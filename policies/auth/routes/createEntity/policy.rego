@@ -42,12 +42,12 @@ editor_used_any_invalid_field {
 }
 
 invalid_fields_for_members := [
-        "creationDateTime",
-        "visibility",
-        "validFromDateTime",
-        "validUntilDateTime",
-        "ownerUsers",
-        "ownerGroups"
+    "creationDateTime",
+    "visibility",
+    "validFromDateTime",
+    "validUntilDateTime",
+    "ownerUsers",
+    "ownerGroups"
 ]
 
 invalid_fields_for_editors := [
