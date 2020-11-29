@@ -1,12 +1,11 @@
 #
 # This policy evaluates the user's role, email verification status and sent fields to decide if entity creation is allowed.
-# - admin users are allowed to create entity no matter the fields they want to create
-# - editors users are allowed to create as long as they are not used any of the invalid fields listed in the data. For instance
+# - admin users are allowed to create entity no matter the fields they want to use
+# - editors users are allowed to create as long as they are not used any of the invalid fields listed in the array. For instance
 #   editors cannot send creationDateTime or ownerUsers fields at the time of creation. 
 # - members are allowed to create if their email is verified and all fields are valid. For instance, members cannot send visibility
 #   field at the time of the creation
-
-package tarcinapp.entity.create
+package auth.createEntity
 
 # By default, deny requests.
 default allow = false
@@ -42,9 +41,24 @@ is_user_admin {
 }
 
 member_used_any_invalid_field {
-	input.fields[_] = data.invalid_fields_for_members[_]
+	input.fields[_] = invalid_fields_for_members[_]
 }
 
 editor_used_any_invalid_field {
-	input.fields[_] = data.invalid_fields_for_editors[_]
+	input.fields[_] = invalid_fields_for_editors[_]
 }
+
+invalid_fields_for_members := [
+        "creationDateTime",
+        "visibility",
+        "validFromDateTime",
+        "validUntilDateTime",
+        "ownerUsers",
+        "ownerGroups"
+]
+
+invalid_fields_for_editors := [
+	"creationDateTime",
+	"ownerUsers",
+	"ownerGroups"
+]
