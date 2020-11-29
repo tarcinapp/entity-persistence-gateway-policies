@@ -1,10 +1,3 @@
-#
-# This policy evaluates the user's role, email verification status and sent fields to decide if entity creation is allowed.
-# - admin users are allowed to create entity no matter the fields they want to use
-# - editors users are allowed to create as long as they are not used any of the invalid fields listed in the array. For instance
-#   editors cannot send creationDateTime or ownerUsers fields at the time of creation. 
-# - members are allowed to create if their email is verified and all fields are valid. For instance, members cannot send visibility
-#   field at the time of the creation
 package auth.createEntity
 
 # By default, deny requests.
@@ -19,7 +12,7 @@ allow {
     not editor_used_any_invalid_field
 }
 
-# if user is member, then it should satisfy a group of conditions to be allowed for creation
+# if user is a member, then it should satisfy a group of conditions to be allowed for creation
 allow {
 	is_user_member
     input.email_verified == true
