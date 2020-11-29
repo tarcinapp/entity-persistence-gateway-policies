@@ -1,4 +1,4 @@
-package auth.createEntity
+package auth.createEntity.policy
 
 # By default, deny requests.
 default allow = false

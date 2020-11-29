@@ -1,4 +1,4 @@
-package auth.createEntity
+package auth.createEntity.metadata
 
 description := `This policy evaluates the user's role, email verification status and sent fields to decide if entity creation is allowed.
 - admin users are allowed to create entity no matter the fields they want to use
