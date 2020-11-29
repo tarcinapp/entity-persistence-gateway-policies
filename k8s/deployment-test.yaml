@@ -1,0 +1,58 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: entity-persistence-gateway-policies-service
+  namespace: tarcinapp-test
+spec:
+  selector:
+    app: entity-persistence-gateway-policies
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8181
+      targetPort: 8181
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: entity-persistence-gateway-policies-deployment
+  namespace: tarcinapp-test
+  labels:
+    app: entity-persistence-gateway-policies
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: entity-persistence-gateway-policies
+  template:
+    metadata:
+      labels:
+        app: entity-persistence-gateway-policies
+    spec:
+      imagePullSecrets:
+      - name: pipeline-docker-registry
+      containers:
+      - name: entity-persistence-gateway-policies
+        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8181
+        args:
+        - "run"
+        - "--ignore=.*"  # exclude hidden dirs created by Kubernetes
+        - "--server"
+        - "/policies"
+        livenessProbe:
+          httpGet:
+            scheme: HTTP 
+            port: 8181
+          initialDelaySeconds: 5      # tune these periods for your environemnt
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health?bundle=true  # Include bundle activation in readiness
+            scheme: HTTP
+            port: 8181
+          initialDelaySeconds: 5
+          periodSeconds: 5
