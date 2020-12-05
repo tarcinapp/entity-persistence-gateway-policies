@@ -1,4 +1,4 @@
-package auth.createEntity.policy
+package policies.auth.routes.createEntity
 
 # By default, deny requests.
 default allow = false
@@ -15,31 +15,36 @@ allow {
 # if user is a member, then it should satisfy a group of conditions to be allowed for creation
 allow {
 	is_user_member
-    input.email_verified == true
+    canMembersManageEntities
+    input.decodedJwtPayload.email_verified == true
     not member_used_any_invalid_field
 }
 
 is_user_member {
-	input.user_roles[_] == "tarcinapp_member"
+	input.decodedJwtPayload.roles[_] == "tarcinapp_member"
 }
 
 # editors are always allowed to create new entities
 is_user_editor {
-    input.user_roles[_] == "tarcinapp_editor"
+    input.decodedJwtPayload.roles[_] == "tarcinapp_editor"
 }
 
 # is_user_editor is true if...
 is_user_admin {
-    input.user_roles[i] == "tarcinapp_admin"
+    input.decodedJwtPayload.roles[_] == "tarcinapp_admin"
 }
 
 member_used_any_invalid_field {
-	input.fields[_] = invalid_fields_for_members[_]
+    key = invalid_fields_for_members[i]
+    _ = input.requestPayload[key]
 }
 
 editor_used_any_invalid_field {
-	input.fields[_] = invalid_fields_for_editors[_]
+	key = invalid_fields_for_editors[i]
+    _ = input.requestPayload[key]
 }
+
+canMembersManageEntities := true
 
 invalid_fields_for_members := [
     "creationDateTime",
