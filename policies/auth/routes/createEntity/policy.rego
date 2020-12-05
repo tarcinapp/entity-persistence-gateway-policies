@@ -45,18 +45,27 @@ editor_used_any_invalid_field {
 
 administrative_roles := [
 	"tarcinapp_admin",
+    "tarcinapp.admin",
+    "tarcinapp.manage.admin",
+    "tarcinapp.create.admin",
     "tarcinapp.entities.manage.admin",
     "tarcinapp.entities.create.admin"
 ]
 
 editorial_roles := [
 	"tarcinapp_editor",
+    "tarcinapp.editor",
+    "tarcinapp.manage.editor",
+    "tarcinapp.create.editor",
     "tarcinapp.entities.manage.editor",
     "tarcinapp.entities.create.editor"
 ]
 
 member_roles := [
 	"tarcinapp_member",
+    "tarcinapp.member",
+    "tarcinapp.manage.member",
+    "tarcinapp.create.member",
     "tarcinapp.entities.manage.member",
     "tarcinapp.entities.create.member"
 ]
