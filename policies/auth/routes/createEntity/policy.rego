@@ -15,23 +15,22 @@ allow {
 # if user is a member, then it should satisfy a group of conditions to be allowed for creation
 allow {
 	is_user_member
-    canMembersManageEntities
     input.decodedJwtPayload.email_verified == true
     not member_used_any_invalid_field
 }
 
 is_user_member {
-	input.decodedJwtPayload.roles[_] == "tarcinapp_member"
+	input.decodedJwtPayload.roles[_] == member_roles[_]
 }
 
 # editors are always allowed to create new entities
 is_user_editor {
-    input.decodedJwtPayload.roles[_] == "tarcinapp_editor"
+    input.decodedJwtPayload.roles[_] == editorial_roles[_]
 }
 
 # is_user_editor is true if...
 is_user_admin {
-    input.decodedJwtPayload.roles[_] == "tarcinapp_admin"
+    input.decodedJwtPayload.roles[_] == administrative_roles[_]
 }
 
 member_used_any_invalid_field {
@@ -44,7 +43,23 @@ editor_used_any_invalid_field {
     _ = input.requestPayload[key]
 }
 
-canMembersManageEntities := true
+administrative_roles := [
+	"tarcinapp_admin",
+    "tarcinapp.entities.manage.admin",
+    "tarcinapp.entities.create.admin"
+]
+
+editorial_roles := [
+	"tarcinapp_editor",
+    "tarcinapp.entities.manage.editor",
+    "tarcinapp.entities.create.editor"
+]
+
+member_roles := [
+	"tarcinapp_member",
+    "tarcinapp.entities.manage.member",
+    "tarcinapp.entities.create.member"
+]
 
 invalid_fields_for_members := [
     "creationDateTime",
