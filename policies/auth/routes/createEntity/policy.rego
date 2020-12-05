@@ -1,4 +1,4 @@
-package policies.auth.routes.createEntity
+package policies.auth.routes.createEntity.policy
 
 # By default, deny requests.
 default allow = false
