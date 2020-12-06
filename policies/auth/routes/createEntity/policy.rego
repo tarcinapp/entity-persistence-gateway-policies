@@ -15,22 +15,22 @@ allow {
 # if user is a member, then it should satisfy a group of conditions to be allowed for creation
 allow {
 	is_user_member
-    input.decodedJwtPayload.email_verified == true
+    token.payload.email_verified == true
     not member_used_any_invalid_field
 }
 
 is_user_member {
-	input.decodedJwtPayload.roles[_] == member_roles[_]
+	token.payload.roles[_] == member_roles[_]
 }
 
 # editors are always allowed to create new entities
 is_user_editor {
-    input.decodedJwtPayload.roles[_] == editorial_roles[_]
+    token.payload.roles[_] == editorial_roles[_]
 }
 
 # is_user_editor is true if...
 is_user_admin {
-    input.decodedJwtPayload.roles[_] == administrative_roles[_]
+    token.payload.roles[_] == administrative_roles[_]
 }
 
 member_used_any_invalid_field {
@@ -41,6 +41,10 @@ member_used_any_invalid_field {
 editor_used_any_invalid_field {
 	key = invalid_fields_for_editors[i]
     _ = input.requestPayload[key]
+}
+
+token = {"payload": payload} {
+  [header, payload, signature] := io.jwt.decode(input.encodedJwt)
 }
 
 administrative_roles := [
