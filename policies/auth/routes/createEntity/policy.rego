@@ -84,7 +84,5 @@ invalid_fields_for_members := [
 ]
 
 invalid_fields_for_editors := [
-	"creationDateTime",
-	"ownerUsers",
-	"ownerGroups"
+	"creationDateTime"
 ]
