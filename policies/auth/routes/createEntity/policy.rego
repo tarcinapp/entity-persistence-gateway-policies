@@ -1,57 +1,13 @@
 package policies.auth.routes.createEntity.policy
 
-# By default, deny requests.
-default allow = false
 
-allow {
-	is_user_admin
-}
-
-allow {
-	is_user_editor
-    not editor_used_any_invalid_field
-}
-
-# if user is a member, then it should satisfy a group of conditions to be allowed for creation
-allow {
-	is_user_member
-    token.payload.email_verified == true
-    not member_used_any_invalid_field
-}
-
-is_user_member {
-	token.payload.roles[_] == member_roles[_]
-}
-
-# editors are always allowed to create new entities
-is_user_editor {
-    token.payload.roles[_] == editorial_roles[_]
-}
-
-# is_user_editor is true if...
-is_user_admin {
-    token.payload.roles[_] == administrative_roles[_]
-}
-
-member_used_any_invalid_field {
-    key = invalid_fields_for_members[i]
-    _ = input.requestPayload[key]
-}
-
-editor_used_any_invalid_field {
-	key = invalid_fields_for_editors[i]
-    _ = input.requestPayload[key]
-}
-
-token = {"payload": payload} {
-  [header, payload, signature] := io.jwt.decode(input.encodedJwt)
-}
-
+# Define roles
+#-----------------------------------------------
 administrative_roles := [
 	"tarcinapp_admin",
     "tarcinapp.admin",
-    "tarcinapp.manage.admin",
-    "tarcinapp.create.admin",
+    "tarcinapp.records.manage.admin",
+    "tarcinapp.records.create.admin",
     "tarcinapp.entities.manage.admin",
     "tarcinapp.entities.create.admin"
 ]
@@ -59,8 +15,8 @@ administrative_roles := [
 editorial_roles := [
 	"tarcinapp_editor",
     "tarcinapp.editor",
-    "tarcinapp.manage.editor",
-    "tarcinapp.create.editor",
+    "tarcinapp.records.manage.editor",
+    "tarcinapp.records.create.editor",
     "tarcinapp.entities.manage.editor",
     "tarcinapp.entities.create.editor"
 ]
@@ -68,21 +24,176 @@ editorial_roles := [
 member_roles := [
 	"tarcinapp_member",
     "tarcinapp.member",
-    "tarcinapp.manage.member",
-    "tarcinapp.create.member",
+    "tarcinapp.records.manage.member",
+    "tarcinapp.records.create.member",
     "tarcinapp.entities.manage.member",
     "tarcinapp.entities.create.member"
 ]
 
-invalid_fields_for_members := [
-    "creationDateTime",
-    "visibility",
-    "validFromDateTime",
-    "validUntilDateTime",
-    "ownerUsers",
-    "ownerGroups"
+member_roles_for_visibility := [
+	"tarcinapp.records.fields.visibility.manage",
+	"tarcinapp.entities.fields.visibility.manage",
+    "tarcinapp.records.fields.visibility.create",
+	"tarcinapp.entities.fields.visibility.create"
 ]
 
-invalid_fields_for_editors := [
-	"creationDateTime"
+member_roles_for_validFrom := [
+	"tarcinapp.records.fields.validFrom.manage",
+	"tarcinapp.entities.fields.validFrom.manage",
+    "tarcinapp.records.fields.validFrom.create",
+	"tarcinapp.entities.fields.validFrom.create"
 ]
+
+member_roles_for_validUntil:= [
+	"tarcinapp.records.fields.validUntil.manage",
+	"tarcinapp.entities.fields.validUntil.manage",
+    "tarcinapp.records.fields.validUntil.create",
+	"tarcinapp.entities.fields.validUntil.create"
+]
+
+#-----------------------------------------------
+
+
+# By default, deny requests.
+default allow = false
+#-----------------------------------------------
+
+
+# Decide allow if any of the following section is true
+#-----------------------------------------------
+allow {
+	is_user_admin
+}
+
+allow {
+	is_user_editor
+    not payload_contains_creationDateTime
+}
+
+allow {
+	is_user_member
+    token.payload.email_verified == true
+    not payload_contains_creationDateTime
+    not member_has_problem_with_visibility
+    not member_has_problem_with_ownerUsers
+    not member_has_problem_with_ownerGroups
+    not member_has_problem_with_validFrom
+    not member_has_problem_with_validUntil
+}
+#-----------------------------------------------
+
+
+# Determine user's role
+#-----------------------------------------------
+is_user_member {
+	token.payload.roles[_] == member_roles[_]
+}
+
+is_user_editor {
+    token.payload.roles[_] == editorial_roles[_]
+}
+
+is_user_admin {
+    token.payload.roles[_] == administrative_roles[_]
+}
+#-----------------------------------------------
+
+
+# Check if user has a problem
+#-----------------------------------------------
+# if request has visibility field, then he must have roles to be able to create it
+member_has_problem_with_visibility {
+	paylod_contains_visibility
+    not can_member_create_visibility
+}
+
+member_has_problem_with_ownerUsers {
+	payload_contains_ownerUsers
+}
+
+member_has_problem_with_ownerGroups {
+	payload_contains_ownerGroups
+    no_ownerGroups_item_in_users_groups
+}
+
+member_has_problem_with_validFrom {
+	payload_contains_validFrom
+    not can_member_create_validFrom
+}
+
+member_has_problem_with_validUntil {
+	payload_contains_validUntil
+    not can_member_create_validUntil
+}
+
+# Following section contains utilities to check if a specific field exists in payload
+#-----------------------------------------------
+payload_contains_creationDateTime {
+    input.requestPayload["creationDateTime"]
+}
+
+payload_contains_creationDateTime {
+    input.requestPayload["creationDateTime"] == false
+}
+
+paylod_contains_visibility {
+	input.requestPayload["visibility"]
+}
+
+paylod_contains_visibility {
+	input.requestPayload["visibility"] == false
+}
+
+payload_contains_ownerUsers {
+	input.requestPayload["ownerUsers"]
+}
+
+payload_contains_ownerUsers {
+	input.requestPayload["ownerUsers"] == false
+}
+
+payload_contains_ownerGroups {
+	input.requestPayload["ownerGroups"]
+}
+
+payload_contains_ownerGroups {
+	input.requestPayload["ownerGroups"] == false
+}
+
+payload_contains_validFrom {
+	input.requestPayload["validFromDateTime"]
+}
+
+payload_contains_validFrom {
+	input.requestPayload["validFromDateTime"] == false
+}
+
+payload_contains_validUntil {
+	input.requestPayload["validUntilDateTime"]
+}
+
+payload_contains_validUntil {
+	input.requestPayload["validUntilDateTime"] == false
+}
+#-----------------------------------------------
+
+
+can_member_create_visibility {
+	member_roles_for_visibility[_] = token.payload.roles[_]
+}
+
+can_member_create_validFrom {
+	member_roles_for_validFrom[_] = token.payload.roles[_]
+}
+
+can_member_create_validUntil {
+	member_roles_for_validUntil[_] = token.payload.roles[_]
+}
+
+no_ownerGroups_item_in_users_groups {
+	token.payload.groups[_] != input.requestPayload.ownerGroups[_]
+}
+
+token = {"payload": payload} {
+  [header, payload, signature] := io.jwt.decode(input.encodedJwt)
+}
