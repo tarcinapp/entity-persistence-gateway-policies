@@ -72,7 +72,7 @@ allow {
 
 allow {
 	is_user_member
-    token.payload.email_verified == true
+   	not member_has_problem_with_mail_verification
     not payload_contains_creationDateTime
     not member_has_problem_with_visibility
     not member_has_problem_with_ownerUsers
@@ -102,6 +102,10 @@ is_user_admin {
 # Check if user has a problem
 #-----------------------------------------------
 # if request has visibility field, then he must have roles to be able to create it
+member_has_problem_with_mail_verification {
+	token.payload.email_verified != true
+}
+
 member_has_problem_with_visibility {
 	paylod_contains_visibility
     not can_member_create_visibility
