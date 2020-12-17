@@ -6,9 +6,9 @@ administrative_roles := [
 	"tarcinapp_admin",
     "tarcinapp.admin",
     "tarcinapp.records.manage.admin",
-    "tarcinapp.records.create.admin",
+    "tarcinapp.records.update.admin",
     "tarcinapp.entities.manage.admin",
-    "tarcinapp.entities.create.admin"
+    "tarcinapp.entities.update.admin"
 ]
 
 #-----------------------------------------------
