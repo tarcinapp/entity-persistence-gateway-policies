@@ -4,7 +4,6 @@ package policies.auth.routes.createEntity.policy
 # Define roles
 #-----------------------------------------------
 administrative_roles := [
-	"tarcinapp_admin",
     "tarcinapp.admin",
     "tarcinapp.records.manage.admin",
     "tarcinapp.records.create.admin",
@@ -13,7 +12,6 @@ administrative_roles := [
 ]
 
 editorial_roles := [
-	"tarcinapp_editor",
     "tarcinapp.editor",
     "tarcinapp.records.manage.editor",
     "tarcinapp.records.create.editor",
@@ -22,7 +20,6 @@ editorial_roles := [
 ]
 
 member_roles := [
-	"tarcinapp_member",
     "tarcinapp.member",
     "tarcinapp.records.manage.member",
     "tarcinapp.records.create.member",

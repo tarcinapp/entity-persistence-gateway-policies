@@ -4,21 +4,18 @@ package data.filters.limitResponseFieldsForFindEntities.forbiddenFields
 # Define roles
 #-----------------------------------------------
 administrative_roles := [
-	"tarcinapp_admin",
     "tarcinapp.admin",
     "tarcinapp.records.find.admin",    
     "tarcinapp.entities.find.admin"
 ]
 
 editorial_roles := [
-	"tarcinapp_editor",
     "tarcinapp.editor",
     "tarcinapp.records.find.editor",    
     "tarcinapp.entities.find.editor"
 ]
 
 member_roles := [
-	"tarcinapp_member",
     "tarcinapp.member",
     "tarcinapp.records.find.member",    
     "tarcinapp.entities.find.member"

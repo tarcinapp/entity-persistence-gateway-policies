@@ -3,12 +3,11 @@ package policies.auth.routes.updateAllEntities.policy
 # Define roles
 #-----------------------------------------------
 administrative_roles := [
-	"tarcinapp_admin",
-    "tarcinapp.admin",
-    "tarcinapp.records.manage.admin",
-    "tarcinapp.records.update.admin",
-    "tarcinapp.entities.manage.admin",
-    "tarcinapp.entities.update.admin"
+  "tarcinapp.admin",
+  "tarcinapp.records.manage.admin",
+  "tarcinapp.records.update.admin",
+  "tarcinapp.entities.manage.admin",
+  "tarcinapp.entities.update.admin"
 ]
 
 #-----------------------------------------------
