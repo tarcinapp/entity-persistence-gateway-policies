@@ -21,21 +21,27 @@ member_roles := [
     "tarcinapp.entities.find.member"
 ]
 
-member_roles_for_visibility := [
+visitor_roles := [
+    "tarcinapp.visitor",
+    "tarcinapp.records.find.visitor",    
+    "tarcinapp.entities.find.visitor"
+]
+
+user_roles_for_visibility := [
 	"tarcinapp.records.fields.visibility.manage",
 	"tarcinapp.entities.fields.visibility.manage",
     "tarcinapp.records.fields.visibility.find",
 	"tarcinapp.entities.fields.visibility.find"
 ]
 
-member_roles_for_validFrom := [
+user_roles_for_validFrom := [
 	"tarcinapp.records.fields.validFrom.manage",
 	"tarcinapp.entities.fields.validFrom.manage",
     "tarcinapp.records.fields.validFrom.find",
 	"tarcinapp.entities.fields.validFrom.find"
 ]
 
-member_roles_for_validUntil:= [
+user_roles_for_validUntil:= [
 	"tarcinapp.records.fields.validUntil.manage",
 	"tarcinapp.entities.fields.validUntil.manage",
     "tarcinapp.records.fields.validUntil.find",
@@ -64,9 +70,20 @@ fields = fields {
         	, ["visibility" | not can_user_see_visibility])
 }
 
+fields = fields {
+	is_user_visitor
+	fields := array.concat(
+    	array.concat(
+    		["validFromDateTime" | not can_user_see_validFrom], ["validUntilDateTime" | not can_user_see_validUntil])
+        	, ["visibility" | not can_user_see_visibility])
+}
 
 # Determine user's role
 #-----------------------------------------------
+is_user_visitor {
+	token.payload.roles[_] == visitor_roles[_]
+}
+
 is_user_member {
 	token.payload.roles[_] == member_roles[_]
 }
@@ -81,15 +98,15 @@ is_user_admin {
 #-----------------------------------------------
 
 can_user_see_validFrom {
-	token.payload.roles[_] == member_roles_for_validFrom[_]
+	token.payload.roles[_] == user_roles_for_validFrom[_]
 }
 
 can_user_see_validUntil  {
-	token.payload.roles[_] == member_roles_for_validUntil[_]
+	token.payload.roles[_] == user_roles_for_validUntil[_]
 }
 
 can_user_see_visibility {
-	token.payload.roles[_] == member_roles_for_visibility[_]
+	token.payload.roles[_] == user_roles_for_visibility[_]
 }
 
 token = {"payload": payload} {

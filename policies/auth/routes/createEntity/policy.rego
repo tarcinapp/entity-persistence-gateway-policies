@@ -27,21 +27,21 @@ member_roles := [
     "tarcinapp.entities.create.member"
 ]
 
-member_roles_for_visibility := [
+user_roles_for_visibility := [
 	"tarcinapp.records.fields.visibility.manage",
 	"tarcinapp.entities.fields.visibility.manage",
     "tarcinapp.records.fields.visibility.create",
 	"tarcinapp.entities.fields.visibility.create"
 ]
 
-member_roles_for_validFrom := [
+user_roles_for_validFrom := [
 	"tarcinapp.records.fields.validFrom.manage",
 	"tarcinapp.entities.fields.validFrom.manage",
     "tarcinapp.records.fields.validFrom.create",
 	"tarcinapp.entities.fields.validFrom.create"
 ]
 
-member_roles_for_validUntil:= [
+user_roles_for_validUntil:= [
 	"tarcinapp.records.fields.validUntil.manage",
 	"tarcinapp.entities.fields.validUntil.manage",
     "tarcinapp.records.fields.validUntil.create",
@@ -180,15 +180,15 @@ payload_contains_validUntil {
 
 
 can_member_create_visibility {
-	member_roles_for_visibility[_] = token.payload.roles[_]
+	user_roles_for_visibility[_] = token.payload.roles[_]
 }
 
 can_member_create_validFrom {
-	member_roles_for_validFrom[_] = token.payload.roles[_]
+	user_roles_for_validFrom[_] = token.payload.roles[_]
 }
 
 can_member_create_validUntil {
-	member_roles_for_validUntil[_] = token.payload.roles[_]
+	user_roles_for_validUntil[_] = token.payload.roles[_]
 }
 
 no_ownerGroups_item_in_users_groups {
