@@ -41,12 +41,8 @@ user_roles_for_validFrom := [
 	"tarcinapp.entities.fields.validFrom.create"
 ]
 
-user_roles_for_validUntil:= [
-	"tarcinapp.records.fields.validUntil.manage",
-	"tarcinapp.entities.fields.validUntil.manage",
-    "tarcinapp.records.fields.validUntil.create",
-	"tarcinapp.entities.fields.validUntil.create"
-]
+# creating an invalid record at the time of creation does not make sense for members
+# user_roles_for_validUntil:= []
 
 #-----------------------------------------------
 
@@ -124,7 +120,6 @@ member_has_problem_with_validFrom {
 
 member_has_problem_with_validUntil {
 	payload_contains_validUntil
-    not can_member_create_validUntil
 }
 
 # Following section contains utilities to check if a specific field exists in payload
@@ -185,10 +180,6 @@ can_member_create_visibility {
 
 can_member_create_validFrom {
 	user_roles_for_validFrom[_] = token.payload.roles[_]
-}
-
-can_member_create_validUntil {
-	user_roles_for_validUntil[_] = token.payload.roles[_]
 }
 
 no_ownerGroups_item_in_users_groups {
