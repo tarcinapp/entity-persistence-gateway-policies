@@ -38,11 +38,11 @@ user_roles_for_visibility := [
 # members can update validFrom value if
 # - original record does not have validFrom
 # and
-# - user's validFrom value is in between now and 10 seconds before
+# - user's validFrom value is in between now and 60 seconds before 
 # and
 # - member have any of the following roles
 #
-# That is, thesse roles give member to approve his own record
+# That is, these roles give member to approve his own record
 user_roles_for_validFrom := [
 	"tarcinapp.records.fields.validFrom.manage",
 	"tarcinapp.entities.fields.validFrom.manage",
@@ -50,21 +50,29 @@ user_roles_for_validFrom := [
 	"tarcinapp.entities.fields.validFrom.update"
 ]
 
+# if record is being approved by a member, validFromDateTime cannot be before than the amount of seconds given below from now
+# this option enforces members to approve records immediately
+member_validFrom_range_in_seconds:= 300
+
 # members can update validUntil value if
-# - original record is active
+# - original record is active or pending
 # and
-# - user's validUntil value is in between now and 10 seconds before
+# - user's validUntil value is in between now and 60 seconds before
 # and
 # - member have any of the following roles
 #
-# That is, these roles give member to effectively delete his own record
-user_roles_for_passifying_record:= [
+# That is, these roles give member to inactivate his own record
+user_roles_for_inactivating_record:= [
 	"tarcinapp.records.fields.validUntil.manage",
 	"tarcinapp.entities.fields.validUntil.manage",
   	"tarcinapp.records.fields.validUntil.update",
 	"tarcinapp.entities.fields.validUntil.update"
 ]
 
+member_validUntil_range_for_inactivation_in_seconds := 300
+
+# NOTE: FOLLOWING ROLES ARE NOT USED FOR NOW! THERE IS A TASK ABOUT IMPLEMENTING THESE ROLES
+# --------------------------------------------------------------------------
 # members can update validUntil value if
 # - original record is passive
 # and
@@ -75,7 +83,7 @@ user_roles_for_passifying_record:= [
 # - member have any of the following roles
 #
 # That is, these roles give member to effectively undo his deletion in 5 minutes
-user_roles_for_undoing_passifying_record:= [
+user_roles_for_undoing_inactivating_record:= [
 	"tarcinapp.records.fields.validUntil.manage",
 	"tarcinapp.entities.fields.validUntil.manage"
 ]
@@ -104,16 +112,18 @@ allow {
 
 allow {
 	is_user_member
-	is_record_belongs_to_this_user # over user's groups or user's id
+	is_record_belongs_to_this_user 						# over user's groups or user's id
+    not is_original_record_inactive 					# only pending and active records are updateable
     
-	not member_has_problem_with_mail_verification
-	not payload_contains_creationDateTime
-	not payload_contains_lastUpdatedDateTime
-	not member_has_problem_with_visibility
-	not member_has_problem_with_ownerUsers
-	not member_has_problem_with_ownerGroups
-	not member_has_problem_with_validFrom
-	not member_has_problem_with_validUntil
+	not member_has_problem_with_mail_verification		# email must be verified
+	not payload_contains_creationDateTime				# member cannot modify creationDateTime
+	not payload_contains_lastUpdatedDateTime			# member cannot modify lastUpdatedDateTime
+	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
+	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
+	not member_has_problem_with_ownerGroups				# member cannot use any group he is not belongs to
+    
+	not member_has_problem_with_validFrom				# updating validFrom (approving) requires some specific roles, validFrom > (now - 60s)
+	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, (validUntil > now - 60s)
 }
 #-----------------------------------------------
 
@@ -143,7 +153,7 @@ member_has_problem_with_mail_verification {
 
 member_has_problem_with_visibility {
 	paylod_contains_visibility
-  not can_member_update_visibility
+	not can_member_update_visibility
 }
 
 member_has_problem_with_ownerUsers {
@@ -156,18 +166,35 @@ member_has_problem_with_ownerGroups {
   no_ownerGroups_item_in_users_groups
 }
 
-member_has_problem_with_validFrom {
-  payload_contains_validFrom
-}
-
 # if original record already have validFrom, members cannot update this value
 member_has_problem_with_validFrom {
+  payload_contains_validFrom
   original_record_already_have_validFrom
 }
 
-member_has_problem_with_validUntil {
-  payload_contains_validUntil
+# if member does not have enough roles, he cannot send validFrom
+member_has_problem_with_validFrom {
+	payload_contains_validFrom
+    not can_member_update_validFrom
 }
+
+# valid from must be in specific range
+member_has_problem_with_validFrom {
+	payload_contains_validFrom
+    not is_validFrom_in_correct_range
+}
+
+member_has_problem_with_validUntil {
+	payload_contains_validUntil
+	not can_user_inactivate_record
+}
+
+# validUntil must be in correct range for inactivation
+member_has_problem_with_validUntil {
+	payload_contains_validUntil
+    not is_validUntil_in_correct_range_for_inactivation
+} 
+
 
 # Following section contains utilities to check if a specific field exists in payload
 #-----------------------------------------------
@@ -234,7 +261,7 @@ user_id_in_ownerUsers {
 #-----------------------------------------------
 
 original_record_already_have_validFrom {
-  input.originalRecord.validFrom
+  input.originalRecord.validFromDateTime
 }
 
 can_member_update_visibility {
@@ -243,6 +270,10 @@ can_member_update_visibility {
 
 can_member_update_validFrom {
 	user_roles_for_validFrom[_] = token.payload.roles[_]
+}
+
+can_user_inactivate_record {
+	user_roles_for_inactivating_record[_] = token.payload.roles[_]
 }
 
 
@@ -257,6 +288,45 @@ is_record_belongs_to_this_user {
 is_record_belongs_to_this_user {
   input.originalRecord.ownerGroups[_] = token.payload.groups[_]
   input.originalRecord.visibility != "private"
+}
+
+
+is_validFrom_in_correct_range {
+	nowSec := time.now_ns()/(1000*1000*1000)
+	validFromSec := time.parse_rfc3339_ns(input.requestPayload.validFromDateTime)/(1000*1000*1000)
+    
+	validFromSec <= nowSec
+    validFromSec > (nowSec - member_validFrom_range_in_seconds)
+}
+
+is_validUntil_in_correct_range_for_inactivation {
+	nowSec := time.now_ns()/(1000*1000*1000)
+    validUntilSec := time.parse_rfc3339_ns(input.requestPayload.validUntilDateTime)/(1000*1000*1000)
+    
+    validUntilSec <= nowSec
+    validUntilSec > (nowSec - member_validUntil_range_for_inactivation_in_seconds)
+}
+
+is_original_record_active {
+    is_record_validFrom_passed
+    not is_record_validUntil_passed
+}
+
+is_original_record_pending {
+	input.originalRecord.validFromDateTime = null
+}
+
+is_original_record_inactive {
+	is_record_validUntil_passed
+}
+
+is_record_validFrom_passed {
+	input.originalRecord.validFromDateTime != null
+    time.parse_rfc3339_ns(input.originalRecord.validFromDateTime) < time.now_ns()
+}
+
+is_record_validUntil_passed {
+	time.parse_rfc3339_ns(input.originalRecord.validUntilDateTime) <= time.now_ns()
 }
 
 token = {"payload": payload} {
