@@ -1,4 +1,4 @@
-package policies.fields.generic-entities.policy
+package policies.fields.genericentities.policy
 
 
 # Define roles
