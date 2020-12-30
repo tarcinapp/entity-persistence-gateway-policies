@@ -31,21 +31,27 @@ user_roles_for_visibility := [
 	"tarcinapp.records.fields.visibility.manage",
 	"tarcinapp.entities.fields.visibility.manage",
     "tarcinapp.records.fields.visibility.find",
-	"tarcinapp.entities.fields.visibility.find"
+	"tarcinapp.entities.fields.visibility.find",
+    "tarcinapp.records.fields.visibility.update",
+	"tarcinapp.entities.fields.visibility.update"
 ]
 
 user_roles_for_validFrom := [
 	"tarcinapp.records.fields.validFrom.manage",
 	"tarcinapp.entities.fields.validFrom.manage",
     "tarcinapp.records.fields.validFrom.find",
-	"tarcinapp.entities.fields.validFrom.find"
+	"tarcinapp.entities.fields.validFrom.find",
+    "tarcinapp.records.fields.validFrom.update",
+	"tarcinapp.entities.fields.validFrom.update"
 ]
 
 user_roles_for_validUntil:= [
 	"tarcinapp.records.fields.validUntil.manage",
 	"tarcinapp.entities.fields.validUntil.manage",
     "tarcinapp.records.fields.validUntil.find",
-	"tarcinapp.entities.fields.validUntil.find"
+	"tarcinapp.entities.fields.validUntil.find",
+    "tarcinapp.records.fields.validUntil.update",
+	"tarcinapp.entities.fields.validUntil.update"
 ]
 
 #-----------------------------------------------
