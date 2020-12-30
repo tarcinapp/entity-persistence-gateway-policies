@@ -120,10 +120,10 @@ allow {
 	not payload_contains_lastUpdatedDateTime			# member cannot modify lastUpdatedDateTime
 	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
 	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
-	not member_has_problem_with_ownerGroups				# member cannot use any group he is not belongs to
+	not member_has_problem_with_ownerGroups				# member cannot use any group he is not belong to
     
 	not member_has_problem_with_validFrom				# updating validFrom (approving) requires some specific roles, validFrom > (now - 60s)
-	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, (validUntil > now - 60s)
+	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, validUntil > (now - 60s)
 }
 #-----------------------------------------------
 
