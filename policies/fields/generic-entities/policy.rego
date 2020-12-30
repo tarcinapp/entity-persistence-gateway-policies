@@ -1,4 +1,4 @@
-package data.filters.limitResponseFieldsForFindEntities.forbiddenFields
+package policies.fields.generic-entities.policy
 
 
 # Define roles
