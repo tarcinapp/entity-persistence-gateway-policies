@@ -38,7 +38,7 @@ user_roles_for_visibility := [
 # members can update validFrom value if
 # - original record does not have validFrom
 # and
-# - user's validFrom value is in between now and 60 seconds before 
+# - user's validFrom value is in between now and 300 seconds before 
 # and
 # - member have any of the following roles
 #
