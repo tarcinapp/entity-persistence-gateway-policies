@@ -1,4 +1,4 @@
-package policies.auth.routes.updateEntityByID.policy
+package policies.auth.routes.updateEntityById.policy
 
 
 # Define roles
