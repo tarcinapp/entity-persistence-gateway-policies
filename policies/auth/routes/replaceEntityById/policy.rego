@@ -167,7 +167,6 @@ member_has_problem_with_visibility {
 }
 
 member_has_problem_with_ownerUsers {
-	input.requestPayload["ownerUsers"]
 	not user_id_in_ownerUsers
 }
 
