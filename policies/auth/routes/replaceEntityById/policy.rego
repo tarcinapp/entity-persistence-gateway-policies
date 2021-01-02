@@ -1,6 +1,5 @@
 package policies.auth.routes.replaceEntityById.policy
 
-
 # Define roles
 #-----------------------------------------------
 administrative_roles := [
@@ -38,7 +37,7 @@ user_roles_for_visibility := [
 # members can update validFrom value if
 # - original record does not have validFrom
 # and
-# - user's validFrom value is in between now and 60 seconds before 
+# - user's validFrom value is in between now and 300 seconds before 
 # and
 # - member have any of the following roles
 #
@@ -106,8 +105,8 @@ allow {
 
 allow {
 	is_user_editor
-	not payload_contains_creationDateTime
-	not payload_contains_lastUpdatedDateTime
+	not user_has_problem_with_creationDateTime
+	not user_has_problem_with_lastUpdatedDateTime
 }
 
 allow {
@@ -116,14 +115,14 @@ allow {
     not is_original_record_inactive 					# only pending and active records are updateable
     
 	not member_has_problem_with_mail_verification		# email must be verified
-	not payload_contains_creationDateTime				# member cannot modify creationDateTime
-	not payload_contains_lastUpdatedDateTime			# member cannot modify lastUpdatedDateTime
+	not user_has_problem_with_creationDateTime			# member cannot change the value of creationDateTime
+	not user_has_problem_with_lastUpdatedDateTime		# member cannot change the value of lastUpdatedDateTime
 	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
 	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
-	not member_has_problem_with_ownerGroups				# member cannot use any group he is not belong to
+	not member_has_problem_with_ownerGroups				# member cannot use any group name that he is not belong to
     
 	not member_has_problem_with_validFrom				# updating validFrom (approving) requires some specific roles, validFrom > (now - 60s)
-	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, validUntil > (now - 60s)
+	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, (validUntil > now - 60s)
 }
 #-----------------------------------------------
 
@@ -147,22 +146,33 @@ is_user_admin {
 # Check if user has a problem
 #-----------------------------------------------
 # if request has visibility field, then he must have roles to be able to create it
+user_has_problem_with_creationDateTime {
+	input.requestPayload["creationDateTime"]
+	input.requestPayload["creationDateTime"] != input.originalRecord["creationDateTime"]
+}
+
+user_has_problem_with_lastUpdatedDateTime {
+	input.requestPayload["lastUpdatedDateTime"]
+	input.requestPayload["lastUpdatedDateTime"] != input.originalRecord["lastUpdatedDateTime"]
+}
+
 member_has_problem_with_mail_verification {
 	token.payload.email_verified != true
 }
 
 member_has_problem_with_visibility {
-	paylod_contains_visibility
+	input.requestPayload["visibility"]
+	input.requestPayload["visibility"] != input.originalRecord["visibility"]
 	not can_member_update_visibility
 }
 
 member_has_problem_with_ownerUsers {
-	payload_contains_ownerUsers
+	input.requestPayload["ownerUsers"]
 	not user_id_in_ownerUsers
 }
 
 member_has_problem_with_ownerGroups {
-  payload_contains_ownerGroups
+  input.requestPayload["ownerGroups"]
   no_ownerGroups_item_in_users_groups
 }
 
@@ -198,46 +208,6 @@ member_has_problem_with_validUntil {
 
 # Following section contains utilities to check if a specific field exists in payload
 #-----------------------------------------------
-payload_contains_creationDateTime {
-  input.requestPayload["creationDateTime"]
-}
-
-payload_contains_creationDateTime {
-  input.requestPayload["creationDateTime"] == false
-}
-
-payload_contains_lastUpdatedDateTime {
-  input.requestPayload["lastUpdatedDateTime"]
-}
-
-payload_contains_lastUpdatedDateTime {
-  input.requestPayload["lastUpdatedDateTime"] == false
-}
-
-paylod_contains_visibility {
-	input.requestPayload["visibility"]
-}
-
-paylod_contains_visibility {
-	input.requestPayload["visibility"] == false
-}
-
-payload_contains_ownerUsers {
-	input.requestPayload["ownerUsers"]
-}
-
-payload_contains_ownerUsers {
-	input.requestPayload["ownerUsers"] == false
-}
-
-payload_contains_ownerGroups {
-	input.requestPayload["ownerGroups"]
-}
-
-payload_contains_ownerGroups {
-	input.requestPayload["ownerGroups"] == false
-}
-
 payload_contains_validFrom {
 	input.requestPayload["validFromDateTime"]
 }
