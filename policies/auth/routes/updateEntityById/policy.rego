@@ -27,6 +27,14 @@ member_roles := [
     "tarcinapp.entities.update.member"
 ]
 
+# members cannot update kind field by default
+user_roles_for_kind := [
+	"tarcinapp.records.fields.kind.manage",
+	"tarcinapp.entities.fields.kind.manage",
+  	"tarcinapp.records.fields.kind.update",
+	"tarcinapp.entities.fields.kind.update"
+]
+
 # members cannot update visibility field by default
 user_roles_for_visibility := [
 	"tarcinapp.records.fields.visibility.manage",
@@ -118,6 +126,7 @@ allow {
 	not member_has_problem_with_mail_verification		# email must be verified
 	not payload_contains_creationDateTime				# member cannot modify creationDateTime
 	not payload_contains_lastUpdatedDateTime			# member cannot modify lastUpdatedDateTime
+	not member_has_problem_with_kind					# updating kind, requires some specific roles
 	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
 	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
 	not member_has_problem_with_ownerGroups				# member cannot use any group he is not belong to
@@ -149,6 +158,11 @@ is_user_admin {
 # if request has visibility field, then he must have roles to be able to create it
 member_has_problem_with_mail_verification {
 	token.payload.email_verified != true
+}
+
+member_has_problem_with_kind {
+	payload_contains_kind
+	not can_member_update_kind
 }
 
 member_has_problem_with_visibility {
@@ -198,6 +212,10 @@ member_has_problem_with_validUntil {
 
 # Following section contains utilities to check if a specific field exists in payload
 #-----------------------------------------------
+payload_contains_kind {
+  input.requestPayload["kind"]
+}
+
 payload_contains_creationDateTime {
   input.requestPayload["creationDateTime"]
 }
@@ -263,6 +281,11 @@ user_id_in_ownerUsers {
 original_record_already_have_validFrom {
   input.originalRecord.validFromDateTime
 }
+
+can_member_update_kind {
+	user_roles_for_kind[_] = token.payload.roles[_]
+}
+
 
 can_member_update_visibility {
 	user_roles_for_visibility[_] = token.payload.roles[_]
