@@ -26,6 +26,14 @@ member_roles := [
     "tarcinapp.entities.update.member"
 ]
 
+# members cannot update kind field by default
+user_roles_for_kind := [
+	"tarcinapp.records.fields.kind.manage",
+	"tarcinapp.entities.fields.kind.manage",
+  	"tarcinapp.records.fields.kind.update",
+	"tarcinapp.entities.fields.kind.update"
+]
+
 # members cannot update visibility field by default
 user_roles_for_visibility := [
 	"tarcinapp.records.fields.visibility.manage",
@@ -117,6 +125,7 @@ allow {
 	not member_has_problem_with_mail_verification		# email must be verified
 	not user_has_problem_with_creationDateTime			# member cannot change the value of creationDateTime
 	not user_has_problem_with_lastUpdatedDateTime		# member cannot change the value of lastUpdatedDateTime
+	not member_has_problem_with_kind					# updating kind, requires some specific roles
 	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
 	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
 	not member_has_problem_with_ownerGroups				# member cannot use any group name that he is not belong to
@@ -158,6 +167,10 @@ user_has_problem_with_lastUpdatedDateTime {
 
 member_has_problem_with_mail_verification {
 	token.payload.email_verified != true
+}
+
+member_has_problem_with_kind {
+	not can_member_update_kind
 }
 
 member_has_problem_with_visibility {
@@ -231,6 +244,10 @@ user_id_in_ownerUsers {
 
 original_record_already_have_validFrom {
   input.originalRecord.validFromDateTime
+}
+
+can_member_update_kind {
+	user_roles_for_kind[_] = token.payload.roles[_]
 }
 
 can_member_update_visibility {
