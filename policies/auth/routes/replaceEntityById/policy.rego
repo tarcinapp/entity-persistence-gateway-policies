@@ -170,6 +170,7 @@ member_has_problem_with_mail_verification {
 }
 
 member_has_problem_with_kind {
+	input.requestPayload["kind"] != input.originalRecord["kind"]
 	not can_member_update_kind
 }
 
