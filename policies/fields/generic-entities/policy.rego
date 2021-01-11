@@ -70,22 +70,18 @@ fields = [] {
 
 fields = fields {
 	is_user_member
-	by_role := array.concat(
+	fields := array.concat(
     	array.concat(
     		["validFromDateTime" | not can_user_see_validFrom], ["validUntilDateTime" | not can_user_see_validUntil])
         	, ["visibility" | not can_user_see_visibility])
-
-	fields := array.concat(by_role, ["kind"])
 }
 
 fields = fields {
 	is_user_visitor
-	by_role := array.concat(
+	fields := array.concat(
     	array.concat(
     		["validFromDateTime" | not can_user_see_validFrom], ["validUntilDateTime" | not can_user_see_validUntil])
         	, ["visibility" | not can_user_see_visibility])
-
-	fields := array.concat(by_role, ["kind"])
 }
 
 # Determine user's role
