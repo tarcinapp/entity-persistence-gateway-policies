@@ -1,0 +1,32 @@
+{
+    "policyName": "/policies/auth/routes/replaceEntityById/policy",
+    "httpMethod": "PUT",
+    "requestPath": "/generic-entities/d3f00c22-616d-4350-8c4c-ab87cf8c1c40",
+    "queryParams": {},
+    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ6TDBGbDlWNVpWUmFNNmZHUkVZcWs3M0piVnZNLXM2WnYwNEpscndmRnpBIn0.eyJleHAiOjE2MTAyODE2MDYsImlhdCI6MTYxMDI4MTMwNiwianRpIjoiYmU0OTE1NTctZTlkOS00NDk4LTgyNTktZDYxM2ZlNDExYmQ1IiwiaXNzIjoiaHR0cHM6Ly9jb21tb24tYXV0aC10ZXN0LmJ1bHV0YXJ0aS5jb20vYXV0aC9yZWFsbXMvdGFyY2luYXBwIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImViZTkyYjBjLWJkYTItNDlkMC05OWQwLWZlYjUzOGFhN2RiNiIsInR5cCI6IkJlYXJlciIsImF6cCI6InBvc3RtYW4iLCJzZXNzaW9uX3N0YXRlIjoiOTRmZTAzNTgtNDFiZC00N2U1LThjYjQtNjJlMTFiZGZmNTliIiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLm1lbWJlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsInRhcmNpbmFwcC5tZW1iZXIiXSwibmFtZSI6IkthZGlyIEvDvHLFn2F0IFRva3B1bmFyIiwiZ3JvdXBzIjpbImZvdW5kZXJzIl0sInByZWZlcnJlZF91c2VybmFtZSI6Imt1cnNhdHRva3BpbmFyIiwiZ2l2ZW5fbmFtZSI6IkthZGlyIEvDvHLFn2F0IiwiZmFtaWx5X25hbWUiOiJUb2twdW5hciIsImVtYWlsIjoia3Vyc2F0dG9rcGluYXJAZ21haWwuY29tIn0.KYyxlgPnwyNaKO068JGJgAz4CQ_OHG1PnhaBMLKsJPOWEmX6Wylbdywqv61NExNH_BIFEStAzFLwXjAt-FAirDvghb8B8xTaUYBeLnCyJ28STmTb0qNZUZzUtwmrQgH0f2UNKnDEDTIr96hvCByN43dFyLMYBadIE_kTTkpJuTdoxZ9VNA-DYrRu-BBQCtNH5luZIYgiS0PyS_XJviAAA361e_dXNXhLVkBv-voSJqeHoTJ9DY-BHi_WlUcg_2sOb1IHfoMWQdnC1xbic-WqXKhMl2PmMMlKUBEpfDicR1hO6qWz5srR9Yn0QVgaj9g37Qgi41Znszt9dTxZNi4Iiw",
+    "requestPayload": {
+        "kind": "k1",
+        "name": "protected ve grubuma ait updated",
+        "slug": "protected-ve-grubuma-ait",
+        "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+        "ownerGroups": ["founders"],
+        "ownerUsersCount": 0,
+        "ownerGroupsCount": 0,
+        "creationDateTime": "2020-11-16T08:42:21.953Z",
+        "properties": {}
+    },
+    "originalRecord": {
+        "id": "d3f00c22-616d-4350-8c4c-ab87cf8c1c40",
+        "kind": "k1",
+        "name": "protected ve grubuma ait",
+        "slug": "protected-ve-grubuma-ait",
+        "visibility": "protected",
+        "ownerUsers": [],
+        "ownerGroups": ["founders"],
+        "ownerUsersCount": 0,
+        "ownerGroupsCount": 0,
+        "creationDateTime": "2020-11-16T08:42:21.953Z",
+        "validFromDateTime": "2020-11-16T08:42:21.953Z",
+        "properties": {}
+    }
+}
