@@ -61,6 +61,9 @@ allow {
 allow {
 	is_user_editor
     not payload_contains_creationDateTime
+    not payload_contains_createdBy
+    not payload_contains_lastUpdatedDateTime
+    not payload_contains_lastUpdatedBy
 }
 
 allow {
@@ -72,6 +75,9 @@ allow {
     not member_has_problem_with_ownerGroups
     not member_has_problem_with_validFrom
     not member_has_problem_with_validUntil
+    not payload_contains_lastUpdatedDateTime
+    not payload_contains_lastUpdatedBy
+    not payload_contains_createdBy
 }
 #-----------------------------------------------
 
@@ -130,6 +136,30 @@ payload_contains_creationDateTime {
 
 payload_contains_creationDateTime {
     input.requestPayload["creationDateTime"] == false
+}
+
+payload_contains_lastUpdatedDateTime {
+	input.requestPayload["lastUpdatedDateTime"]
+}
+
+payload_contains_lastUpdatedDateTime {
+	input.requestPayload["lastUpdatedDateTime"] == false
+}
+
+payload_contains_createdBy {
+	input.requestPayload["createdBy"]
+}
+
+payload_contains_createdBy {
+	input.requestPayload["createdBy"] == false
+}
+
+payload_contains_lastUpdatedBy {
+	input.requestPayload["lastUpdatedBy"]
+}
+
+payload_contains_lastUpdatedBy {
+	input.requestPayload["lastUpdatedBy"] == false
 }
 
 paylod_contains_visibility {
