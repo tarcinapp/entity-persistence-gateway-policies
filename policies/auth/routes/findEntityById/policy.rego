@@ -90,10 +90,12 @@ is_user_visitor {
 
 can_user_see_this_record {
     is_original_record_belongs_to_this_user
+    not is_original_record_passive
 }
 
 can_user_see_this_record {
     is_original_record_belongs_to_users_groups
+    not is_original_record_passive
 }
 
 can_user_see_this_record {
@@ -117,15 +119,12 @@ is_original_record_belongs_to_users_groups {
 is_original_record_active {
     input.originalRecord.validFromDateTime != null
     time.parse_rfc3339_ns(input.originalRecord.validFromDateTime) < time.now_ns()
-    not is_record_validUntil_passed
+    not is_original_record_passive
 }
 
-record_validUntil_is_not_passed {
-    input.originalRecord.validUntilDateTime = null
-}
-
-is_record_validUntil_passed {
-	time.parse_rfc3339_ns(input.originalRecord.validUntilDateTime) <= time.now_ns()
+is_original_record_passive {
+    input.originalRecord.validUntilDateTime != null
+    time.parse_rfc3339_ns(input.originalRecord.validUntilDateTime) <= time.now_ns()
 }
 
 user_has_problem_with_mail_verification {
