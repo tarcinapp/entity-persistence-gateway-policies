@@ -27,7 +27,7 @@ description := `This policy evaluates the user's role, email verification status
     - if validUntilDateTime field exists in the payload
         - user must have the required roles for updating the validUntilDateTime
         - validUntil fields must be null in the original record
-        - validUntilDateTime must specify a time in last 300 seconds
+        - validUntilDateTime must specify a time in last 300 seconds`
 
 fields := {
     "encodedJwt": "Encoded JWT string.",
