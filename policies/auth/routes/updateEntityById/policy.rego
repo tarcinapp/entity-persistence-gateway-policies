@@ -116,6 +116,8 @@ allow {
 	is_user_editor
 	not payload_contains_creationDateTime
 	not payload_contains_lastUpdatedDateTime
+	not payload_contains_lastUpdatedBy
+	not payload_contains_createdBy
 }
 
 allow {
@@ -125,7 +127,9 @@ allow {
     
 	not member_has_problem_with_mail_verification		# email must be verified
 	not payload_contains_creationDateTime				# member cannot modify creationDateTime
+	not payload_contains_lastUpdatedBy					# member cannot modify lastUpdatedBy
 	not payload_contains_lastUpdatedDateTime			# member cannot modify lastUpdatedDateTime
+	not payload_contains_createdBy						# member cannot modify createdBy
 	not member_has_problem_with_kind					# updating kind, requires some specific roles
 	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
 	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
@@ -230,6 +234,22 @@ payload_contains_lastUpdatedDateTime {
 
 payload_contains_lastUpdatedDateTime {
   input.requestPayload["lastUpdatedDateTime"] == false
+}
+
+payload_contains_createdBy {
+	input.requestPayload["createdBy"]
+}
+
+payload_contains_createdBy {
+	input.requestPayload["createdBy"] == false
+}
+
+payload_contains_lastUpdatedBy {
+  input.requestPayload["lastUpdatedBy"]
+}
+
+payload_contains_lastUpdatedBy {
+  input.requestPayload["lastUpdatedBy"] == false
 }
 
 paylod_contains_visibility {
