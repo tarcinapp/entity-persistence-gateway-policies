@@ -57,6 +57,11 @@ user_roles_for_validFrom := [
 	"tarcinapp.entities.fields.validFrom.update"
 ]
 
+user_roles_to_see_validFrom := [
+	"tarcinapp.records.fields.validFrom.find",
+	"tarcinapp.entities.fields.validFrom.find"
+]
+
 # if record is being approved by a member, validFromDateTime cannot be before than the amount of seconds given below from now
 # this option enforces members to approve records immediately
 member_validFrom_range_in_seconds:= 300
@@ -64,7 +69,7 @@ member_validFrom_range_in_seconds:= 300
 # members can update validUntil value if
 # - original record is active or pending
 # and
-# - user's validUntil value is in between now and 60 seconds before
+# - user's validUntil value is in between now and 300 seconds before
 # and
 # - member have any of the following roles
 #
@@ -79,6 +84,8 @@ user_roles_for_inactivating_record:= [
 member_validUntil_range_for_inactivation_in_seconds := 300
 
 # NOTE: FOLLOWING ROLES ARE NOT USED FOR NOW! THERE IS A TASK ABOUT IMPLEMENTING THESE ROLES
+# LETTING USERS TO SEE THEIR INACTIVATED RECORDS ALSE REQUIRES THEM TO SEE THEIR INACTIVE RECORDS.
+# NOT SURE, HOW TO BUILD THE APPLICATION LOGIC.
 # --------------------------------------------------------------------------
 # members can update validUntil value if
 # - original record is passive
@@ -115,6 +122,8 @@ allow {
 	is_user_editor
 	not user_has_problem_with_creationDateTime
 	not user_has_problem_with_lastUpdatedDateTime
+	not user_has_problem_with_lastUpdatedBy
+	not user_has_problem_with_createdBy
 }
 
 allow {
@@ -123,12 +132,14 @@ allow {
     not is_original_record_inactive 					# only pending and active records are updateable
     
 	not member_has_problem_with_mail_verification		# email must be verified
-	not user_has_problem_with_creationDateTime			# member cannot change the value of creationDateTime
-	not user_has_problem_with_lastUpdatedDateTime		# member cannot change the value of lastUpdatedDateTime
+	not user_has_problem_with_creationDateTime			# member cannot send any value for creationDateTime
+	not user_has_problem_with_lastUpdatedDateTime		# member cannot send any value for lastUpdatedDateTime
+	not user_has_problem_with_lastUpdatedBy				# member cannot send any value for lastUpdatedDateTime
+	not user_has_problem_with_createdBy					# member cannot change the value for createdBy
 	not member_has_problem_with_kind					# updating kind, requires some specific roles
 	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
 	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
-	not member_has_problem_with_ownerGroups				# member cannot use any group name that he is not belong to
+	not member_has_problem_with_ownerGroups				# member cannot use any group name that he is not belongs to
     
 	not member_has_problem_with_validFrom				# updating validFrom (approving) requires some specific roles, validFrom > (now - 60s)
 	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, (validUntil > now - 60s)
@@ -157,12 +168,18 @@ is_user_admin {
 # if request has visibility field, then he must have roles to be able to create it
 user_has_problem_with_creationDateTime {
 	input.requestPayload["creationDateTime"]
-	input.requestPayload["creationDateTime"] != input.originalRecord["creationDateTime"]
 }
 
 user_has_problem_with_lastUpdatedDateTime {
 	input.requestPayload["lastUpdatedDateTime"]
-	input.requestPayload["lastUpdatedDateTime"] != input.originalRecord["lastUpdatedDateTime"]
+}
+
+user_has_problem_with_createdBy {
+	input.requestPayload["createdBy"]
+}
+
+user_has_problem_with_lastUpdatedBy{
+	input.requestPayload["lastUpdatedBy"]
 }
 
 member_has_problem_with_mail_verification {
@@ -189,22 +206,50 @@ member_has_problem_with_ownerGroups {
   no_ownerGroups_item_in_users_groups
 }
 
-# if original record already have validFrom, members cannot update this value
+# default behavior.
+# user not able to see the validFrom
+# user sent a value for validFrom
 member_has_problem_with_validFrom {
-  payload_contains_validFrom
-  original_record_already_have_validFrom
+	not can_user_see_the_validFrom		# user cannot see the validFrom
+	not can_member_update_validFrom 	# user cannot update validFrom
+	payload_contains_validFrom			# but validFrom is given in payload
 }
 
-# if member does not have enough roles, he cannot send validFrom
+# user can see but cannot update
+# original record have validFrom
+# user should send a value
 member_has_problem_with_validFrom {
-	payload_contains_validFrom
-    not can_member_update_validFrom
+	can_user_see_the_validFrom 			# user can see the validFrom
+	not can_member_update_validFrom 	# he is not able to change value
+	originalRecord_contains_validFrom	# validFrom is not null in validFrom
+	not payload_contains_validFrom		# but user did not send any value for validFrom
 }
 
-# valid from must be in specific range
+# user can see but cannot update
+# user's value is different than the original
 member_has_problem_with_validFrom {
-	payload_contains_validFrom
-    not is_validFrom_in_correct_range
+	can_user_see_the_validFrom 				# user can see the validFrom
+	not can_member_update_validFrom 		# he is not able to change value
+	not is_validFrom_equals_to_the_original # but the value he sent is not equals to the original
+}
+
+# user can update validFrom
+# user tries to change validFrom
+# but original value is not null
+member_has_problem_with_validFrom {
+	can_member_update_validFrom
+	originalRecord_contains_validFrom
+}
+
+# user can update validFrom
+# original value is null
+# user tries to add a validFrom
+# but validFrom is not in correct range
+member_has_problem_with_validFrom {
+	can_member_update_validFrom
+	not originalRecord_contains_validFrom
+	payload_contains_validUntil
+	not is_validFrom_in_correct_range
 }
 
 member_has_problem_with_validUntil {
@@ -229,6 +274,14 @@ payload_contains_validFrom {
 	input.requestPayload["validFromDateTime"] == false
 }
 
+originalRecord_contains_validFrom {
+	input.originalRecord["validFromDateTime"]
+}
+
+originalRecord_contains_validFrom {
+	input.originalRecord["validFromDateTime"] == false
+}
+
 payload_contains_validUntil {
 	input.requestPayload["validUntilDateTime"]
 }
@@ -243,8 +296,9 @@ user_id_in_ownerUsers {
 
 #-----------------------------------------------
 
-original_record_already_have_validFrom {
-  input.originalRecord.validFromDateTime
+# can user only see the valid from but not authorized to change it
+can_user_see_the_validFrom {
+	token.payload.roles[_] = user_roles_to_see_validFrom[_]
 }
 
 can_member_update_kind {
@@ -272,6 +326,16 @@ is_record_belongs_to_this_user {
   input.originalRecord.ownerUsers[_] = token.payload.sub
 }
 
+is_validFrom_equals_to_the_original {
+	input.requestPayload["validFromDateTime"] == input.originalRecord["validFromDateTime"]
+}
+
+is_validFrom_equals_to_the_original {
+	not originalRecord_contains_validFrom
+	not payload_contains_validFrom
+}
+
+
 is_record_belongs_to_this_user {
   input.originalRecord.ownerGroups[_] = token.payload.groups[_]
   input.originalRecord.visibility != "private"
@@ -284,6 +348,8 @@ is_validFrom_in_correct_range {
     
 	validFromSec <= nowSec
     validFromSec > (nowSec - member_validFrom_range_in_seconds)
+
+	validFromDifferenceInSeconds := nowSec-validFromSec
 }
 
 is_validUntil_in_correct_range_for_inactivation {
