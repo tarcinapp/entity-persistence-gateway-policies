@@ -1,4 +1,4 @@
-package policies.auth.routes.replaceEntityById.metadata
+package policies.fields.genericentities.policy
 
 description := `This policy evaluates user's roles to decide which fields are forbidden for that user.
 Forbidden fields are never returned to the user in response bodes even if the user explicitly asks for them in request.
