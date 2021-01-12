@@ -24,10 +24,6 @@ allow {
 	is_user_admin
 }
 
-reason = "You don't have enough permissions to perform this operation" {
-	not allow
-}
-
 #-----------------------------------------------
 
 
