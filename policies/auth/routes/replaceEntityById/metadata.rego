@@ -53,5 +53,5 @@ description := `This policy evaluates the user's role, email verification status
 fields := {
     "encodedJwt": "Encoded JWT string.",
     "originalRecord": "The record which the user is querying by it's id.",
-    "requestPayload": "The record which the user is querying by it's id."
+    "requestPayload": "Request body."
 }
