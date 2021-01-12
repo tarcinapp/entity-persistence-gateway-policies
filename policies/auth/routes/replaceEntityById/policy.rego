@@ -175,16 +175,32 @@ user_has_problem_with_creationDateTime {
 	input.requestPayload["creationDateTime"]
 }
 
+user_has_problem_with_creationDateTime {
+	input.requestPayload["creationDateTime"] == false
+}
+
 user_has_problem_with_lastUpdatedDateTime {
 	input.requestPayload["lastUpdatedDateTime"]
+}
+
+user_has_problem_with_lastUpdatedDateTime {
+	input.requestPayload["lastUpdatedDateTime"] == false
 }
 
 user_has_problem_with_createdBy {
 	input.requestPayload["createdBy"]
 }
 
+user_has_problem_with_createdBy {
+	input.requestPayload["createdBy"] == false
+}
+
 user_has_problem_with_lastUpdatedBy{
 	input.requestPayload["lastUpdatedBy"]
+}
+
+user_has_problem_with_lastUpdatedBy{
+	input.requestPayload["lastUpdatedBy"] == false
 }
 
 member_has_problem_with_mail_verification {
