@@ -81,6 +81,11 @@ user_roles_for_inactivating_record:= [
 	"tarcinapp.entities.fields.validUntil.update"
 ]
 
+user_roles_to_see_validUntil := [
+	"tarcinapp.records.fields.validUntil.find",
+	"tarcinapp.entities.fields.validUntil.find"
+]
+
 member_validUntil_range_for_inactivation_in_seconds := 300
 
 # NOTE: FOLLOWING ROLES ARE NOT USED FOR NOW! THERE IS A TASK ABOUT IMPLEMENTING THESE ROLES
@@ -221,7 +226,7 @@ member_has_problem_with_validFrom {
 member_has_problem_with_validFrom {
 	can_user_see_the_validFrom 			# user can see the validFrom
 	not can_member_update_validFrom 	# he is not able to change value
-	originalRecord_contains_validFrom	# validFrom is not null in validFrom
+	originalRecord_contains_validFrom	# validFrom is not null in original record
 	not payload_contains_validFrom		# but user did not send any value for validFrom
 }
 
@@ -248,17 +253,32 @@ member_has_problem_with_validFrom {
 member_has_problem_with_validFrom {
 	can_member_update_validFrom
 	not originalRecord_contains_validFrom
-	payload_contains_validUntil
+	payload_contains_validFrom
 	not is_validFrom_in_correct_range
 }
 
 member_has_problem_with_validUntil {
-	payload_contains_validUntil
+	not can_user_see_the_validUntil
 	not can_user_inactivate_record
+	payload_contains_validUntil
+}
+
+member_has_problem_with_validUntil {
+	can_user_see_the_validUntil 		
+	not can_user_inactivate_record 
+	originalRecord_contains_validUntil
+	not payload_contains_validUntil
+}
+
+member_has_problem_with_validUntil {
+	can_user_see_the_validUntil 			
+	not can_user_inactivate_record 	
+	not is_validUntil_equals_to_the_original
 }
 
 # validUntil must be in correct range for inactivation
 member_has_problem_with_validUntil {
+	can_user_inactivate_record
 	payload_contains_validUntil
     not is_validUntil_in_correct_range_for_inactivation
 } 
@@ -290,15 +310,26 @@ payload_contains_validUntil {
 	input.requestPayload["validUntilDateTime"] == false
 }
 
+originalRecord_contains_validUntil {
+	input.originalRecord["validUntilDateTime"]
+}
+
+originalRecord_contains_validUntil {
+	input.originalRecord["validUntilDateTime"] == false
+}
+
 user_id_in_ownerUsers {
   input.requestPayload.ownerUsers[_] = token.payload.sub
 }
 
 #-----------------------------------------------
 
-# can user only see the valid from but not authorized to change it
 can_user_see_the_validFrom {
 	token.payload.roles[_] = user_roles_to_see_validFrom[_]
+}
+
+can_user_see_the_validUntil {
+	token.payload.roles[_] = user_roles_to_see_validUntil[_]
 }
 
 can_member_update_kind {
@@ -335,6 +366,15 @@ is_validFrom_equals_to_the_original {
 	not payload_contains_validFrom
 }
 
+is_validUntil_equals_to_the_original {
+	input.requestPayload["validUntilDateTime"] == input.originalRecord["validUntilDateTime"]
+}
+
+is_validUntil_equals_to_the_original {
+	not originalRecord_contains_validUntil
+	not payload_contains_validUntil
+}
+
 
 is_record_belongs_to_this_user {
   input.originalRecord.ownerGroups[_] = token.payload.groups[_]
@@ -355,7 +395,7 @@ is_validFrom_in_correct_range {
 is_validUntil_in_correct_range_for_inactivation {
 	nowSec := time.now_ns()/(1000*1000*1000)
     validUntilSec := time.parse_rfc3339_ns(input.requestPayload.validUntilDateTime)/(1000*1000*1000)
-    
+
     validUntilSec <= nowSec
     validUntilSec > (nowSec - member_validUntil_range_for_inactivation_in_seconds)
 }
