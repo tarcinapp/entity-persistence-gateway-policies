@@ -1,22 +1,13 @@
-{
-    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ6TDBGbDlWNVpWUmFNNmZHUkVZcWs3M0piVnZNLXM2WnYwNEpscndmRnpBIn0.eyJleHAiOjE2MTA0NTkxOTksImlhdCI6MTYxMDQ1ODg5OSwianRpIjoiNjcxMmIzMTQtNTBjZC00NWJhLTlhNGMtNjBhMzA4MTc1OGI3IiwiaXNzIjoiaHR0cHM6Ly9jb21tb24tYXV0aC10ZXN0LmJ1bHV0YXJ0aS5jb20vYXV0aC9yZWFsbXMvdGFyY2luYXBwIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImViZTkyYjBjLWJkYTItNDlkMC05OWQwLWZlYjUzOGFhN2RiNiIsInR5cCI6IkJlYXJlciIsImF6cCI6InBvc3RtYW4iLCJzZXNzaW9uX3N0YXRlIjoiOTdlZjJiYjgtZjg1Ny00M2QyLWI1ZmItNjJhMmFjNzc2Y2ZjIiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInRhcmNpbmFwcC5yZWNvcmRzLmZpZWxkcy52YWxpZFVudGlsLnVwZGF0ZSIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLm1lbWJlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsib2ZmbGluZV9hY2Nlc3MiLCJ0YXJjaW5hcHAucmVjb3Jkcy5maWVsZHMudmFsaWRVbnRpbC51cGRhdGUiLCJ1bWFfYXV0aG9yaXphdGlvbiIsInRhcmNpbmFwcC5tZW1iZXIiXSwibmFtZSI6IkthZGlyIEvDvHLFn2F0IFRva3B1bmFyIiwiZ3JvdXBzIjpbImZvdW5kZXJzIl0sInByZWZlcnJlZF91c2VybmFtZSI6Imt1cnNhdHRva3BpbmFyIiwiZ2l2ZW5fbmFtZSI6IkthZGlyIEvDvHLFn2F0IiwiZmFtaWx5X25hbWUiOiJUb2twdW5hciIsImVtYWlsIjoia3Vyc2F0dG9rcGluYXJAZ21haWwuY29tIn0.fJGRmQnGKAMTEyRvmRaUMBHTus1Sm6cPDr7ueC6qhEuOwW-rf9La96xQgUZ_UNUpU7aG7xe9Gi594s5pAXZnNiZ20H6J6AqsDLgMBqrFaSWQupPWl1pCNOYH2UQP7XnEqBVm168I7q7rP333-Lu30xHzn8dOD5GEk_XctHw-99Y1593UxQh5scPrW60eF-hJGTzanirczTojRYu3DBk_1eGa2WHLmP4Hz10GWYmc4RXPm7C9bXR9bImVaJirbvu54you3LSUK18ljuakg1zkip5JwYf9zRjrZUN9PZS7KMDZ_oTfwSeGHaJYOIfNFBRr1Q4NnxrUqrmKmhGja22KDg",
-    "requestPayload": {
-        "kind": "k1",
-        "name": "protected ve grubuma ait updated",
-        "slug": "protected-ve-grubuma-ait",
-        "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
-        "ownerGroups": ["founders"],
-        "validUntilDateTime": "2021-01-12T14:06:21.953Z"
+{"input": {
+    "httpMethod": "POST",
+    "requestPath": "/generic-entities",
+    "queryParams": {
     },
-    "originalRecord": {
-        "id": "d3f00c22-616d-4350-8c4c-ab87cf8c1c40",
-        "kind": "k1",
-        "name": "protected ve grubuma ait",
-        "slug": "protected-ve-grubuma-ait",
-        "visibility": "protected",
-        "ownerUsers": [],
-        "ownerGroups": ["founders"],
-        "creationDateTime": "2020-11-16T08:42:21.953Z",
-        "validFromDateTime": "2020-11-16T08:42:21.953Z"
+    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ6TDBGbDlWNVpWUmFNNmZHUkVZcWs3M0piVnZNLXM2WnYwNEpscndmRnpBIn0.eyJleHAiOjE2MTE5Mzk1MzAsImlhdCI6MTYxMTkzOTIzMCwianRpIjoiMWRjZGIzMjItZmZmNi00ZDZmLTlhMWYtMDZhZDBlMGI5Zjg5IiwiaXNzIjoiaHR0cHM6Ly9jb21tb24tYXV0aC10ZXN0LmJ1bHV0YXJ0aS5jb20vYXV0aC9yZWFsbXMvdGFyY2luYXBwIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6ImViZTkyYjBjLWJkYTItNDlkMC05OWQwLWZlYjUzOGFhN2RiNiIsInR5cCI6IkJlYXJlciIsImF6cCI6InBvc3RtYW4iLCJzZXNzaW9uX3N0YXRlIjoiMzA3Mzc4MTgtNTI1YS00NGU0LTkzZmEtZjM0ODE1NTdkMmJhIiwiYWNyIjoiMSIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ0YXJjaW5hcHAucmVjb3Jkcy5maWVsZHMudmFsaWRGcm9tLmZpbmQiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLm1lbWJlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIGVtYWlsIHByb2ZpbGUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsidGFyY2luYXBwLnJlY29yZHMuZmllbGRzLnZhbGlkRnJvbS5maW5kIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsInRhcmNpbmFwcC5tZW1iZXIiXSwibmFtZSI6IkthZGlyIEvDvHLFn2F0IFRva3B1bmFyIiwiZ3JvdXBzIjpbImZvdW5kZXJzIl0sInByZWZlcnJlZF91c2VybmFtZSI6Imt1cnNhdHRva3BpbmFyIiwiZ2l2ZW5fbmFtZSI6IkthZGlyIEvDvHLFn2F0IiwiZmFtaWx5X25hbWUiOiJUb2twdW5hciIsImVtYWlsIjoia3Vyc2F0dG9rcGluYXJAZ21haWwuY29tIn0.B9s8WL_x7INnc3qjyHBF-4POnPWy7_BaZ8JGweTEXqN2m2w_2sAmnyxyaUeTBioERGuUbJ_3zSnsHH586MnEblp30jJPOTUou8t_0QNpcrsun1PBkXOHy6t00Q98WKQRBxDjlgQYOirGma-V1-rGz7XiPt1rTdOH-6b6MduuzDoU9YFJ9NKpQILoWuLD93cklcWRNk-HanL3pR7rULiNtacgQQz1q9kClFoTIyi83GN4mjpIYcn8BXqxn2H7zl_Umjup8iQxfTkz9M7Z_Aj_jBBu539-1ZtCaF2MDNtbufy1-pqbBOdKVkwML_CYOHY14Let1g19hwdY0u5GwMMMYw",
+    "requestPayload": {
+        "kind": "brand",
+        "name": "Abby's",
+        "ownerUsersCount": 0,
+        "ownerGroupsCount": 0
     }
-}
+}}

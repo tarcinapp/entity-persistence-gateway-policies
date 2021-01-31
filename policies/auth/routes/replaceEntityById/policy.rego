@@ -143,7 +143,7 @@ allow {
 	not user_has_problem_with_createdBy					# member cannot change the value for createdBy
 	not member_has_problem_with_kind					# updating kind, requires some specific roles
 	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
-	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
+	not member_has_problem_with_ownerUsers				# member cannot remove himself from ownerUsers
 	not member_has_problem_with_ownerGroups				# member cannot use any group name that he is not belongs to
     
 	not member_has_problem_with_validFrom				# updating validFrom (approving) requires some specific roles, validFrom > (now - 60s)
