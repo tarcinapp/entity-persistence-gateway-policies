@@ -1,4 +1,4 @@
-{"input": {
+{
     "httpMethod": "POST",
     "requestPath": "/generic-entities",
     "queryParams": {
@@ -10,4 +10,4 @@
         "ownerUsersCount": 0,
         "ownerGroupsCount": 0
     }
-}}
+}

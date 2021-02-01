@@ -57,8 +57,11 @@ user_roles_for_validUntil:= [
 #-----------------------------------------------
 
 
-# By default, following fields are forbidden
+# By default, following fields are forbidden for members and visitors
 default fields = ["validFromDateTime", "validUntilDateTime", "visibility"] 
+
+default forbiddenFieldsForMembers = ["validFromDateTime", "validUntilDateTime", "visibility"] 
+default forbiddenFieldsForVisitors = []
 
 fields = [] {
 	is_user_admin
@@ -72,8 +75,8 @@ fields = fields {
 	is_user_member
 	fields := array.concat(
     	array.concat(
-    		["validFromDateTime" | not can_user_see_validFrom], ["validUntilDateTime" | not can_user_see_validUntil])
-        	, ["visibility" | not can_user_see_visibility])
+    		["validFromDateTime" | not can_user_see_field("validFromDateTime")], ["validUntilDateTime" | not can_user_see_field("validUntilDateTime")])
+        	, ["visibility" | not can_user_see_field("visibility")])
 }
 
 fields = fields {
@@ -102,6 +105,13 @@ is_user_admin {
     token.payload.roles[_] == administrative_roles[_]
 }
 #-----------------------------------------------
+
+can_user_see_field(fieldName) {
+	some i
+	role = token.payload.roles[i]
+    pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|manage)`, [fieldName])
+   	regex.match(pattern, role)
+}
 
 can_user_see_validFrom {
 	token.payload.roles[_] == user_roles_for_validFrom[_]
