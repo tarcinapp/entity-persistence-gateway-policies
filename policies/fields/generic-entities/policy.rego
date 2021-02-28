@@ -27,38 +27,10 @@ visitor_roles := [
     "tarcinapp.entities.find.visitor"
 ]
 
-user_roles_for_visibility := [
-	"tarcinapp.records.fields.visibility.manage",
-	"tarcinapp.entities.fields.visibility.manage",
-    "tarcinapp.records.fields.visibility.find",
-	"tarcinapp.entities.fields.visibility.find",
-    "tarcinapp.records.fields.visibility.update",
-	"tarcinapp.entities.fields.visibility.update"
-]
-
-user_roles_for_validFrom := [
-	"tarcinapp.records.fields.validFrom.manage",
-	"tarcinapp.entities.fields.validFrom.manage",
-    "tarcinapp.records.fields.validFrom.find",
-	"tarcinapp.entities.fields.validFrom.find",
-    "tarcinapp.records.fields.validFrom.update",
-	"tarcinapp.entities.fields.validFrom.update"
-]
-
-user_roles_for_validUntil:= [
-	"tarcinapp.records.fields.validUntil.manage",
-	"tarcinapp.entities.fields.validUntil.manage",
-    "tarcinapp.records.fields.validUntil.find",
-	"tarcinapp.entities.fields.validUntil.find",
-    "tarcinapp.records.fields.validUntil.update",
-	"tarcinapp.entities.fields.validUntil.update"
-]
-
 #-----------------------------------------------
 
 
 # By default, following fields are forbidden for members and visitors
-default fields = ["validFromDateTime", "validUntilDateTime", "visibility"] 
 
 default forbiddenFieldsForMembers = ["validFromDateTime", "validUntilDateTime", "visibility"] 
 default forbiddenFieldsForVisitors = []
@@ -73,19 +45,16 @@ fields = [] {
 
 fields = fields {
 	is_user_member
+
 	fields := array.concat(
     	array.concat(
     		["validFromDateTime" | not can_user_see_field("validFromDateTime")], ["validUntilDateTime" | not can_user_see_field("validUntilDateTime")])
         	, ["visibility" | not can_user_see_field("visibility")])
 }
 
-fields = fields {
-	is_user_visitor
-	fields := array.concat(
-    	array.concat(
-    		["validFromDateTime" | not can_user_see_validFrom], ["validUntilDateTime" | not can_user_see_validUntil])
-        	, ["visibility" | not can_user_see_visibility])
-}
+# fields = fields {
+# 	is_user_visitor
+# }
 
 # Determine user's role
 #-----------------------------------------------
@@ -111,18 +80,6 @@ can_user_see_field(fieldName) {
 	role = token.payload.roles[i]
     pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|manage)`, [fieldName])
    	regex.match(pattern, role)
-}
-
-can_user_see_validFrom {
-	token.payload.roles[_] == user_roles_for_validFrom[_]
-}
-
-can_user_see_validUntil  {
-	token.payload.roles[_] == user_roles_for_validUntil[_]
-}
-
-can_user_see_visibility {
-	token.payload.roles[_] == user_roles_for_visibility[_]
 }
 
 token = {"payload": payload} {
