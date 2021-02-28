@@ -31,7 +31,7 @@ visitor_roles := [
 
 
 # By default, following fields are forbidden for members and visitors
-
+# Those forbidden for members are already forbidden for visitors
 default forbiddenFieldsForMembers = ["validFromDateTime", "validUntilDateTime", "visibility"] 
 default forbiddenFieldsForVisitors = []
 
@@ -46,15 +46,20 @@ fields = [] {
 fields = fields {
 	is_user_member
 
-	fields := array.concat(
-    	array.concat(
-    		["validFromDateTime" | not can_user_see_field("validFromDateTime")], ["validUntilDateTime" | not can_user_see_field("validUntilDateTime")])
-        	, ["visibility" | not can_user_see_field("visibility")])
+	# add field to the result fields array if user can see the field.
+	fields := [field | not can_user_see_field(forbiddenFieldsForMembers[i]); field := forbiddenFieldsForMembers[i]]
 }
 
-# fields = fields {
-# 	is_user_visitor
-# }
+
+fields = fields {
+	is_user_visitor
+
+	# merge fields for members with fields for visitors
+	allFields := array.concat(forbiddenFieldsForMembers, forbiddenFieldsForVisitors)
+
+	# add field to the result fields array if user can see the field.
+	fields := [field | not can_user_see_field(allFields[i]); field := allFields[i]]
+}
 
 # Determine user's role
 #-----------------------------------------------
