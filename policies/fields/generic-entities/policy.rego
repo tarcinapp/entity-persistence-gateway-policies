@@ -1,32 +1,5 @@
 package policies.fields.genericentities.policy
 
-
-# Define roles
-#-----------------------------------------------
-administrative_roles := [
-    "tarcinapp.admin",
-    "tarcinapp.records.find.admin",    
-    "tarcinapp.entities.find.admin"
-]
-
-editorial_roles := [
-    "tarcinapp.editor",
-    "tarcinapp.records.find.editor",    
-    "tarcinapp.entities.find.editor"
-]
-
-member_roles := [
-    "tarcinapp.member",
-    "tarcinapp.records.find.member",    
-    "tarcinapp.entities.find.member"
-]
-
-visitor_roles := [
-    "tarcinapp.visitor",
-    "tarcinapp.records.find.visitor",    
-    "tarcinapp.entities.find.visitor"
-]
-
 #-----------------------------------------------
 
 
@@ -36,55 +9,74 @@ default forbiddenFieldsForMembers = ["validFromDateTime", "validUntilDateTime", 
 default forbiddenFieldsForVisitors = []
 
 # Prepare forbidden fields for `find` operations
-forbiddenFieldsForFind = [] {
-	is_user_admin
+forbiddenFields_find = [] {
+	is_user_admin("find")
 }
 
-forbiddenFieldsForFind = [] {
-	is_user_editor
+forbiddenFields_find = [] {
+	is_user_editor("find")
 }
 
-forbiddenFieldsForFind = forbiddenFieldsForFind {
-	is_user_member
+forbiddenFields_find = forbiddenFields_find {
+	is_user_member("find")
 
 	# add field to the result fields array if user cannot see the field.
-	forbiddenFieldsForFind := [field | not can_user_see_field(forbiddenFieldsForMembers[i]); field := forbiddenFieldsForMembers[i]]
+	forbiddenFields_find := [field | not can_user_find_field(forbiddenFieldsForMembers[i]); field := forbiddenFieldsForMembers[i]]
 }
 
 
-forbiddenFieldsForFind = forbiddenFieldsForFind {
-	is_user_visitor
+forbiddenFields_find = forbiddenFields_find {
+	is_user_visitor("find")
 
 	# merge fields for members with fields for visitors
 	allFields := array.concat(forbiddenFieldsForMembers, forbiddenFieldsForVisitors)
 
 	# add field to the result fields array if user can see the field.
-	forbiddenFieldsForFind := [field | not can_user_see_field(allFields[i]); field := allFields[i]]
+	forbiddenFields_find := [field | not can_user_find_field(allFields[i]); field := allFields[i]]
 }
 
-# Determine user's role
-#-----------------------------------------------
-is_user_visitor {
-	token.payload.roles[_] == visitor_roles[_] 
-}
-
-is_user_member {
-	token.payload.roles[_] == member_roles[_]
-}
-
-is_user_editor {
-    token.payload.roles[_] == editorial_roles[_]
-}
-
-is_user_admin {
-    token.payload.roles[_] == administrative_roles[_]
-}
 #-----------------------------------------------
 
-can_user_see_field(fieldName) {
+can_user_find_field(fieldName) {
 	role = token.payload.roles[_]
     pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|manage)`, [fieldName])
    	regex.match(pattern, role)
+}
+
+can_user_update_field(fieldName) {
+	role = token.payload.roles[_]
+    pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(update|manage)`, [fieldName])
+   	regex.match(pattern, role)
+}
+
+can_user_manage_field(fieldName) {
+	role = token.payload.roles[_]
+    pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(manage)`, [fieldName])
+   	regex.match(pattern, role)
+}
+
+is_user_admin(operationType) {
+    role = token.payload.roles[_]
+    pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.admin`, [operationType])
+    regex.match(pattern, role)
+}
+
+is_user_editor(operationType) {
+    role = token.payload.roles[_]
+    pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.editor`, [operationType])
+    regex.match(pattern, role)
+}
+
+is_user_member(operationType) {
+    role = token.payload.roles[_]
+    pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.member`, [operationType])
+    regex.match(pattern, role)
+}
+
+is_user_visitor(operationType) {
+    role = token.payload.roles[_]
+    pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.visitor`, [operationType])
+    regex.match(pattern, role)
 }
 
 token = {"payload": payload} {
