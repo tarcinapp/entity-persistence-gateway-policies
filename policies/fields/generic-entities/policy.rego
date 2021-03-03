@@ -9,30 +9,30 @@ default forbiddenFieldsForMembers = ["validFromDateTime", "validUntilDateTime", 
 default forbiddenFieldsForVisitors = []
 
 # Prepare forbidden fields for `find` operations
-forbiddenFields_find = [] {
+whichFieldsForbiddenToFind = [] {
 	is_user_admin("find")
 }
 
-forbiddenFields_find = [] {
+whichFieldsForbiddenToFind = [] {
 	is_user_editor("find")
 }
 
-forbiddenFields_find = forbiddenFields_find {
+whichFieldsForbiddenToFind = whichFieldsForbiddenToFind {
 	is_user_member("find")
 
 	# add field to the result fields array if user cannot see the field.
-	forbiddenFields_find := [field | not can_user_find_field(forbiddenFieldsForMembers[i]); field := forbiddenFieldsForMembers[i]]
+	whichFieldsForbiddenToFind := [field | not can_user_find_field(forbiddenFieldsForMembers[i]); field := forbiddenFieldsForMembers[i]]
 }
 
 
-forbiddenFields_find = forbiddenFields_find {
+whichFieldsForbiddenToFind = whichFieldsForbiddenToFind {
 	is_user_visitor("find")
 
 	# merge fields for members with fields for visitors
 	allFields := array.concat(forbiddenFieldsForMembers, forbiddenFieldsForVisitors)
 
 	# add field to the result fields array if user can see the field.
-	forbiddenFields_find := [field | not can_user_find_field(allFields[i]); field := allFields[i]]
+	whichFieldsForbiddenToFind := [field | not can_user_find_field(allFields[i]); field := allFields[i]]
 }
 
 #-----------------------------------------------
