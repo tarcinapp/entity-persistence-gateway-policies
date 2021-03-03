@@ -35,36 +35,37 @@ visitor_roles := [
 default forbiddenFieldsForMembers = ["validFromDateTime", "validUntilDateTime", "visibility"] 
 default forbiddenFieldsForVisitors = []
 
-fields = [] {
+# Prepare forbidden fields for `find` operations
+forbiddenFieldsForFind = [] {
 	is_user_admin
 }
 
-fields = [] {
+forbiddenFieldsForFind = [] {
 	is_user_editor
 }
 
-fields = fields {
+forbiddenFieldsForFind = forbiddenFieldsForFind {
 	is_user_member
 
-	# add field to the result fields array if user can see the field.
-	fields := [field | not can_user_see_field(forbiddenFieldsForMembers[i]); field := forbiddenFieldsForMembers[i]]
+	# add field to the result fields array if user cannot see the field.
+	forbiddenFieldsForFind := [field | not can_user_see_field(forbiddenFieldsForMembers[i]); field := forbiddenFieldsForMembers[i]]
 }
 
 
-fields = fields {
+forbiddenFieldsForFind = forbiddenFieldsForFind {
 	is_user_visitor
 
 	# merge fields for members with fields for visitors
 	allFields := array.concat(forbiddenFieldsForMembers, forbiddenFieldsForVisitors)
 
 	# add field to the result fields array if user can see the field.
-	fields := [field | not can_user_see_field(allFields[i]); field := allFields[i]]
+	forbiddenFieldsForFind := [field | not can_user_see_field(allFields[i]); field := allFields[i]]
 }
 
 # Determine user's role
 #-----------------------------------------------
 is_user_visitor {
-	token.payload.roles[_] == visitor_roles[_]
+	token.payload.roles[_] == visitor_roles[_] 
 }
 
 is_user_member {
@@ -81,8 +82,7 @@ is_user_admin {
 #-----------------------------------------------
 
 can_user_see_field(fieldName) {
-	some i
-	role = token.payload.roles[i]
+	role = token.payload.roles[_]
     pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|manage)`, [fieldName])
    	regex.match(pattern, role)
 }
