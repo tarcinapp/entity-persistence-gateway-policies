@@ -1,45 +1,82 @@
 package policies.fields.genericentities.policy
 
-#-----------------------------------------------
+# admins are allowed to see and manage all fields by definition
+# if an user can manage a field, he can create, update and find
+# if an user can create a field, he can find the field
+# if an user can update a field, he can find the field
+# if an user can find a field, does not mean that he cannot create, update and manage
 
+#!!!!!!!!!!!!!!! TODO concat forbiddenfields from upper levels
 
-# By default, following fields are forbidden for members and visitors
-# Those forbidden for members are already forbidden for visitors
-default forbiddenFieldsForMembers = ["validFromDateTime", "validUntilDateTime", "visibility"] 
-default forbiddenFieldsForVisitors = []
+default forbiddenFieldsForEditorsToFind     = []
+default forbiddenFieldsForEditorsToUpdate   = []
+default forbiddenFieldsForEditorsToCreate   = []
+default forbiddenFieldsForEditorsToManage   = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
+
+default forbiddenFieldsForMembersToFind     = ["validFromDateTime", "validUntilDateTime", "visibility"] 
+default forbiddenFieldsForMembersToUpdate   = []
+default forbiddenFieldsForMembersToCreate   = []
+default forbiddenFieldsForMembersToManage   = []
+
+default forbiddenFieldsForVisitorsToFind    = [] 
+default forbiddenFieldsForVisitorsToUpdate  = []
+default forbiddenFieldsForVisitorsToCreate  = []
+default forbiddenFieldsForVisitorsToManage  = []
 
 # Prepare forbidden fields for `find` operations
-whichFieldsForbiddenToFind = [] {
+which_fields_forbidden_for_finding = [] {
 	is_user_admin("find")
 }
 
-whichFieldsForbiddenToFind = [] {
+which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_editor("find")
+
+    # concat all fields into single array
+    fields := array.concat(
+        array.concat(forbiddenFieldsForEditorsToManage, forbiddenFieldsForEditorsToCreate), 
+        array.concat(forbiddenFieldsForEditorsToUpdate, forbiddenFieldsForEditorsToFind)
+    )
+
+    # add field to the result fields array if user cannot see the field.
+	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
 
-whichFieldsForbiddenToFind = whichFieldsForbiddenToFind {
+which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_member("find")
 
+    # concat all fields into single array
+    fields := array.concat(
+        array.concat(forbiddenFieldsForMembersToManage, forbiddenFieldsForMembersToCreate), 
+        array.concat(forbiddenFieldsForMembersToUpdate, forbiddenFieldsForMembersToFind)
+    )
+
 	# add field to the result fields array if user cannot see the field.
-	whichFieldsForbiddenToFind := [field | not can_user_find_field(forbiddenFieldsForMembers[i]); field := forbiddenFieldsForMembers[i]]
+	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
 
-
-whichFieldsForbiddenToFind = whichFieldsForbiddenToFind {
+which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_visitor("find")
 
-	# merge fields for members with fields for visitors
-	allFields := array.concat(forbiddenFieldsForMembers, forbiddenFieldsForVisitors)
+	# concat all fields into single array
+    fields := array.concat(
+        array.concat(forbiddenFieldsForVisitorsToManage, forbiddenFieldsForVisitorsToCreate), 
+        array.concat(forbiddenFieldsForVisitorsToUpdate, forbiddenFieldsForVisitorsToFind)
+    )
 
 	# add field to the result fields array if user can see the field.
-	whichFieldsForbiddenToFind := [field | not can_user_find_field(allFields[i]); field := allFields[i]]
+	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
-
 #-----------------------------------------------
 
 can_user_find_field(fieldName) {
 	role = token.payload.roles[_]
     pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|manage)`, [fieldName])
+   	regex.match(pattern, role)
+}
+
+can_user_create_field(fieldName) {
+	role = token.payload.roles[_]
+    pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(create|manage)`, [fieldName])
    	regex.match(pattern, role)
 }
 
