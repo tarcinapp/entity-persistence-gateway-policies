@@ -1,12 +1,10 @@
 package policies.fields.genericentities.policy
 
 # admins are allowed to see and manage all fields by definition
-# if an user can manage a field, he can create, update and find
-# if an user can create a field, he can find the field
-# if an user can update a field, he can find the field
-# if an user can find a field, does not mean that he cannot create, update and manage
-
-#!!!!!!!!!!!!!!! TODO concat forbiddenfields from upper levels
+# if a user can manage a field, he can create, update and find
+# if a user can create a field, he can find the field
+# if a user can update a field, he can find the field
+# if a user can find a field, does not mean that he cannot create, update and manage
 
 default forbiddenFieldsForEditorsToFind     = []
 default forbiddenFieldsForEditorsToUpdate   = []
@@ -24,31 +22,75 @@ default forbiddenFieldsForVisitorsToCreate  = []
 default forbiddenFieldsForVisitorsToManage  = []
 
 # Prepare forbidden fields for `find` operations
+# ---
+# admin
 which_fields_forbidden_for_finding = [] {
 	is_user_admin("find")
 }
+which_fields_forbidden_for_create = [] {
+    is_user_admin("create")
+}
+which_fields_forbidden_for_update = [] {
+    is_user_admin("update")
+}
+which_fields_forbidden_for_manage = [] {
+    is_user_admin("manage")
+}
 
+# editor
 which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_editor("find")
 
-    # concat all fields into single array
+    # all fields into single array
+    fields := forbiddenFieldsForEditorsToFind
+    
+    # admin users can see all fields, no need to concat with upper level forbidden fields
+
+    # add field to the result fields array if user cannot see the field.
+	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+}
+which_fields_forbidden_for_create = which_fields_forbidden_for_create {
+	is_user_editor("create")
+
+    fields := array.concat(forbiddenFieldsForEditorsToFind, forbiddenFieldsForEditorsToCreate)
+
+     # add field to the result fields array if user create see the field.
+	which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
+}
+which_fields_forbidden_for_update = [] {
+	is_user_editor("update")
+}
+which_fields_forbidden_for_manage = which_fields_forbidden_for_manage {
+    is_user_editor("manage")
+
+    # concat all fields into single array, forbidden fields for manage is calculated 
+    # from the collection of all fields
     fields := array.concat(
         array.concat(forbiddenFieldsForEditorsToManage, forbiddenFieldsForEditorsToCreate), 
         array.concat(forbiddenFieldsForEditorsToUpdate, forbiddenFieldsForEditorsToFind)
     )
 
-    # add field to the result fields array if user cannot see the field.
-	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_manage := [field | not can_user_manage_field(fields[i]); field := fields[i]]
 }
 
+# member
 which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_member("find")
 
     # concat all fields into single array
-    fields := array.concat(
+    fields_member := array.concat(
         array.concat(forbiddenFieldsForMembersToManage, forbiddenFieldsForMembersToCreate), 
         array.concat(forbiddenFieldsForMembersToUpdate, forbiddenFieldsForMembersToFind)
     )
+
+    # concat editor fields (upper level forbidden fields)
+    fields_editor := array.concat(
+        array.concat(forbiddenFieldsForEditorsToManage, forbiddenFieldsForEditorsToCreate), 
+        array.concat(forbiddenFieldsForEditorsToUpdate, forbiddenFieldsForEditorsToFind)
+    )
+
+    # merge all forbidden fields into single array
+    fields := array.concat(fields_member, fields_editor)
 
 	# add field to the result fields array if user cannot see the field.
 	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
@@ -58,9 +100,26 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_visitor("find")
 
 	# concat all fields into single array
-    fields := array.concat(
+    fields_visitor := array.concat(
         array.concat(forbiddenFieldsForVisitorsToManage, forbiddenFieldsForVisitorsToCreate), 
         array.concat(forbiddenFieldsForVisitorsToUpdate, forbiddenFieldsForVisitorsToFind)
+    )
+
+    # concat all fields into single array
+    fields_member := array.concat(
+        array.concat(forbiddenFieldsForMembersToManage, forbiddenFieldsForMembersToCreate), 
+        array.concat(forbiddenFieldsForMembersToUpdate, forbiddenFieldsForMembersToFind)
+    )
+
+    # concat editor fields (upper level forbidden fields)
+    fields_editor := array.concat(
+        array.concat(forbiddenFieldsForEditorsToManage, forbiddenFieldsForEditorsToCreate), 
+        array.concat(forbiddenFieldsForEditorsToUpdate, forbiddenFieldsForEditorsToFind)
+    )
+
+    fields := array.concat(
+        array.concat(fields_visitor, fields_member),
+        fields_editor
     )
 
 	# add field to the result fields array if user can see the field.
