@@ -22,7 +22,7 @@ default forbiddenFields = [
         "role": "editor",
         "operations": {
             "find":   [],
-            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
+            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"],
             "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
         }
     },
@@ -30,7 +30,7 @@ default forbiddenFields = [
         "role": "member",
         "operations": {
             "find":   ["validFromDateTime", "validUntilDateTime", "visibility"],
-            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
+            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"],
             "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
         }
     },
