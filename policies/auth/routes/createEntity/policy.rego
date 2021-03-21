@@ -33,6 +33,8 @@ allow {
     # members must be email verified
     token.payload.email_verified == true
 
+    # if user sent ownerGroups, then all elements listent in the ownerGroups array
+    # must exists in the 'groups' field in token
     not member_has_problem_with_groups
 }
 #-----------------------------------------------
