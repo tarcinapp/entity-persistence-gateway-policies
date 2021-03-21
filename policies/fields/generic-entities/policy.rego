@@ -6,175 +6,190 @@ package policies.fields.genericentities.policy
 # if a user can update a field, he can find the field
 # if a user can find a field, does not mean that he cannot create, update and manage
 
-default forbiddenFieldsForEditorsToFind     = []
-default forbiddenFieldsForEditorsToUpdate   = []
-default forbiddenFieldsForEditorsToCreate   = []
-default forbiddenFieldsForEditorsToManage   = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
+default forbiddenFields = [
+    {
+        "role": "admin",
+        "operations": {
+            "find":   [],
+            "create": [],
+            "update": []
+        }
+    },
+    {
+        "role": "editor",
+        "operations": {
+            "find":   [],
+            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
+            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
+        }
+    },
+    {
+        "role": "member",
+        "operations": {
+            "find":   ["validFromDateTime", "validUntilDateTime", "visibility"],
+            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
+            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
+        }
+    },
+    {
+        "role": "visitor",
+        "operations": {
+            "find": ["validFromDateTime", "validUntilDateTime", "visibility", "lastUpdatedBy", "lastUpdatedDateTime"],
+        }
+    }
+]
 
-default forbiddenFieldsForMembersToFind     = ["validFromDateTime", "validUntilDateTime", "visibility"] 
-default forbiddenFieldsForMembersToUpdate   = []
-default forbiddenFieldsForMembersToCreate   = []
-default forbiddenFieldsForMembersToManage   = []
-
-default forbiddenFieldsForVisitorsToFind    = [] 
-default forbiddenFieldsForVisitorsToUpdate  = []
-default forbiddenFieldsForVisitorsToCreate  = []
-default forbiddenFieldsForVisitorsToManage  = []
-
-# Prepare forbidden fields for `find` operations
-# ---
 # admin
-which_fields_forbidden_for_finding = [] {
+which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_admin("find")
-}
-which_fields_forbidden_for_create = [] {
-    is_user_admin("create")
-}
-which_fields_forbidden_for_update = [] {
-    is_user_admin("update")
-}
-which_fields_forbidden_for_manage = [] {
-    is_user_admin("manage")
+
+    fields := get_effective_fields_for("admin", "find")
+
+    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
 
-# editor
+which_fields_forbidden_for_create = which_fields_forbidden_for_create {
+	is_user_admin("create")
+
+    fields := get_effective_fields_for("admin", "create")
+
+    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
+}
+
+which_fields_forbidden_for_update = which_fields_forbidden_for_update {
+	is_user_admin("update")
+
+    fields := get_effective_fields_for("admin", "update")
+
+    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
+}
+
+#editor
 which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_editor("find")
 
-    # all fields into single array
-    fields := forbiddenFieldsForEditorsToFind
-    
-    # admin users can see all fields, no need to concat with upper level forbidden fields
+    fields := get_effective_fields_for("editor", "find")
 
-    # add field to the result fields array if user cannot see the field.
-	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
+
 which_fields_forbidden_for_create = which_fields_forbidden_for_create {
 	is_user_editor("create")
 
-    fields := array.concat(forbiddenFieldsForEditorsToFind, forbiddenFieldsForEditorsToCreate)
+    fields := get_effective_fields_for("editor", "create")
 
-     # add field to the result fields array if user create see the field.
-	which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
 }
-which_fields_forbidden_for_update = [] {
+
+which_fields_forbidden_for_update = which_fields_forbidden_for_update {
 	is_user_editor("update")
-}
-which_fields_forbidden_for_manage = which_fields_forbidden_for_manage {
-    is_user_editor("manage")
 
-    # concat all fields into single array, forbidden fields for manage is calculated 
-    # from the collection of all fields
-    fields := array.concat(
-        array.concat(forbiddenFieldsForEditorsToManage, forbiddenFieldsForEditorsToCreate), 
-        array.concat(forbiddenFieldsForEditorsToUpdate, forbiddenFieldsForEditorsToFind)
-    )
+    fields := get_effective_fields_for("editor", "update")
 
-    which_fields_forbidden_for_manage := [field | not can_user_manage_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
 }
 
-# member
+#member
 which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_member("find")
 
-    # concat all fields into single array
-    fields_member := array.concat(
-        array.concat(forbiddenFieldsForMembersToManage, forbiddenFieldsForMembersToCreate), 
-        array.concat(forbiddenFieldsForMembersToUpdate, forbiddenFieldsForMembersToFind)
-    )
+    fields := get_effective_fields_for("member", "find")
 
-    # concat editor fields (upper level forbidden fields)
-    fields_editor := array.concat(
-        array.concat(forbiddenFieldsForEditorsToManage, forbiddenFieldsForEditorsToCreate), 
-        array.concat(forbiddenFieldsForEditorsToUpdate, forbiddenFieldsForEditorsToFind)
-    )
-
-    # merge all forbidden fields into single array
-    fields := array.concat(fields_member, fields_editor)
-
-	# add field to the result fields array if user cannot see the field.
-	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
 
+which_fields_forbidden_for_create = which_fields_forbidden_for_create {
+	is_user_member("create")
+
+    fields := get_effective_fields_for("member", "create")
+
+    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
+}
+
+which_fields_forbidden_for_update = which_fields_forbidden_for_update {
+	is_user_member("update")
+
+    fields := get_effective_fields_for("member", "update")
+
+    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
+}
+
+#visitor
 which_fields_forbidden_for_finding = which_fields_forbidden_for_finding {
 	is_user_visitor("find")
 
-	# concat all fields into single array
-    fields_visitor := array.concat(
-        array.concat(forbiddenFieldsForVisitorsToManage, forbiddenFieldsForVisitorsToCreate), 
-        array.concat(forbiddenFieldsForVisitorsToUpdate, forbiddenFieldsForVisitorsToFind)
-    )
+    fields := get_effective_fields_for("visitor", "find")
 
-    # concat all fields into single array
-    fields_member := array.concat(
-        array.concat(forbiddenFieldsForMembersToManage, forbiddenFieldsForMembersToCreate), 
-        array.concat(forbiddenFieldsForMembersToUpdate, forbiddenFieldsForMembersToFind)
-    )
-
-    # concat editor fields (upper level forbidden fields)
-    fields_editor := array.concat(
-        array.concat(forbiddenFieldsForEditorsToManage, forbiddenFieldsForEditorsToCreate), 
-        array.concat(forbiddenFieldsForEditorsToUpdate, forbiddenFieldsForEditorsToFind)
-    )
-
-    fields := array.concat(
-        array.concat(fields_visitor, fields_member),
-        fields_editor
-    )
-
-	# add field to the result fields array if user can see the field.
-	which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
 #-----------------------------------------------
 
+# this method only selects the field array for given role and operation
+get_fields_for(role, operation) = result_fields {   
+    result_fields := [result_field | forbiddenFields[i].role==role; result_field := forbiddenFields[i].operations[operation]][0]
+}
+
+get_effective_fields_for(role, operation) = result_fields {
+    operation == "find"
+    result_fields := get_fields_for(role, "find")
+}
+
+get_effective_fields_for(role, operation) = result_fields {
+    operation == "create"
+    fields_for_find := get_fields_for(role, "find")
+    fields_for_create := get_fields_for(role, "create")
+    result_fields := array.concat(fields_for_find, fields_for_create)
+}
+
+get_effective_fields_for(role, operation) = result_fields {
+    operation == "update"
+    fields_for_find := get_fields_for(role, "find")
+    fields_for_update := get_fields_for(role, "update")
+    result_fields := array.concat(fields_for_find, fields_for_update)
+}
+
 can_user_find_field(fieldName) {
 	role = token.payload.roles[_]
-    pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|manage)`, [fieldName])
-   	regex.match(pattern, role)
+	pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|manage)`, [fieldName])
+	regex.match(pattern, role)
 }
 
 can_user_create_field(fieldName) {
-	role = token.payload.roles[_]
-    pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(create|manage)`, [fieldName])
-   	regex.match(pattern, role)
+	role := token.payload.roles[_]
+	pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(create|manage)`, [fieldName])
+	regex.match(pattern, role)
 }
 
 can_user_update_field(fieldName) {
-	role = token.payload.roles[_]
-    pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(update|manage)`, [fieldName])
-   	regex.match(pattern, role)
-}
-
-can_user_manage_field(fieldName) {
-	role = token.payload.roles[_]
-    pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(manage)`, [fieldName])
-   	regex.match(pattern, role)
+	role := token.payload.roles[_]
+	pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(update|manage)`, [fieldName])
+	regex.match(pattern, role)
 }
 
 is_user_admin(operationType) {
-    role = token.payload.roles[_]
-    pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.admin`, [operationType])
-    regex.match(pattern, role)
+	role := token.payload.roles[_]
+	pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.admin`, [operationType])
+	regex.match(pattern, role)
 }
 
 is_user_editor(operationType) {
-    role = token.payload.roles[_]
-    pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.editor`, [operationType])
-    regex.match(pattern, role)
+	role := token.payload.roles[_]
+	pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.editor`, [operationType])
+	regex.match(pattern, role)
 }
 
 is_user_member(operationType) {
-    role = token.payload.roles[_]
-    pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.member`, [operationType])
-    regex.match(pattern, role)
+	role := token.payload.roles[_]
+	pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.member`, [operationType])
+	regex.match(pattern, role)
 }
 
 is_user_visitor(operationType) {
-    role = token.payload.roles[_]
-    pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.visitor`, [operationType])
-    regex.match(pattern, role)
+	role := token.payload.roles[_]
+	pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.visitor`, [operationType])
+	regex.match(pattern, role)
 }
 
 token = {"payload": payload} {
-  [header, payload, signature] := io.jwt.decode(input.encodedJwt)
+	[header, payload, signature] := io.jwt.decode(input.encodedJwt)
 }
