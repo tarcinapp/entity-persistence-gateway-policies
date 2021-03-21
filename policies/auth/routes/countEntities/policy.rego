@@ -7,8 +7,6 @@ administrative_roles := [
     "tarcinapp.admin",
     "tarcinapp.records.manage.admin",
     "tarcinapp.entities.manage.admin",
-    "tarcinapp.records.create.admin",
-    "tarcinapp.entities.create.admin",
     "tarcinapp.records.count.admin",
     "tarcinapp.entities.count.admin"
 ]
@@ -17,8 +15,6 @@ editorial_roles := [
     "tarcinapp.editor",
     "tarcinapp.records.manage.editor",
     "tarcinapp.entities.manage.editor",
-    "tarcinapp.records.create.editor",
-    "tarcinapp.entities.create.editor",
     "tarcinapp.records.count.editor",
     "tarcinapp.entities.count.editor"
 ]
