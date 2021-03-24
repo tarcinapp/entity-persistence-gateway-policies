@@ -32,7 +32,7 @@ allow {
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
     
     # members must be email verified
-    token.payload.email_verified == true
+    verification.is_email_verified
 
     # if user sent ownerGroups, then all elements listed in the ownerGroups array
     # must exists in the 'groups' field in token
