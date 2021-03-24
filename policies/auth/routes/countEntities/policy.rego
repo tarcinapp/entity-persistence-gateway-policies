@@ -1,7 +1,9 @@
 package policies.auth.routes.countEntities.policy
 
 import data.policies.util.common.token as token
+import data.policies.util.common.verification as verification
 import data.policies.util.genericentities.roles as role_utils
+
 
 # By default, deny requests.
 default allow = false
@@ -19,16 +21,12 @@ allow {
 
 allow {
 	role_utils.is_user_member("count")
-   	not user_has_problem_with_mail_verification
+   	verification.is_email_verified
 }
 
 allow {
 	role_utils.is_user_visitor("count")
-   	not user_has_problem_with_mail_verification
+   	verification.is_email_verified
 }
 
 #-----------------------------------------------
-
-user_has_problem_with_mail_verification {
-	token.payload.email_verified != true
-}

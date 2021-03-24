@@ -2,6 +2,7 @@ package policies.auth.routes.createEntity.policy
 
 import data.policies.util.common.token as token
 import data.policies.util.common.array as array
+import data.policies.util.common.verification as verification
 import data.policies.util.genericentities.roles as role_utils
 import data.policies.fields.genericentities.policy as forbidden_fields
 
@@ -33,7 +34,7 @@ allow {
     # members must be email verified
     token.payload.email_verified == true
 
-    # if user sent ownerGroups, then all elements listent in the ownerGroups array
+    # if user sent ownerGroups, then all elements listed in the ownerGroups array
     # must exists in the 'groups' field in token
     not member_has_problem_with_groups
 }
