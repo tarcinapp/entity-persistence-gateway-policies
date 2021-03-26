@@ -3,10 +3,12 @@
     "requestPath": "/generic-entities",
     "queryParams": {
     },
-    "encodedJwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYmU5MmIwYy1iZGEyLTQ5ZDAtOTlkMC1mZWI1MzhhYTdkYjYiLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTE2MjM5MDIyLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZ3JvdXBzIjpbImFzZCJdLCJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLmVudGl0aWVzLmFkbWluIl19.sxd6bqCQcMAl2hTHeKxPknQz7pYc7WecRG9YwAeD-l8",
-    "requestPayload": {
+    "encodedJwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYmU5MmIwYy1iZGEyLTQ5ZDAtOTlkMC1mZWI1MzhhYTdkYjYiLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTE2MjM5MDIyLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZ3JvdXBzIjpbImFzZCJdLCJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLmVudGl0aWVzLm1lbWJlciJdfQ.D2N8nvSIU-UmUX97FZKG6WhYOJd0SGRPVQBiAnmr2zA",
+    "originalRecord": {
         "kind": "brand",
         "name": "Abby's",
-        "ownerGroups": ["asd"]
+        "ownerGroups": ["asd"],
+        "ownerUsers": ["x"],
+        "visibility": "protected"
     }
 }
