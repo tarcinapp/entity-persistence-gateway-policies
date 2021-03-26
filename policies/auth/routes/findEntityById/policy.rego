@@ -41,7 +41,7 @@ can_user_see_this_record {
 can_user_see_this_record {
     original_record.is_belong_to_users_groups
     not original_record.is_passive                # record is either pending or active
-    input.originalRecord.visibility != "private"    # record is either public or protected
+    input.originalRecord.visibility != "private"  # record is either public or protected
 }
 
 # user can see this record, because it is public and active record

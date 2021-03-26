@@ -28,5 +28,3 @@ allow {
 	role_utils.is_user_visitor("count")
    	verification.is_email_verified
 }
-
-#-----------------------------------------------
