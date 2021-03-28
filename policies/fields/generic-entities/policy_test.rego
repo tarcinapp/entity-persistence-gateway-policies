@@ -26,12 +26,12 @@ test_editor_find {
 }
 
 test_editor_create {
-	which_fields_forbidden_for_create = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+	which_fields_forbidden_for_create = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
         with input as produce_input_doc_by_role(["tarcinapp.editor"])
 }
 
 test_editor_update {
-    which_fields_forbidden_for_update = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+    which_fields_forbidden_for_update = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
         with input as produce_input_doc_by_role(["tarcinapp.editor"])
 }
 
@@ -56,22 +56,22 @@ test_visitor_find {
 }
 
 test_editor_creationDateTime_create {
-    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy" ]
         with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.records.fields.creationDateTime.manage"])
 
-    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
         with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.records.fields.creationDateTime.create"])
 
-    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
         with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.entities.fields.creationDateTime.manage"])
 
-    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
         with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.entities.fields.creationDateTime.create"])
 
-    which_fields_forbidden_for_create = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+    which_fields_forbidden_for_create = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
         with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.entities.fields.creationDateTime.find"])
 
-    which_fields_forbidden_for_create = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+    which_fields_forbidden_for_create = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
         with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.entities.fields.visibility.create"])
 }
 
