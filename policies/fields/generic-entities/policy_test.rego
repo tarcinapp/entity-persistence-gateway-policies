@@ -2,6 +2,9 @@ package policies.fields.genericentities.policy
 
 import data.policies.util.common.test as test
 
+
+# This test checks if we can receive desired list of fields for given roles.
+# Roles are given from the most upper level like tarcinapp.{rolename}
 test_admin_find {
 	which_fields_forbidden_for_finding = []
         with input as produce_input_doc_by_role(["tarcinapp.admin"])
@@ -50,6 +53,26 @@ test_member_update {
 test_visitor_find {
     which_fields_forbidden_for_finding = ["validFromDateTime", "validUntilDateTime", "visibility", "lastUpdatedBy", "lastUpdatedDateTime"]
         with input as produce_input_doc_by_role(["tarcinapp.visitor"])
+}
+
+test_editor_creationDateTime_create {
+    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+        with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.records.fields.creationDateTime.manage"])
+
+    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+        with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.records.fields.creationDateTime.create"])
+
+    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+        with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.entities.fields.creationDateTime.manage"])
+
+    which_fields_forbidden_for_create = ["lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+        with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.entities.fields.creationDateTime.create"])
+
+    which_fields_forbidden_for_create = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+        with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.entities.fields.creationDateTime.find"])
+
+    which_fields_forbidden_for_create = ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+        with input as produce_input_doc_by_role(["tarcinapp.editor", "tarcinapp.entities.fields.visibility.create"])
 }
 
 produce_input_doc_by_role(roles) = test_body {
