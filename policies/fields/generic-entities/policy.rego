@@ -4,11 +4,6 @@ import data.policies.util.common.token as token
 import data.policies.util.genericentities.roles as role_utils
 
 # admins are allowed to see and manage all fields by definition
-# if a user can manage a field, he can create, update and find
-# if a user can create a field, he can find the field
-# if a user can update a field, he can find the field
-# if a user can find a field, does not mean that he cannot create, update and manage
-
 default forbiddenFields = [
     {
         "role": "admin",
@@ -23,7 +18,7 @@ default forbiddenFields = [
         "operations": {
             "find":   [],
             "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"],
-            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
+            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"],
         }
     },
     {
@@ -31,7 +26,7 @@ default forbiddenFields = [
         "operations": {
             "find":   ["validFromDateTime", "validUntilDateTime", "visibility"],
             "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"],
-            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"]
+            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
         }
     },
     {
