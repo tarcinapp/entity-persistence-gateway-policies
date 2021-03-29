@@ -6,9 +6,6 @@ import data.policies.util.genericentities.roles as role_utils
 default allow = false
 #-----------------------------------------------
 
-
-# Decide allow if any of the following section is true
-#-----------------------------------------------
 allow {
 	role_utils.is_user_admin("delete")
 }
