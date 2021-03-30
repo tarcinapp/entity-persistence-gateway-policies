@@ -7,8 +7,10 @@
     "originalRecord": {
         "kind": "brand",
         "name": "Abby's",
-        "ownerGroups": ["asd"],
-        "ownerUsers": ["x"],
-        "visibility": "protected"
+        "ownerGroups": ["some-random-group"],
+        "ownerUsers": ["some-random-member"],
+        "visibility": "public",
+        "validFromDateTime": "2020-01-01T00:00:00Z",
+        "validUntilDateTime": null
     }
 }

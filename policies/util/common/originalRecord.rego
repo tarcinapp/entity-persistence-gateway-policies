@@ -18,7 +18,7 @@ is_pending {
 }
 
 is_public {
-    input.originalRecord.visibility = "public"
+    input.originalRecord.visibility == "public"
 }
 
 is_belong_to_user {
