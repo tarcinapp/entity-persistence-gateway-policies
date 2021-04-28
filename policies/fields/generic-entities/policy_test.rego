@@ -36,17 +36,17 @@ test_editor_update {
 }
 
 test_member_find {
-    which_fields_forbidden_for_finding = ["validFromDateTime", "validUntilDateTime", "visibility"]
+    which_fields_forbidden_for_finding = ["visibility"]
         with input as produce_input_doc_by_role(["tarcinapp.member"])
 }
 
 test_member_create {
-	which_fields_forbidden_for_create = ["validFromDateTime", "validUntilDateTime", "visibility", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+	which_fields_forbidden_for_create = ["visibility", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime", "ownerUsers"]
         with input as produce_input_doc_by_role(["tarcinapp.member"])
 }
 
 test_member_update {
-    which_fields_forbidden_for_update = ["validFromDateTime", "validUntilDateTime", "visibility", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "ownerUsers"]
+    which_fields_forbidden_for_update = ["visibility", "kind", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime"]
         with input as produce_input_doc_by_role(["tarcinapp.member"])
 }
 
