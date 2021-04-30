@@ -26,7 +26,7 @@ default forbiddenFields = [
         "operations": {
             "find":   ["visibility"],
             "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime", "ownerUsers"],
-            "update": ["kind", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime"]
+            "update": ["kind", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
         }
     },
     {
@@ -148,7 +148,7 @@ get_effective_fields_for(role, operation) = result_fields {
 
 can_user_find_field(fieldName) {
 	role = token.payload.roles[_]
-	pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|manage)`, [fieldName])
+	pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|create|manage)`, [fieldName])
 	regex.match(pattern, role)
 }
 
