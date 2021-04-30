@@ -30,3 +30,12 @@ is_belong_to_users_groups {
     some i
     token.payload.groups[i] = input.originalRecord.ownerGroups[i]
 }
+
+has_value(fieldName) {
+    input.originalRecord[fieldName]
+    input.originalRecord[fieldName] != null
+}
+
+is_empty(fieldName) {
+    not has_field(fieldName)
+}
