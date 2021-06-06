@@ -3,19 +3,13 @@ package policies.auth.routes.replaceEntityById.metadata
 description := `This policy evaluates the user's role, email verification status, request payload and original record to decide if an user can replace the record.
 - admin users are allowed to replace original record notwithstanding the payload and original record.
 - editor users are allowed to replace the record if payload satisfy 'all' of the conditions given below:
-    - payload cannot contain creationDateTime
-    - payload cannot contain lastUpdatedDateTime
-    - payload cannot contain lastUpdatedBy
-    - payload cannot contain createdBy
+    - payload cannot contain any invalid field
 - members are allowed to replace the entity if following conditions are met
     - email must be verified
-    - record must be belongs to that user. record belongs to the user if either of the following is true
+    - record must belong to that user. record belongs to the user if 'either' of the following is true
         - user's id is in ownerUsers
         - one of the user's groups is specified in the records ownerGroups field, and visibilitiy is 'not private' (it must be 'protected' or 'public').
-    - payload cannot contain creationDateTime
-    - payload cannot contain lastUpdatedDateTime
-    - payload cannot contain lastUpdatedBy
-    - payload cannot contain createdBy
+    - payload cannot contain any invalid field
     - 'kind' in payload must be equal to the original record or user has the required role for updating the kind
     - visibilitiy in payload must be equal to the original record or user has the required role for updating the visibilitiy
     - ownerUsers contains the user id
@@ -41,7 +35,7 @@ description := `This policy evaluates the user's role, email verification status
             - forbidden fields are not mandatory in replace operations
             - forbidden fields are filled with the values of the original record by gateway
             - if payload contains 'validUntilDateTime', replaceEntityById attempts are rejected with 401
-        - if user has required role to see 'validUntilDateTime' (tarcinapp.entities.fields.validUntil.find)
+        - if user has required role to see 'validUntilDateTime' (tarcinapp.entities.fields.validUntilDateTime.find)
             - this field becomes not a forbidden field anymore, not get automatically filled by gateway
             - thus, user must send a value for this field
             - as user does not have required roles for 'updating' the validFrom the value must be equal to the one in originalRecord

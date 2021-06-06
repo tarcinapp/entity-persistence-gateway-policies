@@ -37,5 +37,5 @@ has_value(fieldName) {
 }
 
 is_empty(fieldName) {
-    not has_field(fieldName)
+    not has_value(fieldName)
 }
