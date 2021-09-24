@@ -7,49 +7,10 @@ import data.policies.util.common.array as array
 import data.policies.util.common.verification as verification
 import data.policies.util.common.originalRecord as original_record
 
-# members can update validFrom value if
-# - original record does not have validFrom
-# and
-# - user's validFrom value is in between now and 300 seconds before 
-# and
-# - member have any of the following roles
-#
-# That is, these roles give member to approve his own record
-user_roles_for_validFrom := [
-	"tarcinapp.records.fields.validFrom.manage",
-	"tarcinapp.entities.fields.validFrom.manage",
-    "tarcinapp.records.fields.validFrom.update",
-	"tarcinapp.entities.fields.validFrom.update"
-]
-
-user_roles_to_see_validFrom := [
-	"tarcinapp.records.fields.validFrom.find",
-	"tarcinapp.entities.fields.validFrom.find"
-]
 
 # if record is being approved by a member, validFromDateTime cannot be before than the amount of seconds given below from now
 # this option enforces members to approve records immediately
 member_validFrom_range_in_seconds:= 300
-
-# members can update validUntil value if
-# - original record is active or pending
-# and
-# - user's validUntil value is in between now and 300 seconds before
-# and
-# - member have any of the following roles
-#
-# That is, these roles give member to inactivate his own record
-user_roles_for_inactivating_record:= [
-	"tarcinapp.records.fields.validUntil.manage",
-	"tarcinapp.entities.fields.validUntil.manage",
-  	"tarcinapp.records.fields.validUntil.update",
-	"tarcinapp.entities.fields.validUntil.update"
-]
-
-user_roles_to_see_validUntil := [
-	"tarcinapp.records.fields.validUntil.find",
-	"tarcinapp.entities.fields.validUntil.find"
-]
 
 member_validUntil_range_for_inactivation_in_seconds := 300
 
@@ -87,6 +48,9 @@ default allow = false
 allow {
 	role_utils.is_user_admin("update")
 
+	# user must be email verified
+	verification.is_email_verified						
+
 	# payload cannot contain any field that requestor cannot see
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_find)
 
@@ -95,6 +59,9 @@ allow {
 
 allow {
 	role_utils.is_user_editor("update")
+
+	# user must be email verified
+	verification.is_email_verified						
 
 	# payload cannot contain any field that requestor cannot see
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_find)
