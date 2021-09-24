@@ -13,10 +13,12 @@ default allow = false
 #-----------------------------------------------
 allow {
 	role_utils.is_user_admin("count")
+	verification.is_email_verified
 }
 
 allow {
 	role_utils.is_user_editor("count")
+	verification.is_email_verified
 }
 
 allow {

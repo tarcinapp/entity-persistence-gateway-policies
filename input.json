@@ -3,7 +3,7 @@
     "requestPath": "/generic-entities",
     "queryParams": {
     },
-    "encodedJwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYmU5MmIwYy1iZGEyLTQ5ZDAtOTlkMC1mZWI1MzhhYTdkYjYiLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTE2MjM5MDIyLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZ3JvdXBzIjpbImFzZCJdLCJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLmVudGl0aWVzLm1lbWJlciJdfQ.D2N8nvSIU-UmUX97FZKG6WhYOJd0SGRPVQBiAnmr2zA",
+    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYmU5MmIwYy1iZGEyLTQ5ZDAtOTlkMC1mZWI1MzhhYTdkYjYiLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTE2MjM5MDIyLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZ3JvdXBzIjpbImFzZCJdLCJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLmVudGl0aWVzLm1lbWJlciJdfQ.i4hVix2j_qYOQnHlg0stpEV15_0FhgbSJCIM7NDb3Gg5kQ0641BE1ExEAHx7MW4nHsmslYynhsX8FgTnRd4QZtbH27hhvmpmYPl54e5Dg3mGKv4Ub8ZIqwL5kBo6VchiSlwcEC2F28lDP1QjAPvPJH2tu0-BTQQpzqGc5B8JsizGHB33xUhTplKTN2Y4845qKxhe3BZW9Fv2IKFzS6dnuXyJV6enmjtJAQIKBRC_S3ZXCRim6NwtIkX-JRmwW96rXy_C7PozgSruZKgLyJGquQ328iJFA2cmYc7dml3vJvkUs245Qd2nRIaPySFRhwPzJzI-kz8yicNnwW0111W6-Q",
     "originalRecord": {
         "kind": "brand",
         "name": "Abby's",
