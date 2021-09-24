@@ -14,12 +14,16 @@ default allow = false
 allow {
 	role_utils.is_user_admin("create")
 
+    verification.is_email_verified
+
     # payload cannot contain any invalid field
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 }
 
 allow {
 	role_utils.is_user_editor("create")
+
+    verification.is_email_verified
 
     # payload cannot contain any invalid field
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
