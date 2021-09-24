@@ -14,25 +14,6 @@ member_validFrom_range_in_seconds:= 300
 
 member_validUntil_range_for_inactivation_in_seconds := 300
 
-# NOTE: FOLLOWING ROLES ARE NOT USED FOR NOW! THERE IS A TASK ABOUT IMPLEMENTING THESE ROLES
-# LETTING USERS TO SEE THEIR INACTIVATED RECORDS ALSO REQUIRES THEM TO SEE THEIR INACTIVE RECORDS.
-# NOT SURE, HOW TO BUILD THE APPLICATION LOGIC.
-# --------------------------------------------------------------------------
-# members can update validUntil value if
-# - original record is passive
-# and
-# - original record's validUntil date is in last 5 minutes
-# and
-# - user's validUntil value is exactly equals to 'null'
-# and
-# - member have any of the following roles
-#
-# That is, these roles give member to effectively undo his deletion in 5 minutes
-user_roles_for_undoing_inactivating_record:= [
-	"tarcinapp.records.fields.validUntil.manage",
-	"tarcinapp.entities.fields.validUntil.manage"
-]
-
 # visitiors cannot update any record
 
 #-----------------------------------------------
@@ -54,7 +35,7 @@ allow {
 	# payload cannot contain any field that requestor cannot see
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_find)
 
-	# todo - all other fields that user can see but cannot update, must contain the same value with the original record
+	forbidden_fields_has_same_value_with_original_record
 }
 
 allow {
@@ -66,7 +47,7 @@ allow {
 	# payload cannot contain any field that requestor cannot see
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_find)
 
-	# todo - all other fields that user can see but cannot update, must contain the same value with the original record
+	forbidden_fields_has_same_value_with_original_record
 }
 
 allow {
@@ -75,7 +56,7 @@ allow {
 	# payload cannot contain any field that requestor cannot see
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_find)
 
-	# todo - all other fields that user can see but cannot update, must contain the same value with the original record
+	forbidden_fields_has_same_value_with_original_record
 	
     verification.is_email_verified						# members must be email verified
 
@@ -161,9 +142,10 @@ is_validUntil_in_correct_range_for_inactivation {
     validUntilSec > (nowSec - member_validUntil_range_for_inactivation_in_seconds)
 }
 
-#fields_user_can_see_but_cannot_update {
-#	
-#}
+forbidden_fields_has_same_value_with_original_record {
+	forbidden_field_for_update := forbidden_fields.which_fields_forbidden_for_update[_]
+	input.requestPayload[forbidden_field_for_update] = input.originalRecord[forbidden_field_for_update]
+}
 
 payload_contains_any_field(fields) {
     field = fields[_]
