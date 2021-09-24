@@ -119,7 +119,7 @@ no_ownerGroups_item_in_users_groups {
 # As this attempt means changing the approval time, 
 # or unapproving already approved reacord, should not be allowed for members
 member_has_problem_with_validFrom {
-	forbidden_fields.can_user_update_field("validFromDateTime")
+	payload_contains_any_field(["validFromDateTime"])
 	original_record.has_value("validFromDateTime")
 }
 
@@ -128,25 +128,20 @@ member_has_problem_with_validFrom {
 # user tries to add a validFrom
 # but validFrom is not in correct range
 member_has_problem_with_validFrom {
-	forbidden_fields.can_user_update_field("validFromDateTime")
-	original_record.is_empty("validFromDateTime")
-	payload_contains_any_field(["validFromDateTime"]) 
+	payload_contains_any_field(["validFromDateTime"])
 	not is_validFrom_in_correct_range
 }
 
 member_has_problem_with_validUntil {
-	can_user_see_the_validUntil 			
-	not can_user_inactivate_record 	
-	not is_validUntil_equals_to_the_original
+	payload_contains_any_field(["validUntilDateTime"])
+	original_record.has_value("validUntilDateTime")
 }
 
 # validUntil must be in correct range for inactivation
 member_has_problem_with_validUntil {
-	can_user_inactivate_record
-	payload_contains_validUntil
+	payload_contains_any_field(["validUntilDateTime"])
     not is_validUntil_in_correct_range_for_inactivation
 } 
-
 
 is_validFrom_in_correct_range {
 	nowSec := time.now_ns()/(1000*1000*1000)
@@ -165,6 +160,10 @@ is_validUntil_in_correct_range_for_inactivation {
     validUntilSec <= nowSec
     validUntilSec > (nowSec - member_validUntil_range_for_inactivation_in_seconds)
 }
+
+#fields_user_can_see_but_cannot_update {
+#	
+#}
 
 payload_contains_any_field(fields) {
     field = fields[_]
