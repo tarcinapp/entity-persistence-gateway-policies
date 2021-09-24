@@ -20,12 +20,12 @@ description := `This policy evaluates the user's role, email verification status
     - ownerUsers contains the user's user id
     - all group names specified in ownerGroups field of the payload must be from the user's groups
     - For validFromDateTime, if user is allowed the change the value
-        - it must be within the last 300 seconds
         - validFromDateTime field of the original record must be empty
-    - For validUntilDateTime, if user is allowed the change the value
         - it must be within the last 300 seconds
+    - For validUntilDateTime, if user is allowed the change the value
         - validUntilDateTime field of the original record must be empty
-
+        - it must be within the last 300 seconds`
+        
 fields := {
     "encodedJwt": "Encoded JWT string.",
     "originalRecord": "The record which the user is querying by it's id.",
