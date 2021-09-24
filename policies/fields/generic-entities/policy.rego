@@ -127,6 +127,15 @@ get_fields_for(role, operation) = result_fields {
     result_fields := [result_field | forbiddenFields[i].role==role; result_field := forbiddenFields[i].operations[operation]][0]
 }
 
+# We need this operation in order to get merged list of fields for different operations.
+# For instance, if caller asks for effective list of forbidden fields for 'create' operation, this method gets
+# list of fields for 'create' and 'find' operations and merges these two list. 
+#
+# Same logic applies to 'update' operation as well. If caller asks for effective fields for 'update' operation
+# this method merges the lists for both 'update' and 'find', and returns the list.
+#
+# If caller asks for effective list of forbidden fields for 'find' operation, this method simply returns
+# the fields list of 'find' operation, without performing any logic.
 get_effective_fields_for(role, operation) = result_fields {
     operation == "find"
     result_fields := get_fields_for(role, "find")
