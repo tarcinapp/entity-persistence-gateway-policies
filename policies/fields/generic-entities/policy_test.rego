@@ -46,7 +46,7 @@ test_member_create {
 }
 
 test_member_update {
-    which_fields_forbidden_for_update = ["visibility", "kind", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime"]
+    which_fields_forbidden_for_update = ["visibility", "kind", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime"]
         with input as produce_input_doc_by_role(["tarcinapp.member"])
 }
 
