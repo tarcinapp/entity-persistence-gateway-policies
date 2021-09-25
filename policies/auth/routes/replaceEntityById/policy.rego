@@ -30,13 +30,14 @@ allow {
 	role_utils.is_user_admin("update")
 
 	# user must be email verified
-	verification.is_email_verified						
+	verification.is_email_verified				
 
 	# payload cannot contain any field that requestor cannot see
-    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_find)
+    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 
 	forbidden_fields_has_same_value_with_original_record
 }
+
 
 allow {
 	role_utils.is_user_editor("update")
@@ -45,7 +46,7 @@ allow {
 	verification.is_email_verified						
 
 	# payload cannot contain any field that requestor cannot see
-    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_find)
+    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 
 	forbidden_fields_has_same_value_with_original_record
 }
@@ -54,7 +55,7 @@ allow {
 	role_utils.is_user_member("update")
 
 	# payload cannot contain any field that requestor cannot see
-    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_find)
+    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 
 	forbidden_fields_has_same_value_with_original_record
 	
@@ -70,7 +71,6 @@ allow {
 	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, (validUntil > now - 60s)
 }
 #-----------------------------------------------
-
 
 is_record_belongs_to_this_user {
   original_record.is_belong_to_user
@@ -142,8 +142,14 @@ is_validUntil_in_correct_range_for_inactivation {
     validUntilSec > (nowSec - member_validUntil_range_for_inactivation_in_seconds)
 }
 
+# if there is no forbidden field for update, this expression must return true
+forbidden_fields_has_same_value_with_original_record {
+	not forbidden_fields.which_fields_forbidden_for_update[0]
+}
+
 forbidden_fields_has_same_value_with_original_record {
 	forbidden_field_for_update := forbidden_fields.which_fields_forbidden_for_update[_]
+	
 	input.requestPayload[forbidden_field_for_update] = input.originalRecord[forbidden_field_for_update]
 }
 
