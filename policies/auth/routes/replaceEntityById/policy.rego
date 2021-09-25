@@ -38,7 +38,6 @@ allow {
 	forbidden_fields_has_same_value_with_original_record
 }
 
-
 allow {
 	role_utils.is_user_editor("update")
 
