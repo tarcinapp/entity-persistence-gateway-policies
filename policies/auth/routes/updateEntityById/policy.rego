@@ -1,100 +1,18 @@
 package policies.auth.routes.updateEntityById.policy
 
-
-# Define roles
-#-----------------------------------------------
-administrative_roles := [
-    "tarcinapp.admin",
-    "tarcinapp.records.manage.admin",
-    "tarcinapp.records.update.admin",
-    "tarcinapp.entities.manage.admin",
-    "tarcinapp.entities.update.admin"
-]
-
-editorial_roles := [
-    "tarcinapp.editor",
-    "tarcinapp.records.manage.editor",
-    "tarcinapp.records.update.editor",
-    "tarcinapp.entities.manage.editor",
-    "tarcinapp.entities.update.editor"
-]
-
-member_roles := [
-    "tarcinapp.member",
-    "tarcinapp.records.manage.member",
-    "tarcinapp.records.update.member",
-    "tarcinapp.entities.manage.member",
-    "tarcinapp.entities.update.member"
-]
-
-# members cannot update kind field by default
-user_roles_for_kind := [
-	"tarcinapp.records.fields.kind.manage",
-	"tarcinapp.entities.fields.kind.manage",
-  	"tarcinapp.records.fields.kind.update",
-	"tarcinapp.entities.fields.kind.update"
-]
-
-# members cannot update visibility field by default
-user_roles_for_visibility := [
-	"tarcinapp.records.fields.visibility.manage",
-	"tarcinapp.entities.fields.visibility.manage",
-  	"tarcinapp.records.fields.visibility.update",
-	"tarcinapp.entities.fields.visibility.update"
-]
-
-# members can update validFrom value if
-# - original record does not have validFrom
-# and
-# - user's validFrom value is in between now and 60 seconds before 
-# and
-# - member have any of the following roles
-#
-# That is, these roles give member to approve his own record
-user_roles_for_validFrom := [
-	"tarcinapp.records.fields.validFrom.manage",
-	"tarcinapp.entities.fields.validFrom.manage",
-    "tarcinapp.records.fields.validFrom.update",
-	"tarcinapp.entities.fields.validFrom.update"
-]
+import data.policies.util.genericentities.roles as role_utils
+import data.policies.fields.genericentities.policy as forbidden_fields
+import data.policies.util.common.token as token
+import data.policies.util.common.array as array
+import data.policies.util.common.verification as verification
+import data.policies.util.common.originalRecord as original_record
 
 # if record is being approved by a member, validFromDateTime cannot be before than the amount of seconds given below from now
 # this option enforces members to approve records immediately
 member_validFrom_range_in_seconds:= 300
 
-# members can update validUntil value if
-# - original record is active or pending
-# and
-# - user's validUntil value is in between now and 60 seconds before
-# and
-# - member have any of the following roles
-#
-# That is, these roles give member to inactivate his own record
-user_roles_for_inactivating_record:= [
-	"tarcinapp.records.fields.validUntil.manage",
-	"tarcinapp.entities.fields.validUntil.manage",
-  	"tarcinapp.records.fields.validUntil.update",
-	"tarcinapp.entities.fields.validUntil.update"
-]
-
 member_validUntil_range_for_inactivation_in_seconds := 300
 
-# NOTE: FOLLOWING ROLES ARE NOT USED FOR NOW! THERE IS A TASK ABOUT IMPLEMENTING THESE ROLES
-# --------------------------------------------------------------------------
-# members can update validUntil value if
-# - original record is passive
-# and
-# - original record's validUntil date is in last 5 minutes
-# and
-# - user's validUntil value is exactly equals to 'null'
-# and
-# - member have any of the following roles
-#
-# That is, these roles give member to effectively undo his deletion in 5 minutes
-user_roles_for_undoing_inactivating_record:= [
-	"tarcinapp.records.fields.validUntil.manage",
-	"tarcinapp.entities.fields.validUntil.manage"
-]
 
 # visitiors cannot update any record
 
@@ -109,230 +27,96 @@ default allow = false
 # Decide allow if any of the following section is true
 #-----------------------------------------------
 allow {
-	is_user_admin
+	role_utils.is_user_admin("update")
+
+	# user must be email verified
+	verification.is_email_verified				
+
+	# payload cannot contain any forbidden field
+    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)	
 }
 
 allow {
-	is_user_editor
-	not payload_contains_creationDateTime
-	not payload_contains_lastUpdatedDateTime
-	not payload_contains_lastUpdatedBy
-	not payload_contains_createdBy
+	role_utils.is_user_editor("update")
+
+	# user must be email verified
+	verification.is_email_verified						
+
+	# payload cannot contain any field that requestor cannot see
+    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)
 }
 
 allow {
-	is_user_member
+	role_utils.is_user_member("update")
+
+	# payload cannot contain any field that requestor cannot see
+    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)
+	
+    verification.is_email_verified						# members must be email verified
+
 	is_record_belongs_to_this_user 						# over user's groups or user's id
-    not is_original_record_inactive 					# only pending and active records are updateable
-    
-	not member_has_problem_with_mail_verification		# email must be verified
-	not payload_contains_creationDateTime				# member cannot modify creationDateTime
-	not payload_contains_lastUpdatedBy					# member cannot modify lastUpdatedBy
-	not payload_contains_lastUpdatedDateTime			# member cannot modify lastUpdatedDateTime
-	not payload_contains_createdBy						# member cannot modify createdBy
-	not member_has_problem_with_kind					# updating kind, requires some specific roles
-	not member_has_problem_with_visibility				# updating visibilitiy, requires some specific roles
-	not member_has_problem_with_ownerUsers				# member cannot remove himself from owners
-	not member_has_problem_with_ownerGroups				# member cannot use any group he is not belong to
+	not original_record.is_passive 						# only pending and active records are updateable by members for now, maybe we can let users to 'undo' their inactivation operation by letting them to modify inactive records as well
+
+	user_id_in_ownerUsers								# user id must always be in the ownerUsers array
+	not member_has_problem_with_ownerGroups				# member cannot use any group name that he is not belongs to
     
 	not member_has_problem_with_validFrom				# updating validFrom (approving) requires some specific roles, validFrom > (now - 60s)
-	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, validUntil > (now - 60s)
+	not member_has_problem_with_validUntil				# updating validUntil (deleting) requires some specific roles, (validUntil > now - 60s)
 }
+
 #-----------------------------------------------
 
-
-# Determine user's role
-#-----------------------------------------------
-is_user_member {
-	token.payload.roles[_] == member_roles[_]
+is_record_belongs_to_this_user {
+  original_record.is_belong_to_user
 }
 
-is_user_editor {
-    token.payload.roles[_] == editorial_roles[_]
-}
-
-is_user_admin {
-    token.payload.roles[_] == administrative_roles[_]
-}
-#-----------------------------------------------
-
-
-# Check if user has a problem
-#-----------------------------------------------
-# if request has visibility field, then he must have roles to be able to create it
-member_has_problem_with_mail_verification {
-	token.payload.email_verified != true
-}
-
-member_has_problem_with_kind {
-	payload_contains_kind
-	not can_member_update_kind
-}
-
-member_has_problem_with_visibility {
-	paylod_contains_visibility
-	not can_member_update_visibility
-}
-
-member_has_problem_with_ownerUsers {
-	payload_contains_ownerUsers
-	not user_id_in_ownerUsers
-}
-
-member_has_problem_with_ownerGroups {
-  payload_contains_ownerGroups
-  no_ownerGroups_item_in_users_groups
-}
-
-# if original record already have validFrom, members cannot update this value
-member_has_problem_with_validFrom {
-  payload_contains_validFrom
-  original_record_already_have_validFrom
-}
-
-# if member does not have enough roles, he cannot send validFrom
-member_has_problem_with_validFrom {
-	payload_contains_validFrom
-    not can_member_update_validFrom
-}
-
-# valid from must be in specific range
-member_has_problem_with_validFrom {
-	payload_contains_validFrom
-    not is_validFrom_in_correct_range
-}
-
-member_has_problem_with_validUntil {
-	payload_contains_validUntil
-	not can_user_inactivate_record
-}
-
-# validUntil must be in correct range for inactivation
-member_has_problem_with_validUntil {
-	payload_contains_validUntil
-    not is_validUntil_in_correct_range_for_inactivation
-} 
-
-
-# Following section contains utilities to check if a specific field exists in payload
-#-----------------------------------------------
-payload_contains_kind {
-  input.requestPayload["kind"]
-}
-
-payload_contains_creationDateTime {
-  input.requestPayload["creationDateTime"]
-}
-
-payload_contains_creationDateTime {
-  input.requestPayload["creationDateTime"] == false
-}
-
-payload_contains_lastUpdatedDateTime {
-  input.requestPayload["lastUpdatedDateTime"]
-}
-
-payload_contains_lastUpdatedDateTime {
-  input.requestPayload["lastUpdatedDateTime"] == false
-}
-
-payload_contains_createdBy {
-	input.requestPayload["createdBy"]
-}
-
-payload_contains_createdBy {
-	input.requestPayload["createdBy"] == false
-}
-
-payload_contains_lastUpdatedBy {
-  input.requestPayload["lastUpdatedBy"]
-}
-
-payload_contains_lastUpdatedBy {
-  input.requestPayload["lastUpdatedBy"] == false
-}
-
-paylod_contains_visibility {
-	input.requestPayload["visibility"]
-}
-
-paylod_contains_visibility {
-	input.requestPayload["visibility"] == false
-}
-
-payload_contains_ownerUsers {
-	input.requestPayload["ownerUsers"]
-}
-
-payload_contains_ownerUsers {
-	input.requestPayload["ownerUsers"] == false
-}
-
-payload_contains_ownerGroups {
-	input.requestPayload["ownerGroups"]
-}
-
-payload_contains_ownerGroups {
-	input.requestPayload["ownerGroups"] == false
-}
-
-payload_contains_validFrom {
-	input.requestPayload["validFromDateTime"]
-}
-
-payload_contains_validFrom {
-	input.requestPayload["validFromDateTime"] == false
-}
-
-payload_contains_validUntil {
-	input.requestPayload["validUntilDateTime"]
-}
-
-payload_contains_validUntil {
-	input.requestPayload["validUntilDateTime"] == false
+is_record_belongs_to_this_user {
+  original_record.is_belong_to_users_groups
+  input.originalRecord.visibility != "private"
 }
 
 user_id_in_ownerUsers {
   input.requestPayload.ownerUsers[_] = token.payload.sub
 }
 
-#-----------------------------------------------
-
-original_record_already_have_validFrom {
-  input.originalRecord.validFromDateTime
+member_has_problem_with_ownerGroups {
+  input.requestPayload["ownerGroups"]
+  no_ownerGroups_item_in_users_groups
 }
-
-can_member_update_kind {
-	user_roles_for_kind[_] = token.payload.roles[_]
-}
-
-
-can_member_update_visibility {
-	user_roles_for_visibility[_] = token.payload.roles[_]
-}
-
-can_member_update_validFrom {
-	user_roles_for_validFrom[_] = token.payload.roles[_]
-}
-
-can_user_inactivate_record {
-	user_roles_for_inactivating_record[_] = token.payload.roles[_]
-}
-
 
 no_ownerGroups_item_in_users_groups {
 	token.payload.groups[_] != input.requestPayload.ownerGroups[_]
 }
 
-is_record_belongs_to_this_user {
-  input.originalRecord.ownerUsers[_] = token.payload.sub
+# user can update validFrom
+# user tries to change validFrom
+# but original value is not null
+# As this attempt means changing the approval time, 
+# or unapproving already approved reacord, should not be allowed for members
+member_has_problem_with_validFrom {
+	payload_contains_any_field(["validFromDateTime"])
+	original_record.has_value("validFromDateTime")
 }
 
-is_record_belongs_to_this_user {
-  input.originalRecord.ownerGroups[_] = token.payload.groups[_]
-  input.originalRecord.visibility != "private"
+# user can update validFrom
+# original value is null
+# user tries to add a validFrom
+# but validFrom is not in correct range
+member_has_problem_with_validFrom {
+	payload_contains_any_field(["validFromDateTime"])
+	not is_validFrom_in_correct_range
 }
 
+member_has_problem_with_validUntil {
+	payload_contains_any_field(["validUntilDateTime"])
+	original_record.has_value("validUntilDateTime")
+}
+
+# validUntil must be in correct range for inactivation
+member_has_problem_with_validUntil {
+	payload_contains_any_field(["validUntilDateTime"])
+    not is_validUntil_in_correct_range_for_inactivation
+} 
 
 is_validFrom_in_correct_range {
 	nowSec := time.now_ns()/(1000*1000*1000)
@@ -340,38 +124,30 @@ is_validFrom_in_correct_range {
     
 	validFromSec <= nowSec
     validFromSec > (nowSec - member_validFrom_range_in_seconds)
+
+	validFromDifferenceInSeconds := nowSec-validFromSec
 }
 
 is_validUntil_in_correct_range_for_inactivation {
 	nowSec := time.now_ns()/(1000*1000*1000)
     validUntilSec := time.parse_rfc3339_ns(input.requestPayload.validUntilDateTime)/(1000*1000*1000)
-    
+
     validUntilSec <= nowSec
     validUntilSec > (nowSec - member_validUntil_range_for_inactivation_in_seconds)
 }
 
-is_original_record_active {
-    is_record_validFrom_passed
-    not is_record_validUntil_passed
+# if there is no forbidden field for update, this expression must return true
+forbidden_fields_has_same_value_with_original_record {
+	not forbidden_fields.which_fields_forbidden_for_update[0]
 }
 
-is_original_record_pending {
-	input.originalRecord.validFromDateTime = null
+forbidden_fields_has_same_value_with_original_record {
+	forbidden_field_for_update := forbidden_fields.which_fields_forbidden_for_update[_]
+	
+	input.requestPayload[forbidden_field_for_update] = input.originalRecord[forbidden_field_for_update]
 }
 
-is_original_record_inactive {
-	is_record_validUntil_passed
-}
-
-is_record_validFrom_passed {
-	input.originalRecord.validFromDateTime != null
-    time.parse_rfc3339_ns(input.originalRecord.validFromDateTime) < time.now_ns()
-}
-
-is_record_validUntil_passed {
-	time.parse_rfc3339_ns(input.originalRecord.validUntilDateTime) <= time.now_ns()
-}
-
-token = {"payload": payload} {
-  [header, payload, signature] := io.jwt.decode(input.encodedJwt)
+payload_contains_any_field(fields) {
+    field = fields[_]
+    input.requestPayload[field]
 }
