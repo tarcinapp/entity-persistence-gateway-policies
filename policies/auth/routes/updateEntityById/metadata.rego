@@ -1,12 +1,11 @@
 package policies.auth.routes.updateEntityById.metadata
 
-description := `This policy evaluates the user's role, email verification status, request payload and original record to decide if a user can replace the record.
+description := `This policy evaluates the user's role, email verification status, request payload and original record to decide if a user can update the record.
 - admin users are allowed to update the original record notwithstanding the payload and original record.
 - editor users are allowed to update the record if payload satisfy 'all' of the conditions given below:
+    - email must be verified
     - payload cannot contain creationDateTime
-    - payload cannot contain lastUpdatedDateTime
-    - payload cannot contain lastUpdatedBy
-    - payload cannot contain createdBy
+    - payload cannot contain any field that user is not allowed to see or update.
 - members are allowed to update the entity if following conditions are met
     - email must be verified
     - record must be belongs to that user. record belongs to the user if either of the following is true
