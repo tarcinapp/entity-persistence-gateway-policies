@@ -2,11 +2,24 @@
     "httpMethod": "POST",
     "requestPath": "/generic-entities",
     "queryParams": {},
-    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYmU5MmIwYy1iZGEyLTQ5ZDAtOTlkMC1mZWI1MzhhYTdkYjYiLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNTE2MjM5MDIyLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiZ3JvdXBzIjpbImdyb3VwLTEiXSwicm9sZXMiOlsidGFyY2luYXBwLm1lbWJlciJdfQ.RGsA_vaxoMvloqqAiRCCz3uqx4rclJ9un87R4_l-www_EYj6EB87OMQ0AdvhN4JOKLIzOKbD4SQ1Bpvup8-HPN4GYCuEouJzl47_iFWF7XPNgf1uqRmNrfyDMoKx09O2yn7JD2rOlgB59DzKWWdqsV_74e2-_Ed466ySHD6rtmYAs-Pu-ukthT6xuAlLb0xYylTVoV29jXWXoE1zeOTsar-ZgscIhuXk1IhCaIULvIbiGkpyZ8WbJJlN3CAwtsko5s16j76UTvE8AupjnzrU2-jD8_SG04aWXbea4CZsWLdS4IE-HcKHMc6TQaaLTn30YdR3z4BgHd0D4E3JqYDFsA",
+    "encodedJwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYmU5MmIwYy1iZGEyLTQ5ZDAtOTlkMC1mZWI1MzhhYTdkYjYiLCJuYW1lIjoiSm9obiBEb2UiLCJhZG1pbiI6dHJ1ZSwiZW1haWxfdmVyaWZpZWQiOnRydWUsImdyb3VwcyI6WyJncm91cC0xIiwiZ3JvdXAtMiJdLCJyb2xlcyI6WyJ0YXJjaW5hcHAubWVtYmVyIl0sImlhdCI6MTYzMzAxMTkyNX0.R0s8PMDT1OFruudVKOkp3vxJyR9eNpjXhR4ZBhsJmRA",
     "requestPayload": {
+        "name": "Believe Yourself!",
+        "author": "J. Martin Doe",
+        "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+        "ownerGroups":["group-1"],
+        "validFromDateTime": "2019-10-12T07:20:50.52Z",
+        "validUntilDateTime": null
+    },
+    "originalRecord": {
+        "id": "0331c4d7-1408-4078-8e92-5169a55a12c5",
         "kind": "book",
         "name": "Believe Yourself!",
         "author": "J. Doe",
-        "ownerGroups":["group-2"]
+        "visibility": "private",
+        "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+        "ownerGroups":["group-1"],
+        "validFromDateTime": "2019-10-12T07:20:50.52Z",
+        "validUntilDateTime": null
     }
 }
