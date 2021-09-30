@@ -75,8 +75,15 @@ is_record_belongs_to_this_user {
   input.originalRecord.visibility != "private"
 }
 
+# if ownerUsers exists in the payload, then it must contains user's id
+# if ownerUsers is not in the payload, then we can assume this control 'true'
 user_id_in_ownerUsers {
-  input.requestPayload.ownerUsers[_] = token.payload.sub
+	not payload_contains_any_field(["ownerUsers"])
+}
+
+user_id_in_ownerUsers {
+	payload_contains_any_field(["ownerUsers"])
+	input.requestPayload.ownerUsers[_] = token.payload.sub
 }
 
 member_has_problem_with_ownerGroups {
