@@ -34,7 +34,7 @@ spec:
       - name: pipeline-docker-registry
       containers:
       - name: entity-persistence-gateway-policies
-        image: ${CICD_IMAGE}:${CICD_EXECUTION_SEQUENCE}
+        image: localhost:5000/entitypersistencegatewaypolicies:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8181
