@@ -128,6 +128,8 @@ member_has_problem_with_validUntil {
 }
 
 is_validFrom_in_correct_range {
+	payload_contains_any_field(["validFromDateTime"])
+	input.requestPayload.validFromDateTime != null
 	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
 	validFromSec := time.parse_rfc3339_ns(input.requestPayload.validFromDateTime) / ((1000 * 1000) * 1000)
 
@@ -139,6 +141,7 @@ is_validFrom_in_correct_range {
 
 is_validUntil_in_correct_range_for_inactivation {
 	payload_contains_any_field(["validUntilDateTime"])
+	input.requestPayload.validUntilDateTime != null
 	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
 	validUntilSec := time.parse_rfc3339_ns(input.requestPayload.validUntilDateTime) / ((1000 * 1000) * 1000)
 
