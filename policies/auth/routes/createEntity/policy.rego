@@ -57,5 +57,5 @@ member_has_problem_with_groups {
 
 member_has_problem_with_groups {
     input.requestPayload["ownerGroups"]
-    not token.payload.groups
+    not token.payload.groups[0]
 }
