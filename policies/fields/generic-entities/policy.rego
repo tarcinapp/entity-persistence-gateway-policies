@@ -25,8 +25,8 @@ default forbiddenFields = [
         "role": "member",
         "operations": {
             "find":   ["visibility"],
-            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime", "ownerUsers"],
-            "update": ["kind", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
+            "create": ["creationDateTime", "slug", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime", "ownerUsers"],
+            "update": ["kind", "slug", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
         }
     },
     {
