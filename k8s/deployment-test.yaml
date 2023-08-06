@@ -38,11 +38,6 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8181
-        args:
-        - "run"
-        - "--ignore=.*"  # exclude hidden dirs created by Kubernetes
-        - "--server"
-        - "/policies"
         livenessProbe:
           httpGet:
             scheme: HTTP 
