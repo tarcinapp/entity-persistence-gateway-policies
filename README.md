@@ -36,20 +36,17 @@ To modify the structure of the JWT token payload and move the roles directly und
 
 Log in to your Keycloak admin console.
 Select the desired realm from the drop-down menu on the top left.
-Go to "Clients" from the left-hand menu and select your client postman.
+Go to "Clients" from the left-hand menu and select your client.
+Click on the "Dedicated Scopes" tab.
+Click on the {client-name}-dedicated.
 Click on the "Mappers" tab.
-Click the "Create" button to add a new mapper.
-Now, we will create the custom mapper with the following settings:
+Click on the "Add mappers" button.
 
 Name: Enter a descriptive name for your mapper (e.g., Custom Role Mapper).
-Mapper Type: Select Role Name Mapper.
+Mapper Type: Select User Realm Role.
 Token Claim Name: Set it to the desired name for the roles in the payload (e.g., roles).
 Multivalued: Select ON.
 Leave other settings as they are or adjust them according to your specific requirements.
 
 Click "Save" to save the mapper.
 Now, when a user logs in and requests an access token, the custom mapper will be applied, and the roles will be moved directly under the payload with the key roles.
-
-Please note that modifying the structure of the token payload may affect the compatibility of the token with some applications. Ensure that your applications can handle this modified token structure accordingly.
-
-If you want to test the token to verify the changes, you can use a JWT decoding tool like jwt.io to inspect the token and check if the roles are now directly under the payload.
