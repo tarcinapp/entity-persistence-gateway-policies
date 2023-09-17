@@ -41,8 +41,9 @@ Click on the "Dedicated Scopes" tab.
 Click on the {client-name}-dedicated.
 Click on the "Mappers" tab.
 Click on the "Add mappers" button.
+Select By Configuration
 
-Name: Enter a descriptive name for your mapper (e.g., Custom Role Mapper).
+Name: Enter a descriptive name for your mapper (e.g., Realm Role Mapper).
 Mapper Type: Select User Realm Role.
 Token Claim Name: Set it to the desired name for the roles in the payload (e.g., roles).
 Multivalued: Select ON.
