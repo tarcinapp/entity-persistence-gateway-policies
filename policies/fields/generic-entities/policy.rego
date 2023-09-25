@@ -9,16 +9,16 @@ default forbiddenFields = [
         "role": "admin",
         "operations": {
             "find":   [],
-            "create": [],
-            "update": []
+            "create": ["idempotencyKey"],
+            "update": ["idempotencyKey"]
         }
     },
     {
         "role": "editor",
         "operations": {
             "find":   [],
-            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
-            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy"],
+            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "idempotencyKey"],
+            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "idempotencyKey"],
         }
     },
     {
