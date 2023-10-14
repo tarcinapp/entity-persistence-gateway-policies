@@ -9,18 +9,27 @@ is_user_admin(operationType) {
 }
 
 is_user_editor(operationType) {
+	not is_user_admin(operationType)
+	
 	role := token.payload.roles[_]
 	pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.editor`, [operationType])
 	regex.match(pattern, role)
 }
 
 is_user_member(operationType) {
+	not is_user_admin(operationType)
+    not is_user_editor(operationType)
+
 	role := token.payload.roles[_]
 	pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.member`, [operationType])
 	regex.match(pattern, role)
 }
 
 is_user_visitor(operationType) {
+	not is_user_admin(operationType)
+    not is_user_editor(operationType)
+    not is_user_member(operationType)
+
 	role := token.payload.roles[_]
 	pattern := sprintf(`tarcinapp(((\.)|(\.(records|entities))|(\.(records|entities)(\.%s)))?)\.visitor`, [operationType])
 	regex.match(pattern, role)
