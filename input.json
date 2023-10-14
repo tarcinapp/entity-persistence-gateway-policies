@@ -1,4 +1,5 @@
 {
+    "appShortcode": "tarcinapp",
     "policyName": "/policies/auth/routes/findEntities/policy",
     "httpMethod": "GET",
     "requestPath": "/generic-entities",

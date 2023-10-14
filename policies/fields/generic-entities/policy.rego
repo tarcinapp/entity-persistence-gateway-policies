@@ -157,18 +157,18 @@ get_effective_fields_for(role, operation) = result_fields {
 
 can_user_find_field(fieldName) {
 	role = token.payload.roles[_]
-	pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(find|update|create|manage)`, [fieldName])
+	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(find|update|create|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
 can_user_create_field(fieldName) {
 	role := token.payload.roles[_]
-	pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(create|manage)`, [fieldName])
+	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(create|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
 can_user_update_field(fieldName) {
 	role := token.payload.roles[_]
-	pattern := sprintf(`tarcinapp\.(records|entities)\.fields\.%s\.(update|manage)`, [fieldName])
+	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(update|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }

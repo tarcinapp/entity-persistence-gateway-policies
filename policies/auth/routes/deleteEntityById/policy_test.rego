@@ -33,6 +33,7 @@ test_not_allow_to_any_other_roles {
 
 produce_input_doc_by_role(roles) = test_body {
     test_body = {
+        "appShortcode":"tarcinapp",
 		"httpMethod": "POST",
 		"requestPath": "/generic-entities",
 		"queryParams": {},
