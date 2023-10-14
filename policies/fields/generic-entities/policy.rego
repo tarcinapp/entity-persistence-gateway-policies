@@ -9,8 +9,8 @@ default forbiddenFields = [
         "role": "admin",
         "operations": {
             "find":   [],
-            "create": ["idempotencyKey"],
-            "update": ["idempotencyKey"]
+            "create": [],
+            "update": []
         }
     },
     {
@@ -24,7 +24,7 @@ default forbiddenFields = [
     {
         "role": "member",
         "operations": {
-            "find":   ["visibility", "version", "idempotencyKey"],
+            "find":   ["visibility", "version", "idempotencyKey", "application"],
             "create": ["creationDateTime", "slug", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime", "ownerUsers"],
             "update": ["kind", "slug", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
         }
@@ -32,7 +32,7 @@ default forbiddenFields = [
     {
         "role": "visitor",
         "operations": {
-            "find": ["validFromDateTime", "validUntilDateTime", "visibility", "version", "lastUpdatedBy", "lastUpdatedDateTime", "idempotencyKey"],
+            "find": ["validFromDateTime", "validUntilDateTime", "visibility", "version", "lastUpdatedBy", "lastUpdatedDateTime", "idempotencyKey", "application"],
         }
     }
 ]
