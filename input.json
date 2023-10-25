@@ -1,0 +1,35 @@
+{
+    "policyName": "/policies/auth/routes/updateEntityById/policy",
+    "appShortcode": "tarcinapp",
+    "httpMethod": "PATCH",
+    "requestPath": "/generic-entities/e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e",
+    "queryParams": {
+        "query-param-1": "val-1"
+    },
+    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJrVG1OeGhSNExXZGhKeG5rV082d25NNHcybkFrcU5uWGFMOFZuR2JCLVFvIn0.eyJleHAiOjE2OTc4NzQxMzcsImlhdCI6MTY5NzgzODEzNywianRpIjoiZjhmODExZWQtZmVlYy00NDRkLTlkNTQtMmVhOWQ2ZjIzNGRkIiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAta2V5Y2xvYWsuaDN0NGVnLmVhc3lwYW5lbC5ob3N0L3JlYWxtcy90YXJjaW5hcHAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiMTkwOWFhMjgtNzc4Yi00MTFiLWI4N2YtMDExOWNlNDAxYzEwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoicG9zdG1hbiIsInNlc3Npb25fc3RhdGUiOiJhNThlMjQxYi1hNmYyLTQzMzctYWRkMi1lNzM5ZjczNmQ1NTgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ0YXJjaW5hcHAuZW50aXRpZXMuZmllbGRzLnZhbGlkRnJvbURhdGVUaW1lLnVwZGF0ZSIsImRlZmF1bHQtcm9sZXMtdGFyY2luYXBwIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsInRhcmNpbmFwcC5tZW1iZXIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiYTU4ZTI0MWItYTZmMi00MzM3LWFkZDItZTczOWY3MzZkNTU4IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInJvbGVzIjpbInRhcmNpbmFwcC5lbnRpdGllcy5maWVsZHMudmFsaWRGcm9tRGF0ZVRpbWUudXBkYXRlIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLm1lbWJlciJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ1c2VyLWJhc2ljLXZlcmlmaWVkLW1lbWJlci0xIiwiZ2l2ZW5fbmFtZSI6IiIsImZhbWlseV9uYW1lIjoiIn0.CojiA9ShXSmOm5yTlIl2W3sZqKbvFZbsVAatqLXguYKVFcDhR7oH4BcU9rNs_x1PVqKZwq4gdwMvBNGYJ1Q2vtvWhGNdhgtbYKwvt4TPCWaHZ51QerBA0Kk8q5n3xeqgjZ93eft5rG9aFeaJtVsx0DfMWK1DbrjfXawRO9Te4GEPJgMkm_QSZXgOWkNI2rqfn45YvGr4lXxAH3iRXGbS-8rmFg1RnOgPAeTS-OoHKxSCO_Pa1KZSEi5ZeayY5_KS4GPg_7xnc0e9ltbq1U_yx8k4VfF_hb0TiMoC9zt6lrEUGWme4zQ1VzHIwBrnDvGMmhXTP_LAysz4Q1_MDtCTyw",
+    "requestPayload": {
+        "ownerUsersCount": 0,
+        "ownerGroupsCount": 0,
+        "validFromDateTime": "2023-10-20T21:54:06.988Z"
+    },
+    "originalRecord": {
+        "id": "e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e",
+        "kind": "book",
+        "name": "Cinler",
+        "slug": "cinler",
+        "visibility": "private",
+        "ownerUsers": [
+            "1909aa28-778b-411b-b87f-0119ce401c10"
+        ],
+        "ownerGroups": [],
+        "ownerUsersCount": 1,
+        "ownerGroupsCount": 0,
+        "lastUpdatedBy": "1909aa28-778b-411b-b87f-0119ce401c10",
+        "createdBy": "1909aa28-778b-411b-b87f-0119ce401c10",
+        "version": 3,
+        "idempotencyKey": "3678437ad111f82704f6a54954a1b96c105125264cb7e81e95ffca44986c307a",
+        "creationDateTime": "2023-10-20T21:26:06.988Z",
+        "lastUpdatedDateTime": "2023-10-20T21:31:56.937Z",
+        "author": "Dostoyevski"
+    }
+}
