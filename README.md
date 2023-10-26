@@ -152,6 +152,17 @@ Sample policy input:
 
 
 
+# Policies
+To access the details of each policy, you can refer to the policy's README.
+1. [countEntities](./policies/auth/routes/countEntities/README.md)
+2. [createEntity](./policies/auth/routes/createEntity/README.md)
+3. [deleteEntityById](./policies/auth/routes/deleteEntityById/README.md)
+4. [findEntities](./policies/auth/routes/findEntities/README.md)
+5. [findEntityById](./policies/auth/routes/findEntityById/README.md)
+6. [replaceEntityById](./policies/auth/routes/replaceEntityById/README.md)
+7. [updateAllEntities](./policies/auth/routes/updateAllEntities/README.md)
+8. [updateEntityById](./policies/auth/routes/updateEntityById/README.md)
+
 # Setting Up the Development Environment
 Get the OPA extension for Visual Studio Code (VSCode). This extension simplifies local OPA policy testing by automatically downloading and installing the OPA binary. It's a handy tool to ensure your policies work smoothly within your development environment, enhancing security and compliance for your applications.  
   
