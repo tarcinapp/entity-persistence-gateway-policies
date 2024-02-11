@@ -19,7 +19,7 @@
         "slug": "cinler",
         "visibility": "private",
         "ownerUsers": [
-            "1909aa28-778b-411b-b87f-0119ce401c10"
+            "x"
         ],
         "ownerGroups": [],
         "ownerUsersCount": 1,
@@ -29,7 +29,10 @@
         "version": 3,
         "idempotencyKey": "3678437ad111f82704f6a54954a1b96c105125264cb7e81e95ffca44986c307a",
         "creationDateTime": "2023-10-20T21:26:06.988Z",
+        "validFromDateTime": "2023-10-20T21:26:06.988Z",
         "lastUpdatedDateTime": "2023-10-20T21:31:56.937Z",
-        "author": "Dostoyevski"
+        "author": "Dostoyevski",
+        "viewerUsers": [],
+        "viewerGroups": []
     }
 }

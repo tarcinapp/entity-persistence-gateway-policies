@@ -31,6 +31,16 @@ is_belong_to_users_groups {
     token.payload.groups[i] = input.originalRecord.ownerGroups[i]
 }
 
+is_user_in_viewerUsers {
+    some i
+    token.payload.sub = input.originalRecord.viewerUsers[i]
+}
+
+is_user_in_viewerGroups {
+    some i
+    token.payload.groups[i] = input.originalRecord.viewerGroups[i]
+}
+
 has_value(fieldName) {
     input.originalRecord[fieldName]
     input.originalRecord[fieldName] != null

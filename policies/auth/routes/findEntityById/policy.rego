@@ -39,7 +39,7 @@ can_user_see_this_record {
     not original_record.is_passive                # record is either pending or active
 }
 
-# user can see this record, because record belongs to his groups and it's not private
+# user can see this record, because record belongs to his groups and record is not private
 can_user_see_this_record {
     original_record.is_belong_to_users_groups
     not original_record.is_passive                # record is either pending or active
@@ -49,5 +49,18 @@ can_user_see_this_record {
 # user can see this record, because it is public and active record
 can_user_see_this_record {
     original_record.is_public
+    original_record.is_active
+}
+
+# user can see this record, because he is in viewerUsers, and record is active
+can_user_see_this_record {
+    original_record.is_user_in_viewerUsers
+    original_record.is_active
+}
+
+# user can see this record, because he is in viewerGroups, and record is active
+can_user_see_this_record {
+    original_record.is_user_in_viewerGroups
+    input.originalRecord.visibility != "private"  # record is either public or protected
     original_record.is_active
 }
