@@ -1,4 +1,4 @@
-package policies.auth.routes.createEntity.metadata
+package policies.auth.routes.createList.metadata
 
 description := `This policy evaluates the user's role, email verification status and request payload to decide if entity creation is allowed.
 - admin users are allowed to create entity no matter the fields they want to use (admin users can even set createdBy, creationDateTime and lastUpdatedDateTime)
