@@ -1,4 +1,4 @@
-# Delete Entity by ID Policy
+# Delete List by ID Policy
 
 ## Description
 
