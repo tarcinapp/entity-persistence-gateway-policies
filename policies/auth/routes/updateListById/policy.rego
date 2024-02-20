@@ -1,7 +1,7 @@
 package policies.auth.routes.updateListById.policy
 
-import data.policies.util.list.roles as role_utils
-import data.policies.fields.list.policy as forbidden_fields
+import data.policies.util.lists.roles as role_utils
+import data.policies.fields.lists.policy as forbidden_fields
 import data.policies.util.common.token as token
 import data.policies.util.common.array as array
 import data.policies.util.common.verification as verification
