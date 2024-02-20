@@ -1,4 +1,4 @@
-package policies.auth.routes.deleteEntityById.policy
+package policies.auth.routes.deleteListById.policy
 
 import data.policies.util.lists.roles as role_utils
 import data.policies.util.common.verification as verification
