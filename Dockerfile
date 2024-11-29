@@ -1,4 +1,4 @@
-FROM openpolicyagent/opa:0.37.0
+FROM openpolicyagent/opa:0.37.0-dev-static
 
 COPY ./policies /policies
 ENTRYPOINT ["/opa"]
