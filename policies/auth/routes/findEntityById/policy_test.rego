@@ -2,7 +2,7 @@ package policies.auth.routes.findEntityById.policy
 
 import data.policies.util.common.test as test
 
-test_allow_pendings_to_admin {
+test_allow_pendings_to_admin if {
 	allow with input as produce_input(false, ["tarcinapp.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "private", null, null)
 
 	allow with input as produce_input(false, ["tarcinapp.records.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "protected", null, null)
@@ -16,7 +16,7 @@ test_allow_pendings_to_admin {
 	allow with input as produce_input(false, ["tarcinapp.entities.find.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "private", null, null)
 }
 
-test_allow_actives_to_admin {
+test_allow_actives_to_admin if {
 	allow with input as produce_input(false, ["tarcinapp.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "private", "2020-01-01T00:00:00Z", null)
 
 	allow with input as produce_input(false, ["tarcinapp.records.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "protected", "2020-01-01T00:00:00Z", null)
@@ -30,7 +30,7 @@ test_allow_actives_to_admin {
 	allow with input as produce_input(false, ["tarcinapp.entities.find.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "private", "2020-01-01T00:00:00Z", null)
 }
 
-test_allow_inactives_to_admin {
+test_allow_inactives_to_admin if {
 	allow with input as produce_input(false, ["tarcinapp.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "private", "2020-01-01T00:00:00Z", null)
 
 	allow with input as produce_input(false, ["tarcinapp.records.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "protected", "2020-01-01T00:00:00Z", null)
@@ -44,7 +44,7 @@ test_allow_inactives_to_admin {
 	allow with input as produce_input(false, ["tarcinapp.entities.find.admin"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "private", "2020-01-01T00:00:00Z", null)
 }
 
-test_allow_actives_to_editor {
+test_allow_actives_to_editor if {
 	allow with input as produce_input(false, ["tarcinapp.editor"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "private", "2020-01-01T00:00:00Z",  "2020-02-01T00:00:00Z")
 
 	allow with input as produce_input(false, ["tarcinapp.records.editor"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "protected", "2020-01-01T00:00:00Z", "2020-02-01T00:00:00Z")
@@ -58,7 +58,7 @@ test_allow_actives_to_editor {
 	allow with input as produce_input(false, ["tarcinapp.entities.find.editor"], ["any-group-1"], ["any-owner"], ["any-owner-group-1"], "private", "2020-01-01T00:00:00Z", "2020-02-01T00:00:00Z")
 }
 
-test_allow_actives_to_owner {
+test_allow_actives_to_owner if {
     allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
         ["any-owner-group-1"],
@@ -84,7 +84,7 @@ test_allow_actives_to_owner {
     )
 }
 
-test_allow_pending_to_owner {
+test_allow_pending_to_owner if {
 	allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
         ["any-owner-group-1"],
@@ -110,7 +110,7 @@ test_allow_pending_to_owner {
     )
 }
 
-test_not_allow_inactives_to_owner {
+test_not_allow_inactives_to_owner if {
 	not allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["any-owner-user"],
         ["any-owner-group-1"],
@@ -120,7 +120,7 @@ test_not_allow_inactives_to_owner {
     )
 }
 
-test_allow_pending_to_owner_over_group {
+test_allow_pending_to_owner_over_group if {
     allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["any-owner-user"],
         ["users-group-1"],
@@ -130,7 +130,7 @@ test_allow_pending_to_owner_over_group {
     )
 }
 
-test_allow_active_protected_to_owner_over_group {
+test_allow_active_protected_to_owner_over_group if {
     allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["any-owner-user"],
         ["users-group-1"],
@@ -140,7 +140,7 @@ test_allow_active_protected_to_owner_over_group {
     )
 }
 
-test_not_allow_active_private_to_owner_over_group {
+test_not_allow_active_private_to_owner_over_group if {
     not allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["any-owner-user"],
         ["users-group-1"],
@@ -150,7 +150,7 @@ test_not_allow_active_private_to_owner_over_group {
     )
 }
 
-test_allow_active_and_public_to_member {
+test_allow_active_and_public_to_member if {
     allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["any-owner-user"],
         ["any-owner-group-1"],
@@ -160,7 +160,7 @@ test_allow_active_and_public_to_member {
     )
 }
 
-test_not_allow_active_protected_to_member {
+test_not_allow_active_protected_to_member if {
     not allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["any-owner-user"],
         ["any-owner-group-1"],
@@ -170,7 +170,7 @@ test_not_allow_active_protected_to_member {
     )
 }
 
-test_not_allow_active_private_to_member {
+test_not_allow_active_private_to_member if {
     not allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["any-owner-user"],
         ["any-owner-group-1"],
@@ -180,7 +180,7 @@ test_not_allow_active_private_to_member {
     )
 }
 
-test_not_allow_inactive_public_to_member {
+test_not_allow_inactive_public_to_member if {
     not allow with input as produce_input(false, ["tarcinapp.member"], ["users-group-1"], 
         ["any-owner-user"],
         ["any-owner-group-1"],
@@ -190,7 +190,7 @@ test_not_allow_inactive_public_to_member {
     )
 }
 
-produce_input(verified, roles, groups, ownerUsers, ownerGroups, visibility, validFrom, validUntil) = test_body {
+produce_input(verified, roles, groups, ownerUsers, ownerGroups, visibility, validFrom, validUntil) = test_body if {
 	test_body = {
 		"httpMethod": "GET",
 		"requestPath": "/generic-entities",

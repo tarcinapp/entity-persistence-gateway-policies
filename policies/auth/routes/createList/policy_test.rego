@@ -8,8 +8,7 @@ import data.policies.fields.lists.policy as forbidden_fields
 
 # In this test, we try to create a generic list with admin role.
 # We expect 'allow' rule to be true
-test_allow_to_admin {
-
+test_allow_to_admin if {
     allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.admin"],
@@ -25,8 +24,7 @@ test_allow_to_admin {
         }
 }
 
-test_allow_to_editor {
-
+test_allow_to_editor if {
     allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.editor"],
@@ -42,8 +40,7 @@ test_allow_to_editor {
         }
 }
 
-test_not_allow_to_editor_by_forbidden_field {
-
+test_not_allow_to_editor_by_forbidden_field if {
     not allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.editor"],
@@ -60,8 +57,7 @@ test_not_allow_to_editor_by_forbidden_field {
         }
 }
 
-test_allow_to_member {
-
+test_allow_to_member if {
     allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.member"],
@@ -79,8 +75,7 @@ test_allow_to_member {
 # In this scenario, user is member of group-1 and group-2
 # He is trying to create an list belongs to group-1
 # We expect this operation to be allowed.
-test_allow_to_correct_group {
-
+test_allow_to_correct_group if {
     allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.member"],
@@ -96,7 +91,7 @@ test_allow_to_correct_group {
         }
 }
 
-test_not_allow_to_member_email_verification {
+test_not_allow_to_member_email_verification if {
     not allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.member"],
@@ -111,7 +106,7 @@ test_not_allow_to_member_email_verification {
         }
 }
 
-test_not_allow_to_member_by_forbidden_field {
+test_not_allow_to_member_by_forbidden_field if {
     not allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.member"],
@@ -131,7 +126,7 @@ test_not_allow_to_member_by_forbidden_field {
 # As the scenario, our user is member of group-1 but he tries to create an list
 # belongs to group-2.
 # We expect this operation to not allowed
-test_not_allow_to_member_by_invalid_group {
+test_not_allow_to_member_by_invalid_group if {
     not allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.member"],
@@ -147,7 +142,7 @@ test_not_allow_to_member_by_invalid_group {
         }
 }
 
-test_not_allow_to_visitor {
+test_not_allow_to_visitor if {
     not allow 
         with input as produce_input_doc_by_role(
             ["tarcinapp.visitor"],
@@ -162,23 +157,20 @@ test_not_allow_to_visitor {
         }
 }
 
-
-
-
-produce_input_doc_by_role(roles, groups, is_email_verified, payload) = test_body {
+produce_input_doc_by_role(roles, groups, is_email_verified, payload) = test_body if {
     test_body = {
-		"httpMethod": "POST",
-		"requestPath": "/lists",
-		"queryParams": {},
-		"encodedJwt": test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "Favorites",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": is_email_verified,
-			"groups": groups,
-			"roles": roles,
-		}),
+        "httpMethod": "POST",
+        "requestPath": "/lists",
+        "queryParams": {},
+        "encodedJwt": test.produce_token({
+            "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
+            "name": "Favorites",
+            "admin": true,
+            "iat": 1516239022,
+            "email_verified": is_email_verified,
+            "groups": groups,
+            "roles": roles,
+        }),
         "requestPayload": payload
-	}
+    }
 }

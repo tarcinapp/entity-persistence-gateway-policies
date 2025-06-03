@@ -11,22 +11,22 @@ default allow = false
 
 # Decide allow if any of the following section is true
 #-----------------------------------------------
-allow {
+allow if {
 	role_utils.is_user_admin("find")
 	verification.is_email_verified
 }
 
-allow {
+allow if {
 	role_utils.is_user_editor("find")
 	verification.is_email_verified
 }
 
-allow {
+allow if {
 	role_utils.is_user_member("find")
 	verification.is_email_verified
 }
 
-allow {
+allow if {
 	role_utils.is_user_visitor("find")
 	verification.is_email_verified
 }

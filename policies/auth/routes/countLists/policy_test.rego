@@ -2,7 +2,7 @@ package policies.auth.routes.countLists.policy
 
 import data.policies.util.common.test as test
 
-test_allow_admin {
+test_allow_admin if {
 	allow with input as produce_input_doc_by_role("tarcinapp.admin", true)
     allow with input as produce_input_doc_by_role("tarcinapp.records.admin", true)
     allow with input as produce_input_doc_by_role("tarcinapp.lists.admin", true)
@@ -10,7 +10,7 @@ test_allow_admin {
     allow with input as produce_input_doc_by_role("tarcinapp.lists.count.admin", true)
 }
 
-test_allow_editor {
+test_allow_editor if {
 	allow with input as produce_input_doc_by_role("tarcinapp.editor", true)
     allow with input as produce_input_doc_by_role("tarcinapp.records.editor", true)
     allow with input as produce_input_doc_by_role("tarcinapp.lists.editor", true)
@@ -18,7 +18,7 @@ test_allow_editor {
     allow with input as produce_input_doc_by_role("tarcinapp.lists.count.editor", true)
 }
 
-test_allow_member {
+test_allow_member if {
 	allow with input as produce_input_doc_by_role("tarcinapp.member", true)
     allow with input as produce_input_doc_by_role("tarcinapp.records.member", true)
     allow with input as produce_input_doc_by_role("tarcinapp.lists.member", true)
@@ -26,7 +26,7 @@ test_allow_member {
     allow with input as produce_input_doc_by_role("tarcinapp.lists.count.member", true)
 }
 
-test_allow_visitor {
+test_allow_visitor if {
 	allow with input as produce_input_doc_by_role("tarcinapp.visitor", true)
     allow with input as produce_input_doc_by_role("tarcinapp.records.visitor", true)
     allow with input as produce_input_doc_by_role("tarcinapp.lists.visitor", true)
@@ -34,7 +34,7 @@ test_allow_visitor {
     allow with input as produce_input_doc_by_role("tarcinapp.lists.count.visitor", true)
 }
 
-test_not_allow_member {
+test_not_allow_member if {
 	not allow with input as produce_input_doc_by_role("tarcinapp.member", false)
     not allow with input as produce_input_doc_by_role("tarcinapp.records.member", false)
     not allow with input as produce_input_doc_by_role("tarcinapp.lists.member", false)
@@ -42,7 +42,7 @@ test_not_allow_member {
     not allow with input as produce_input_doc_by_role("tarcinapp.lists.count.member", false)
 }
 
-test_not_allow_visitor {
+test_not_allow_visitor if {
 	not allow with input as produce_input_doc_by_role("tarcinapp.visitor", false)
     not allow with input as produce_input_doc_by_role("tarcinapp.records.visitor", false)
     not allow with input as produce_input_doc_by_role("tarcinapp.lists.visitor", false)
@@ -50,7 +50,7 @@ test_not_allow_visitor {
     not allow with input as produce_input_doc_by_role("tarcinapp.lists.count.visitor", false)
 }
 
-test_not_allow_other_roles {
+test_not_allow_other_roles if {
 	not allow with input as produce_input_doc_by_role("tarcinapp.records.find.admin", true)
     not allow with input as produce_input_doc_by_role("tarcinapp.records.create.admin", true)
     not allow with input as produce_input_doc_by_role("tarcinapp.records.update.admin", true)
@@ -72,7 +72,7 @@ test_not_allow_other_roles {
 }
 
 
-produce_input_doc_by_role(role, is_email_verified) = test_body {
+produce_input_doc_by_role(role, is_email_verified) = test_body if {
     test_body = {
 		"httpMethod": "POST",
 		"requestPath": "/lists",

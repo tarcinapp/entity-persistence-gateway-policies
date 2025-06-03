@@ -2,8 +2,7 @@ package policies.auth.routes.deleteEntityById.policy
 
 import data.policies.util.common.test as test
 
-test_allow_to_admin {
-
+test_allow_to_admin if {
     allow 
         with input as produce_input_doc_by_role(["tarcinapp.admin"])
 
@@ -20,7 +19,7 @@ test_allow_to_admin {
         with input as produce_input_doc_by_role(["tarcinapp.entities.delete.admin"])
 }
 
-test_not_allow_to_any_other_roles {
+test_not_allow_to_any_other_roles if {
     not allow 
         with input as produce_input_doc_by_role(["tarcinapp.editor"])
     
@@ -31,7 +30,7 @@ test_not_allow_to_any_other_roles {
         with input as produce_input_doc_by_role(["tarcinapp.visitor"])
 }
 
-produce_input_doc_by_role(roles) = test_body {
+produce_input_doc_by_role(roles) = test_body if {
     test_body = {
         "appShortcode":"tarcinapp",
 		"httpMethod": "POST",

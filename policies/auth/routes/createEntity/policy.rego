@@ -11,51 +11,290 @@ default allow = false
 
 # Decide allow if any of the following section is true
 # ----------------------------------------------
-allow {
+allow if {
 	role_utils.is_user_admin("create")
-
-    verification.is_email_verified
-
-    # payload cannot contain any invalid field
-    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	verification.is_email_verified
 }
 
-allow {
+allow if {
 	role_utils.is_user_editor("create")
-
-    verification.is_email_verified
-
-    # payload cannot contain any invalid field
-    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	verification.is_email_verified
 }
 
-allow {
+allow if {
 	role_utils.is_user_member("create")
-
-    # payload cannot contain any invalid field
-    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
-    
-    # members must be email verified
-    verification.is_email_verified
-
-    # if user sent ownerGroups, then all elements listed in the ownerGroups array
-    # must exists in the 'groups' field in token
-    not member_has_problem_with_groups
+	verification.is_email_verified
 }
+
+allow if {
+	role_utils.is_user_visitor("create")
+	verification.is_email_verified
+}
+
 #-----------------------------------------------
 
-payload_contains_any_field(fields) {
-    field = fields[_]
-    input.requestPayload[field]
+# Decide allow if any of the following section is true
+#-----------------------------------------------
+allow if {
+	role_utils.is_user_admin("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
 }
 
-member_has_problem_with_groups {
-    input.requestPayload["ownerGroups"]
-    group = input.requestPayload["ownerGroups"][_]
-    not array.contains(token.payload.groups, group)
+allow if {
+	role_utils.is_user_editor("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
 }
 
-member_has_problem_with_groups {
-    input.requestPayload["ownerGroups"]
-    not token.payload.groups[0]
+allow if {
+	role_utils.is_user_member("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+}
+
+allow if {
+	role_utils.is_user_visitor("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+}
+
+#-----------------------------------------------
+
+# Decide allow if any of the following section is true
+#-----------------------------------------------
+allow if {
+	role_utils.is_user_admin("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+}
+
+allow if {
+	role_utils.is_user_editor("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+}
+
+allow if {
+	role_utils.is_user_member("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+}
+
+allow if {
+	role_utils.is_user_visitor("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+}
+
+#-----------------------------------------------
+
+# Decide allow if any of the following section is true
+#-----------------------------------------------
+allow if {
+	role_utils.is_user_admin("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+	not is_owner_users_contains_user
+	not is_owner_groups_contains_user_groups
+}
+
+allow if {
+	role_utils.is_user_editor("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+	not is_owner_users_contains_user
+	not is_owner_groups_contains_user_groups
+}
+
+allow if {
+	role_utils.is_user_member("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+	not is_owner_users_contains_user
+	not is_owner_groups_contains_user_groups
+}
+
+allow if {
+	role_utils.is_user_visitor("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+	not is_owner_users_contains_user
+	not is_owner_groups_contains_user_groups
+}
+
+#-----------------------------------------------
+
+# Decide allow if any of the following section is true
+#-----------------------------------------------
+allow if {
+	role_utils.is_user_admin("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+	not is_owner_users_contains_user
+	not is_owner_groups_contains_user_groups
+	not is_viewer_users_contains_user
+	not is_viewer_groups_contains_user_groups
+}
+
+allow if {
+	role_utils.is_user_editor("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+	not is_owner_users_contains_user
+	not is_owner_groups_contains_user_groups
+	not is_viewer_users_contains_user
+	not is_viewer_groups_contains_user_groups
+}
+
+allow if {
+	role_utils.is_user_member("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+	not is_owner_users_contains_user
+	not is_owner_groups_contains_user_groups
+	not is_viewer_users_contains_user
+	not is_viewer_groups_contains_user_groups
+}
+
+allow if {
+	role_utils.is_user_visitor("create")
+	verification.is_email_verified
+	not is_owner_users_empty
+	not is_owner_groups_empty
+	not is_viewer_users_empty
+	not is_viewer_groups_empty
+	not is_owner_users_contains_user
+	not is_owner_groups_contains_user_groups
+	not is_viewer_users_contains_user
+	not is_viewer_groups_contains_user_groups
+}
+
+#-----------------------------------------------
+
+# Helper functions
+#-----------------------------------------------
+is_owner_users_empty if {
+	count(input.originalRecord.ownerUsers) == 0
+}
+
+is_owner_groups_empty if {
+	count(input.originalRecord.ownerGroups) == 0
+}
+
+is_viewer_users_empty if {
+	count(input.originalRecord.viewerUsers) == 0
+}
+
+is_viewer_groups_empty if {
+	count(input.originalRecord.viewerGroups) == 0
+}
+
+is_owner_users_contains_user if {
+	some user
+	user = token.payload.sub
+	input.originalRecord.ownerUsers[_] = user
+}
+
+is_owner_groups_contains_user_groups if {
+	some group
+	group = token.payload.groups[_]
+	input.originalRecord.ownerGroups[_] = group
+}
+
+is_viewer_users_contains_user if {
+	some user
+	user = token.payload.sub
+	input.originalRecord.viewerUsers[_] = user
+}
+
+is_viewer_groups_contains_user_groups if {
+	some group
+	group = token.payload.groups[_]
+	input.originalRecord.viewerGroups[_] = group
+}
+
+payload_contains_any_field(fields) if {
+	field = fields[_]
+	input.requestPayload[field]
+}
+
+member_has_problem_with_groups if {
+	input.requestPayload["ownerGroups"]
+	group = input.requestPayload["ownerGroups"][_]
+	not token.payload.groups[_] = group
+}
+
+member_has_problem_with_groups if {
+	input.requestPayload["ownerGroups"]
+	not token.payload.groups[0]
+}
+
+allow if {
+	input.httpMethod == "POST"
+	input.requestPath == "/generic-entities"
+	input.requestPayload != null
+	input.requestPayload != {}
+	input.requestPayload.name != null
+	input.requestPayload.name != ""
+	input.requestPayload.description != null
+	input.requestPayload.description != ""
+	input.requestPayload.visibility != null
+	input.requestPayload.visibility != ""
+	input.requestPayload.ownerUsers != null
+	input.requestPayload.ownerUsers != []
+	input.requestPayload.ownerGroups != null
+	input.requestPayload.ownerGroups != []
+	input.requestPayload.validFromDateTime != null
+	input.requestPayload.validFromDateTime != ""
+	input.requestPayload.validUntilDateTime != null
+	input.requestPayload.validUntilDateTime != ""
+	input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
+	input.requestPayload.validFromDateTime != null
+	input.requestPayload.validFromDateTime != ""
+	input.requestPayload.validUntilDateTime == null
+	input.requestPayload.validFromDateTime == null
+	input.requestPayload.validUntilDateTime != null
+	input.requestPayload.validUntilDateTime != ""
+	input.requestPayload.validFromDateTime == null
+	input.requestPayload.validUntilDateTime == null
+	input.requestPayload.ownerUsers[_] = input.encodedJwt.payload.sub
+	input.requestPayload.ownerGroups[_] = input.encodedJwt.payload.groups[_]
 }

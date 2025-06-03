@@ -1,5 +1,5 @@
 package policies.util.common.array
 
-contains(arr, el) {
-  arr[_] = el
+concat(arr1, arr2) = result if {
+    result = array.concat(arr1, arr2)
 }

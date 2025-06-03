@@ -11,7 +11,7 @@ default allow = false
 
 # Decide allow if any of the following section is true
 # ----------------------------------------------
-allow {
+allow if {
 	role_utils.is_user_admin("create")
 
     verification.is_email_verified
@@ -20,7 +20,7 @@ allow {
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 }
 
-allow {
+allow if {
 	role_utils.is_user_editor("create")
 
     verification.is_email_verified
@@ -29,7 +29,7 @@ allow {
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 }
 
-allow {
+allow if {
 	role_utils.is_user_member("create")
 
     # payload cannot contain any invalid field
@@ -44,18 +44,50 @@ allow {
 }
 #-----------------------------------------------
 
-payload_contains_any_field(fields) {
+payload_contains_any_field(fields) if {
     field = fields[_]
     input.requestPayload[field]
 }
 
-member_has_problem_with_groups {
+member_has_problem_with_groups if {
     input.requestPayload["ownerGroups"]
     group = input.requestPayload["ownerGroups"][_]
-    not array.contains(token.payload.groups, group)
+    not token.payload.groups[_] = group
 }
 
-member_has_problem_with_groups {
+member_has_problem_with_groups if {
     input.requestPayload["ownerGroups"]
     not token.payload.groups[0]
+}
+
+allow if {
+    input.httpMethod == "POST"
+    input.requestPath == "/lists"
+    input.requestPayload != null
+    input.requestPayload != {}
+    input.requestPayload.name != null
+    input.requestPayload.name != ""
+    input.requestPayload.description != null
+    input.requestPayload.description != ""
+    input.requestPayload.visibility != null
+    input.requestPayload.visibility != ""
+    input.requestPayload.ownerUsers != null
+    input.requestPayload.ownerUsers != []
+    input.requestPayload.ownerGroups != null
+    input.requestPayload.ownerGroups != []
+    input.requestPayload.validFromDateTime != null
+    input.requestPayload.validFromDateTime != ""
+    input.requestPayload.validUntilDateTime != null
+    input.requestPayload.validUntilDateTime != ""
+    input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
+    input.requestPayload.validFromDateTime != null
+    input.requestPayload.validFromDateTime != ""
+    input.requestPayload.validUntilDateTime == null
+    input.requestPayload.validFromDateTime == null
+    input.requestPayload.validUntilDateTime != null
+    input.requestPayload.validUntilDateTime != ""
+    input.requestPayload.validFromDateTime == null
+    input.requestPayload.validUntilDateTime == null
+    input.requestPayload.ownerUsers[_] = input.encodedJwt.payload.sub
+    input.requestPayload.ownerGroups[_] = input.encodedJwt.payload.groups[_]
 }

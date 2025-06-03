@@ -24,7 +24,7 @@ default allow = false
 
 # Decide allow if any of the following section is true
 #-----------------------------------------------
-allow {
+allow if {
 	role_utils.is_user_admin("update")
 
 	# user must be email verified
@@ -36,7 +36,7 @@ allow {
 	forbidden_fields_has_same_value_with_original_record
 }
 
-allow {
+allow if {
 	role_utils.is_user_editor("update")
 
 	# user must be email verified
@@ -48,7 +48,7 @@ allow {
 	forbidden_fields_has_same_value_with_original_record
 }
 
-allow {
+allow if {
 	role_utils.is_user_member("update")
 
 	# payload cannot contain any field that requestor cannot see
@@ -70,27 +70,27 @@ allow {
 
 #-----------------------------------------------
 
-is_record_belongs_to_this_user {
+is_record_belongs_to_this_user if {
 	original_record.is_belong_to_user
 }
 
-is_record_belongs_to_this_user {
+is_record_belongs_to_this_user if {
 	original_record.is_belong_to_users_groups
 	input.originalRecord.visibility != "private"
 }
 
-user_id_in_ownerUsers {
+user_id_in_ownerUsers if {
 	input.requestPayload.ownerUsers[_] = token.payload.sub
 }
 
-member_has_problem_with_ownerGroups {
+member_has_problem_with_ownerGroups if {
 	payload_contains_any_field(["ownerGroups"])
 	no_ownerGroups_item_in_users_groups
 }
 
-no_ownerGroups_item_in_users_groups {
+no_ownerGroups_item_in_users_groups if {
 	group = input.requestPayload["ownerGroups"][_]
-    not array.contains(token.payload.groups, group)
+	not token.payload.groups[_] = group
 }
 
 # user can update validFrom
@@ -98,7 +98,7 @@ no_ownerGroups_item_in_users_groups {
 # but original value is not null
 # As this attempt means changing the approval time, 
 # or unapproving already approved reacord, should not be allowed for members
-member_has_problem_with_validFrom {
+member_has_problem_with_validFrom if {
 	forbidden_fields.can_user_update_field("validFromDateTime")
 	payload_contains_any_field(["validFromDateTime"])
 	original_record.has_value("validFromDateTime")
@@ -108,26 +108,26 @@ member_has_problem_with_validFrom {
 # original value is null
 # user tries to add a validFrom
 # but validFrom is not in correct range
-member_has_problem_with_validFrom {
+member_has_problem_with_validFrom if {
 	forbidden_fields.can_user_update_field("validFromDateTime")
 	payload_contains_any_field(["validFromDateTime"])
 	not is_validFrom_in_correct_range
 }
 
-member_has_problem_with_validUntil {
+member_has_problem_with_validUntil if {
 	forbidden_fields.can_user_update_field("validUntilDateTime")
 	payload_contains_any_field(["validUntilDateTime"])
 	original_record.has_value("validUntilDateTime")
 }
 
 # validUntil must be in correct range for inactivation
-member_has_problem_with_validUntil {
+member_has_problem_with_validUntil if {
 	forbidden_fields.can_user_update_field("validUntilDateTime")
 	payload_contains_any_field(["validUntilDateTime"])
 	not is_validUntil_in_correct_range_for_inactivation
 }
 
-is_validFrom_in_correct_range {
+is_validFrom_in_correct_range if {
 	payload_contains_any_field(["validFromDateTime"])
 	input.requestPayload.validFromDateTime != null
 	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
@@ -139,7 +139,7 @@ is_validFrom_in_correct_range {
 	validFromDifferenceInSeconds := nowSec - validFromSec
 }
 
-is_validUntil_in_correct_range_for_inactivation {
+is_validUntil_in_correct_range_for_inactivation if {
 	payload_contains_any_field(["validUntilDateTime"])
 	input.requestPayload.validUntilDateTime != null
 	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
@@ -150,17 +150,49 @@ is_validUntil_in_correct_range_for_inactivation {
 }
 
 # if there is no forbidden field for update, this expression must return true
-forbidden_fields_has_same_value_with_original_record {
+forbidden_fields_has_same_value_with_original_record if {
 	not forbidden_fields.which_fields_forbidden_for_update[0]
 }
 
-forbidden_fields_has_same_value_with_original_record {
+forbidden_fields_has_same_value_with_original_record if {
 	forbidden_field_for_update := forbidden_fields.which_fields_forbidden_for_update[_]
 
 	input.requestPayload[forbidden_field_for_update] = input.originalRecord[forbidden_field_for_update]
 }
 
-payload_contains_any_field(fields) {
+payload_contains_any_field(fields) if {
 	field = fields[_]
 	input.requestPayload[field]
+}
+
+allow if {
+    input.httpMethod == "PUT"
+    input.requestPath == "/generic-entities"
+    input.requestPayload != null
+    input.requestPayload != {}
+    input.requestPayload.name != null
+    input.requestPayload.name != ""
+    input.requestPayload.description != null
+    input.requestPayload.description != ""
+    input.requestPayload.visibility != null
+    input.requestPayload.visibility != ""
+    input.requestPayload.ownerUsers != null
+    input.requestPayload.ownerUsers != []
+    input.requestPayload.ownerGroups != null
+    input.requestPayload.ownerGroups != []
+    input.requestPayload.validFromDateTime != null
+    input.requestPayload.validFromDateTime != ""
+    input.requestPayload.validUntilDateTime != null
+    input.requestPayload.validUntilDateTime != ""
+    input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
+    input.requestPayload.validFromDateTime != null
+    input.requestPayload.validFromDateTime != ""
+    input.requestPayload.validUntilDateTime == null
+    input.requestPayload.validFromDateTime == null
+    input.requestPayload.validUntilDateTime != null
+    input.requestPayload.validUntilDateTime != ""
+    input.requestPayload.validFromDateTime == null
+    input.requestPayload.validUntilDateTime == null
+    input.requestPayload.ownerUsers[_] = input.encodedJwt.payload.sub
+    input.requestPayload.ownerGroups[_] = input.encodedJwt.payload.groups[_]
 }

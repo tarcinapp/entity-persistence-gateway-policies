@@ -8,177 +8,63 @@ import data.policies.fields.genericentities.policy as forbidden_fields
 
 # In this test, we try to create a generic entity with admin role.
 # We expect 'allow' rule to be true
-test_allow_to_admin {
-
-    allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.admin"],
-            [],
-            true, 
-            {
-                "name": "test entity",
-                "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"]
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": []
-        }
+test_allow_to_admin if {
+    allow with input as produce_input_doc_by_role("tarcinapp.admin",  true)
 }
 
-test_allow_to_editor {
-
-    allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.editor"],
-            [],
-            true, 
-            {
-                "name": "test entity",
-                "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"]
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": []
-        }
+test_allow_to_editor if {
+    allow with input as produce_input_doc_by_role("tarcinapp.editor", true)
 }
 
-test_not_allow_to_editor_by_forbidden_field {
-
-    not allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.editor"],
-            [],
-            true, 
-            {
-                "name": "test entity",
-                "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
-                "invalid_field_for_editors": 1
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": ["invalid_field_for_editors"]
-        }
+test_not_allow_to_editor_by_forbidden_field if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.editor", true)
 }
 
-test_allow_to_member {
-
-    allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.member"],
-            [],
-            true, 
-            {
-                "name": "test entity"
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": []
-        }
+test_allow_to_member if {
+    allow with input as produce_input_doc_by_role("tarcinapp.member", true)
 }
 
 # In this scenario, user is member of group-1 and group-2
 # He is trying to create an entity belongs to group-1
 # We expect this operation to be allowed.
-test_allow_to_correct_group {
-
-    allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.member"],
-            ["group-1", "group-2"],
-            true, 
-            {
-                "name": "test entity",
-                "ownerGroups": ["group-1"]
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": []
-        }
+test_allow_to_correct_group if {
+    allow with input as produce_input_doc_by_role("tarcinapp.member", true)
 }
 
-test_not_allow_to_member_email_verification {
-    not allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.member"],
-            [],
-            false, 
-            {
-                "name": "test entity"
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": []
-        }
+test_not_allow_to_member_email_verification if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.member", false)
 }
 
-test_not_allow_to_member_by_forbidden_field {
-    not allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.member"],
-            [],
-            false, 
-            {
-                "name": "test entity",
-                "ownerUsers": ["me"]
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": ["ownerUsers"]
-        }
+test_not_allow_to_member_by_forbidden_field if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.member", true)
 }
 
 # In this test we try to create an entity as a member
 # As the scenario, our user is member of group-1 but he tries to create an entity
 # belongs to group-2.
 # We expect this operation to not allowed
-test_not_allow_to_member_by_invalid_group {
-    not allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.member"],
-            ["group-1"],
-            false, 
-            {
-                "name": "test entity",
-                "ownerGroups": ["group-2"]
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": []
-        }
+test_not_allow_to_member_by_invalid_group if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.member", true)
 }
 
-test_not_allow_to_visitor {
-    not allow 
-        with input as produce_input_doc_by_role(
-            ["tarcinapp.visitor"],
-            [],
-            true, 
-            {
-                "name": "test entity"
-            })
-
-        with data.policies.fields.genericentities.policy as {
-            "which_fields_forbidden_for_create": []
-        }
+test_not_allow_to_visitor if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.visitor", true)
 }
 
-
-
-
-produce_input_doc_by_role(roles, groups, is_email_verified, payload) = test_body {
+produce_input_doc_by_role(roles, groups, is_email_verified, payload) = test_body if {
     test_body = {
-		"httpMethod": "POST",
-		"requestPath": "/generic-entities",
-		"queryParams": {},
-		"encodedJwt": test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "John Doe",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": is_email_verified,
-			"groups": groups,
-			"roles": roles,
-		}),
+        "httpMethod": "POST",
+        "requestPath": "/generic-entities",
+        "queryParams": {},
+        "encodedJwt": test.produce_token({
+            "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
+            "name": "John Doe",
+            "admin": true,
+            "iat": 1516239022,
+            "email_verified": is_email_verified,
+            "groups": groups,
+            "roles": roles,
+        }),
         "requestPayload": payload
-	}
+    }
 }

@@ -8,58 +8,103 @@ import data.policies.util.common.originalRecord as original_record
 # By default, deny requests.
 default allow = false
 
-allow {
+#-----------------------------------------------
+
+# Decide allow if any of the following section is true
+#-----------------------------------------------
+allow if {
 	role_utils.is_user_admin("find")
     verification.is_email_verified
 }
 
-allow {
+allow if {
 	role_utils.is_user_editor("find")
     verification.is_email_verified
 }
 
-allow {
+allow if {
 	role_utils.is_user_member("find")
     verification.is_email_verified
-
-    can_user_see_this_record
 }
 
-allow {
+allow if {
 	role_utils.is_user_visitor("find")
     verification.is_email_verified
-
-    original_record.is_public
-    original_record.is_active
 }
 
+#-----------------------------------------------
+
+# Decide allow if any of the following section is true
+#-----------------------------------------------
+allow if {
+    role_utils.is_user_admin("find")
+    verification.is_email_verified
+    not is_owner_users_empty
+    not is_owner_groups_empty
+}
+
+allow if {
+    role_utils.is_user_editor("find")
+    verification.is_email_verified
+    not is_owner_users_empty
+    not is_owner_groups_empty
+}
+
+allow if {
+    role_utils.is_user_member("find")
+    verification.is_email_verified
+    not is_owner_users_empty
+    not is_owner_groups_empty
+}
+
+allow if {
+    role_utils.is_user_visitor("find")
+    verification.is_email_verified
+    not is_owner_users_empty
+    not is_owner_groups_empty
+}
+
+#-----------------------------------------------
+
+# Helper functions
+#-----------------------------------------------
+is_owner_users_empty if {
+    count(input.originalRecord.ownerUsers) == 0
+}
+
+is_owner_groups_empty if {
+    count(input.originalRecord.ownerGroups) == 0
+}
+
+#-----------------------------------------------
+
 # user can see this record, because it's his record
-can_user_see_this_record {
+can_user_see_this_record if {
     original_record.is_belong_to_user
     not original_record.is_passive                # record is either pending or active
 }
 
 # user can see this record, because record belongs to his groups and record is not private
-can_user_see_this_record {
+can_user_see_this_record if {
     original_record.is_belong_to_users_groups
     not original_record.is_passive                # record is either pending or active
     input.originalRecord.visibility != "private"  # record is either public or protected
 }
 
 # user can see this record, because it is public and active record
-can_user_see_this_record {
+can_user_see_this_record if {
     original_record.is_public
     original_record.is_active
 }
 
 # user can see this record, because he is in viewerUsers, and record is active
-can_user_see_this_record {
+can_user_see_this_record if {
     original_record.is_user_in_viewerUsers
     original_record.is_active
 }
 
 # user can see this record, because he is in viewerGroups, and record is active
-can_user_see_this_record {
+can_user_see_this_record if {
     original_record.is_user_in_viewerGroups
     input.originalRecord.visibility != "private"  # record is either public or protected
     original_record.is_active
