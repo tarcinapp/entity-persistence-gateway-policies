@@ -45,14 +45,21 @@ allow if {
 #-----------------------------------------------
 
 payload_contains_any_field(fields) if {
+    some field
     field = fields[_]
     input.requestPayload[field]
 }
 
 member_has_problem_with_groups if {
     input.requestPayload["ownerGroups"]
+    some group
     group = input.requestPayload["ownerGroups"][_]
-    not token.payload.groups[_] = group
+    not group_in_token_groups(group)
+}
+
+group_in_token_groups(group) if {
+    some i
+    token.payload.groups[i] == group
 }
 
 member_has_problem_with_groups if {
@@ -88,6 +95,8 @@ allow if {
     input.requestPayload.validUntilDateTime != ""
     input.requestPayload.validFromDateTime == null
     input.requestPayload.validUntilDateTime == null
-    input.requestPayload.ownerUsers[_] = input.encodedJwt.payload.sub
-    input.requestPayload.ownerGroups[_] = input.encodedJwt.payload.groups[_]
+    some i
+    input.requestPayload.ownerUsers[i] == input.encodedJwt.payload.sub
+    some j, k
+    input.requestPayload.ownerGroups[j] == input.encodedJwt.payload.groups[k]
 }

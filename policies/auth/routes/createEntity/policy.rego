@@ -230,36 +230,49 @@ is_viewer_groups_empty if {
 is_owner_users_contains_user if {
 	some user
 	user = token.payload.sub
-	input.originalRecord.ownerUsers[_] = user
+	some i
+	input.originalRecord.ownerUsers[i] == user
 }
 
 is_owner_groups_contains_user_groups if {
 	some group
-	group = token.payload.groups[_]
-	input.originalRecord.ownerGroups[_] = group
+	some i
+	group = token.payload.groups[i]
+	some j
+	input.originalRecord.ownerGroups[j] == group
 }
 
 is_viewer_users_contains_user if {
 	some user
 	user = token.payload.sub
-	input.originalRecord.viewerUsers[_] = user
+	some i
+	input.originalRecord.viewerUsers[i] == user
 }
 
 is_viewer_groups_contains_user_groups if {
 	some group
-	group = token.payload.groups[_]
-	input.originalRecord.viewerGroups[_] = group
+	some i
+	group = token.payload.groups[i]
+	some j
+	input.originalRecord.viewerGroups[j] == group
 }
 
 payload_contains_any_field(fields) if {
+	some field
 	field = fields[_]
 	input.requestPayload[field]
 }
 
 member_has_problem_with_groups if {
 	input.requestPayload["ownerGroups"]
+	some group
 	group = input.requestPayload["ownerGroups"][_]
-	not token.payload.groups[_] = group
+	not group_in_token_groups(group)
+}
+
+group_in_token_groups(group) if {
+	some i
+	token.payload.groups[i] == group
 }
 
 member_has_problem_with_groups if {
@@ -295,6 +308,8 @@ allow if {
 	input.requestPayload.validUntilDateTime != ""
 	input.requestPayload.validFromDateTime == null
 	input.requestPayload.validUntilDateTime == null
-	input.requestPayload.ownerUsers[_] = input.encodedJwt.payload.sub
-	input.requestPayload.ownerGroups[_] = input.encodedJwt.payload.groups[_]
+	some i
+	input.requestPayload.ownerUsers[i] == input.encodedJwt.payload.sub
+	some j, k
+	input.requestPayload.ownerGroups[j] == input.encodedJwt.payload.groups[k]
 }

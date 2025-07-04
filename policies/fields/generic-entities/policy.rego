@@ -14,18 +14,22 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
     which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
 
-which_fields_forbidden_for_create if {
+which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
     not is_user_admin
     not is_user_editor
     not is_user_member
     not is_user_visitor
+
+    which_fields_forbidden_for_create := []
 }
 
-which_fields_forbidden_for_update if {
+which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
     not is_user_admin
     not is_user_editor
     not is_user_member
     not is_user_visitor
+
+    which_fields_forbidden_for_update := []
 }
 
 #editor
@@ -37,18 +41,22 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
     which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
 
-which_fields_forbidden_for_create if {
+which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
     is_user_admin
     not is_user_editor
     not is_user_member
     not is_user_visitor
+
+    which_fields_forbidden_for_create := []
 }
 
-which_fields_forbidden_for_update if {
+which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
     is_user_admin
     is_user_editor
     not is_user_member
     not is_user_visitor
+
+    which_fields_forbidden_for_update := []
 }
 
 #member
@@ -60,18 +68,22 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
     which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
 }
 
-which_fields_forbidden_for_create if {
+which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
     is_user_admin
     is_user_editor
     is_user_member
     not is_user_visitor
+
+    which_fields_forbidden_for_create := []
 }
 
-which_fields_forbidden_for_update if {
+which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
     is_user_admin
     is_user_editor
     is_user_member
     is_user_visitor
+
+    which_fields_forbidden_for_update := []
 }
 
 #visitor

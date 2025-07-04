@@ -9,7 +9,7 @@ import data.policies.fields.genericentities.policy as forbidden_fields
 # In this test, we try to create a generic entity with admin role.
 # We expect 'allow' rule to be true
 test_allow_to_admin if {
-    allow with input as produce_input_doc_by_role("tarcinapp.admin",  true)
+    allow with input as produce_input_doc_by_role("tarcinapp.admin", true)
 }
 
 test_allow_to_editor if {
@@ -51,7 +51,7 @@ test_not_allow_to_visitor if {
     not allow with input as produce_input_doc_by_role("tarcinapp.visitor", true)
 }
 
-produce_input_doc_by_role(roles, groups, is_email_verified, payload) = test_body if {
+produce_input_doc_by_role(roles, is_email_verified) = test_body if {
     test_body = {
         "httpMethod": "POST",
         "requestPath": "/generic-entities",
@@ -62,9 +62,9 @@ produce_input_doc_by_role(roles, groups, is_email_verified, payload) = test_body
             "admin": true,
             "iat": 1516239022,
             "email_verified": is_email_verified,
-            "groups": groups,
+            "groups": ["group-1"],
             "roles": roles,
         }),
-        "requestPayload": payload
+        "requestPayload": {}
     }
 }

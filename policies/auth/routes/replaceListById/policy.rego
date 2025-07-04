@@ -80,7 +80,8 @@ is_record_belongs_to_this_user if {
 }
 
 user_id_in_ownerUsers if {
-	input.requestPayload.ownerUsers[_] = token.payload.sub
+	some i
+	input.requestPayload.ownerUsers[i] == token.payload.sub
 }
 
 member_has_problem_with_ownerGroups if {
@@ -89,8 +90,14 @@ member_has_problem_with_ownerGroups if {
 }
 
 no_ownerGroups_item_in_users_groups if {
+	some group
 	group = input.requestPayload["ownerGroups"][_]
-	not token.payload.groups[_] = group
+	not group_in_token_groups(group)
+}
+
+group_in_token_groups(group) if {
+	some i
+	token.payload.groups[i] == group
 }
 
 # user can update validFrom
@@ -155,12 +162,14 @@ forbidden_fields_has_same_value_with_original_record if {
 }
 
 forbidden_fields_has_same_value_with_original_record if {
-	forbidden_field_for_update := forbidden_fields.which_fields_forbidden_for_update[_]
+	some forbidden_field_for_update
+	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
 
-	input.requestPayload[forbidden_field_for_update] = input.originalRecord[forbidden_field_for_update]
+	input.requestPayload[forbidden_field_for_update] == input.originalRecord[forbidden_field_for_update]
 }
 
 payload_contains_any_field(fields) if {
+	some field
 	field = fields[_]
 	input.requestPayload[field]
 }
@@ -193,6 +202,8 @@ allow if {
     input.requestPayload.validUntilDateTime != ""
     input.requestPayload.validFromDateTime == null
     input.requestPayload.validUntilDateTime == null
-    input.requestPayload.ownerUsers[_] = input.encodedJwt.payload.sub
-    input.requestPayload.ownerGroups[_] = input.encodedJwt.payload.groups[_]
+    some i
+    input.requestPayload.ownerUsers[i] == input.encodedJwt.payload.sub
+    some j, k
+    input.requestPayload.ownerGroups[j] == input.encodedJwt.payload.groups[k]
 }
