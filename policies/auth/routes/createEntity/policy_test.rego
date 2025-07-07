@@ -20,7 +20,7 @@ test_allow_to_admin if {
 test_allow_to_editor if {
     allow with input as produce_input_doc_by_role("tarcinapp.entities.create.editor", true, {
         "_name": "Test Entity",
-        "_description": "Test Description",
+        "description": "Test Description",
         "_visibility": "public"
     })
 }
