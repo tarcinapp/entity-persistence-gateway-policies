@@ -14,248 +14,29 @@ default allow = false
 allow if {
 	role_utils.is_user_admin("create")
 	verification.is_email_verified
+	# payload cannot contain any invalid field
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 }
 
 allow if {
 	role_utils.is_user_editor("create")
 	verification.is_email_verified
+	# payload cannot contain any invalid field
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 }
 
 allow if {
 	role_utils.is_user_member("create")
+	# payload cannot contain any invalid field
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	# members must be email verified
 	verification.is_email_verified
-}
-
-allow if {
-	role_utils.is_user_visitor("create")
-	verification.is_email_verified
+	# if user sent _ownerGroups, then all elements listed in the _ownerGroups array
+	# must exists in the 'groups' field in token
+	not member_has_problem_with_groups
 }
 
 #-----------------------------------------------
-
-# Decide allow if any of the following section is true
-#-----------------------------------------------
-allow if {
-	role_utils.is_user_admin("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-}
-
-allow if {
-	role_utils.is_user_editor("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-}
-
-allow if {
-	role_utils.is_user_member("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-}
-
-allow if {
-	role_utils.is_user_visitor("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-}
-
-#-----------------------------------------------
-
-# Decide allow if any of the following section is true
-#-----------------------------------------------
-allow if {
-	role_utils.is_user_admin("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-}
-
-allow if {
-	role_utils.is_user_editor("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-}
-
-allow if {
-	role_utils.is_user_member("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-}
-
-allow if {
-	role_utils.is_user_visitor("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-}
-
-#-----------------------------------------------
-
-# Decide allow if any of the following section is true
-#-----------------------------------------------
-allow if {
-	role_utils.is_user_admin("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-	not is_owner_users_contains_user
-	not is_owner_groups_contains_user_groups
-}
-
-allow if {
-	role_utils.is_user_editor("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-	not is_owner_users_contains_user
-	not is_owner_groups_contains_user_groups
-}
-
-allow if {
-	role_utils.is_user_member("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-	not is_owner_users_contains_user
-	not is_owner_groups_contains_user_groups
-}
-
-allow if {
-	role_utils.is_user_visitor("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-	not is_owner_users_contains_user
-	not is_owner_groups_contains_user_groups
-}
-
-#-----------------------------------------------
-
-# Decide allow if any of the following section is true
-#-----------------------------------------------
-allow if {
-	role_utils.is_user_admin("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-	not is_owner_users_contains_user
-	not is_owner_groups_contains_user_groups
-	not is_viewer_users_contains_user
-	not is_viewer_groups_contains_user_groups
-}
-
-allow if {
-	role_utils.is_user_editor("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-	not is_owner_users_contains_user
-	not is_owner_groups_contains_user_groups
-	not is_viewer_users_contains_user
-	not is_viewer_groups_contains_user_groups
-}
-
-allow if {
-	role_utils.is_user_member("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-	not is_owner_users_contains_user
-	not is_owner_groups_contains_user_groups
-	not is_viewer_users_contains_user
-	not is_viewer_groups_contains_user_groups
-}
-
-allow if {
-	role_utils.is_user_visitor("create")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-	not is_viewer_users_empty
-	not is_viewer_groups_empty
-	not is_owner_users_contains_user
-	not is_owner_groups_contains_user_groups
-	not is_viewer_users_contains_user
-	not is_viewer_groups_contains_user_groups
-}
-
-#-----------------------------------------------
-
-# Helper functions
-#-----------------------------------------------
-is_owner_users_empty if {
-	count(input.originalRecord.ownerUsers) == 0
-}
-
-is_owner_groups_empty if {
-	count(input.originalRecord.ownerGroups) == 0
-}
-
-is_viewer_users_empty if {
-	count(input.originalRecord.viewerUsers) == 0
-}
-
-is_viewer_groups_empty if {
-	count(input.originalRecord.viewerGroups) == 0
-}
-
-is_owner_users_contains_user if {
-	some user
-	user = token.payload.sub
-	some i
-	input.originalRecord.ownerUsers[i] == user
-}
-
-is_owner_groups_contains_user_groups if {
-	some group
-	some i
-	group = token.payload.groups[i]
-	some j
-	input.originalRecord.ownerGroups[j] == group
-}
-
-is_viewer_users_contains_user if {
-	some user
-	user = token.payload.sub
-	some i
-	input.originalRecord.viewerUsers[i] == user
-}
-
-is_viewer_groups_contains_user_groups if {
-	some group
-	some i
-	group = token.payload.groups[i]
-	some j
-	input.originalRecord.viewerGroups[j] == group
-}
 
 payload_contains_any_field(fields) if {
 	some field
@@ -264,9 +45,9 @@ payload_contains_any_field(fields) if {
 }
 
 member_has_problem_with_groups if {
-	input.requestPayload["ownerGroups"]
+	input.requestPayload["_ownerGroups"]
 	some group
-	group = input.requestPayload["ownerGroups"][_]
+	group = input.requestPayload["_ownerGroups"][_]
 	not group_in_token_groups(group)
 }
 
@@ -276,40 +57,6 @@ group_in_token_groups(group) if {
 }
 
 member_has_problem_with_groups if {
-	input.requestPayload["ownerGroups"]
+	input.requestPayload["_ownerGroups"]
 	not token.payload.groups[0]
-}
-
-allow if {
-	input.httpMethod == "POST"
-	input.requestPath == "/generic-entities"
-	input.requestPayload != null
-	input.requestPayload != {}
-	input.requestPayload.name != null
-	input.requestPayload.name != ""
-	input.requestPayload.description != null
-	input.requestPayload.description != ""
-	input.requestPayload.visibility != null
-	input.requestPayload.visibility != ""
-	input.requestPayload.ownerUsers != null
-	input.requestPayload.ownerUsers != []
-	input.requestPayload.ownerGroups != null
-	input.requestPayload.ownerGroups != []
-	input.requestPayload.validFromDateTime != null
-	input.requestPayload.validFromDateTime != ""
-	input.requestPayload.validUntilDateTime != null
-	input.requestPayload.validUntilDateTime != ""
-	input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
-	input.requestPayload.validFromDateTime != null
-	input.requestPayload.validFromDateTime != ""
-	input.requestPayload.validUntilDateTime == null
-	input.requestPayload.validFromDateTime == null
-	input.requestPayload.validUntilDateTime != null
-	input.requestPayload.validUntilDateTime != ""
-	input.requestPayload.validFromDateTime == null
-	input.requestPayload.validUntilDateTime == null
-	some i
-	input.requestPayload.ownerUsers[i] == input.encodedJwt.payload.sub
-	some j, k
-	input.requestPayload.ownerGroups[j] == input.encodedJwt.payload.groups[k]
 }

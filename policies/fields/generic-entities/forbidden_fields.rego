@@ -14,22 +14,22 @@ default forbiddenFields = [
         "role": "editor",
         "operations": {
             "find":   [],
-            "create": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "idempotencyKey"],
-            "update": ["creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "idempotencyKey"],
+            "create": ["_creationDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_idempotencyKey"],
+            "update": ["_creationDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_idempotencyKey"],
         }
     },
     {
         "role": "member",
         "operations": {
-            "find":   ["version", "idempotencyKey", "application"],
-            "create": ["creationDateTime", "slug", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime", "ownerUsers"],
-            "update": ["kind", "slug", "creationDateTime", "lastUpdatedDateTime", "lastUpdatedBy", "createdBy", "validFromDateTime", "validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
+            "find":   ["_version", "_idempotencyKey", "_application"],
+            "create": ["_creationDateTime", "_slug", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime", "_ownerUsers"],
+            "update": ["_kind", "_slug", "_creationDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
         }
     },
     {
         "role": "visitor",
         "operations": {
-            "find": ["validFromDateTime", "validUntilDateTime", "visibility", "version", "lastUpdatedBy", "lastUpdatedDateTime", "idempotencyKey", "application"],
+            "find": ["_validFromDateTime", "_validUntilDateTime", "_visibility", "_version", "_lastUpdatedBy", "_lastUpdatedDateTime", "_idempotencyKey", "_application"],
         }
     }
 ]
