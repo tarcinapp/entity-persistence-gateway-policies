@@ -3,7 +3,6 @@ package policies.fields.genericentities.policy
 import data.policies.util.common.token as token
 import data.policies.util.genericentities.roles as role_utils
 import data.policies.fields.genericentities.policy.forbiddenFields as forbiddenFields
-import data.policies.util.common.array as array
 
 # admin
 which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
@@ -15,21 +14,19 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
-    not is_user_admin
-    not is_user_editor
-    not is_user_member
-    not is_user_visitor
+	role_utils.is_user_admin("create")
 
-    which_fields_forbidden_for_create := []
+    fields := get_effective_fields_for("admin", "create")
+
+    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
-    not is_user_admin
-    not is_user_editor
-    not is_user_member
-    not is_user_visitor
+	role_utils.is_user_admin("update")
 
-    which_fields_forbidden_for_update := []
+    fields := get_effective_fields_for("admin", "update")
+
+    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
 }
 
 #editor
@@ -42,21 +39,19 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
-    is_user_admin
-    not is_user_editor
-    not is_user_member
-    not is_user_visitor
+	role_utils.is_user_editor("create")
 
-    which_fields_forbidden_for_create := []
+    fields := get_effective_fields_for("editor", "create")
+
+    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
-    is_user_admin
-    is_user_editor
-    not is_user_member
-    not is_user_visitor
+	role_utils.is_user_editor("update")
 
-    which_fields_forbidden_for_update := []
+    fields := get_effective_fields_for("editor", "update")
+
+    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
 }
 
 #member
@@ -69,21 +64,19 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
-    is_user_admin
-    is_user_editor
-    is_user_member
-    not is_user_visitor
+	role_utils.is_user_member("create")
 
-    which_fields_forbidden_for_create := []
+    fields := get_effective_fields_for("member", "create")
+
+    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
-    is_user_admin
-    is_user_editor
-    is_user_member
-    is_user_visitor
+	role_utils.is_user_member("update")
 
-    which_fields_forbidden_for_update := []
+    fields := get_effective_fields_for("member", "update")
+
+    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
 }
 
 #visitor
@@ -145,102 +138,4 @@ can_user_update_field(fieldName) if {
 	role := token.payload.roles[_]
 	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(update|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
-}
-
-is_user_admin if {
-    role_utils.is_user_admin("create")
-}
-
-is_user_editor if {
-    role_utils.is_user_editor("create")
-}
-
-is_user_member if {
-    role_utils.is_user_member("create")
-}
-
-is_user_visitor if {
-    role_utils.is_user_visitor("create")
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.name != null
-    input.requestPayload.name != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.description != null
-    input.requestPayload.description != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.visibility != null
-    input.requestPayload.visibility != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.ownerUsers != null
-    input.requestPayload.ownerUsers != []
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.ownerGroups != null
-    input.requestPayload.ownerGroups != []
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-    input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime == null
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/generic-entities"
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime == null
 }
