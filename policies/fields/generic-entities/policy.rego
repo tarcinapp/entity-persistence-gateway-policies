@@ -10,7 +10,11 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
     fields := get_effective_fields_for("admin", "find")
 
-    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
@@ -18,7 +22,11 @@ which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
 
     fields := get_effective_fields_for("admin", "create")
 
-    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_create := [field | 
+        some i
+        field := fields[i]
+        not can_user_create_field(field)
+    ]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
@@ -26,7 +34,11 @@ which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
 
     fields := get_effective_fields_for("admin", "update")
 
-    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_update := [field | 
+        some i
+        field := fields[i]
+        not can_user_update_field(field)
+    ]
 }
 
 #editor
@@ -35,7 +47,11 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
     fields := get_effective_fields_for("editor", "find")
 
-    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
@@ -43,7 +59,11 @@ which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
 
     fields := get_effective_fields_for("editor", "create")
 
-    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_create := [field | 
+        some i
+        field := fields[i]
+        not can_user_create_field(field)
+    ]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
@@ -51,7 +71,11 @@ which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
 
     fields := get_effective_fields_for("editor", "update")
 
-    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_update := [field | 
+        some i
+        field := fields[i]
+        not can_user_update_field(field)
+    ]
 }
 
 #member
@@ -60,7 +84,11 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
     fields := get_effective_fields_for("member", "find")
 
-    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
@@ -68,7 +96,11 @@ which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
 
     fields := get_effective_fields_for("member", "create")
 
-    which_fields_forbidden_for_create := [field | not can_user_create_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_create := [field | 
+        some i
+        field := fields[i]
+        not can_user_create_field(field)
+    ]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
@@ -76,7 +108,11 @@ which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
 
     fields := get_effective_fields_for("member", "update")
 
-    which_fields_forbidden_for_update := [field | not can_user_update_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_update := [field | 
+        some i
+        field := fields[i]
+        not can_user_update_field(field)
+    ]
 }
 
 #visitor
@@ -85,13 +121,22 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
     fields := get_effective_fields_for("visitor", "find")
 
-    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
 }
 #-----------------------------------------------
 
 # this method only selects the field array for given role and operation
 get_fields_for(role, operation) = result_fields if {   
-    result_fields := [result_field | forbiddenFields[i].role==role; result_field := forbiddenFields[i].operations[operation]]
+    result_fields := [result_field | 
+        some i
+        forbiddenFields[i].role == role
+        forbiddenFields[i].operations[operation]
+        result_field := forbiddenFields[i].operations[operation]
+    ]
 }
 
 # We need this operation in order to get merged list of fields for different operations.
@@ -123,18 +168,24 @@ get_effective_fields_for(role, operation) = result_fields if {
 }
 
 can_user_find_field(fieldName) if {
+	input.appShortcode
+	token.payload.roles
 	role = token.payload.roles[_]
 	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(find|update|create|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
 can_user_create_field(fieldName) if {
+	input.appShortcode
+	token.payload.roles
 	role := token.payload.roles[_]
 	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(create|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
 can_user_update_field(fieldName) if {
+	input.appShortcode
+	token.payload.roles
 	role := token.payload.roles[_]
 	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(update|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
