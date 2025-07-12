@@ -10,7 +10,7 @@ default allow = false
 
 #-----------------------------------------------
 
-# Decide allow if any of the following section is true
+# Admin and editor users are always allowed to retrieve the list
 #-----------------------------------------------
 allow if {
 	role_utils.is_user_admin("find")
@@ -22,58 +22,25 @@ allow if {
     verification.is_email_verified
 }
 
-allow if {
-	role_utils.is_user_member("find")
-    verification.is_email_verified
-}
-
-allow if {
-	role_utils.is_user_visitor("find")
-    verification.is_email_verified
-}
-
 #-----------------------------------------------
 
-# Decide allow if any of the following section is true
+# Members can see records if specific conditions are met
 #-----------------------------------------------
-allow if {
-    role_utils.is_user_admin("find")
-    verification.is_email_verified
-    not is_owner_users_empty
-    not is_owner_groups_empty
-}
-
-allow if {
-    role_utils.is_user_editor("find")
-    verification.is_email_verified
-    not is_owner_users_empty
-    not is_owner_groups_empty
-}
-
 allow if {
     role_utils.is_user_member("find")
     verification.is_email_verified
-    not is_owner_users_empty
-    not is_owner_groups_empty
+    can_user_see_this_record
 }
 
+#-----------------------------------------------
+
+# Visitors are allowed to retrieve only active and public lists
+#-----------------------------------------------
 allow if {
     role_utils.is_user_visitor("find")
     verification.is_email_verified
-    not is_owner_users_empty
-    not is_owner_groups_empty
-}
-
-#-----------------------------------------------
-
-# Helper functions
-#-----------------------------------------------
-is_owner_users_empty if {
-    count(input.originalRecord.ownerUsers) == 0
-}
-
-is_owner_groups_empty if {
-    count(input.originalRecord.ownerGroups) == 0
+    original_record.is_public
+    original_record.is_active
 }
 
 #-----------------------------------------------
