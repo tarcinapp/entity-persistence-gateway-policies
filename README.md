@@ -238,7 +238,7 @@ These roles allow precise control over access to individual fields within record
 
 **Format:**
 ```
-<app-code>.<scope>.fields.<fieldname>.<operation>
+<app-code>[.<scope>].fields.<fieldname>.<operation>
 ```
 
 - **app-code**: Application-specific prefix (e.g., `tarcinapp`)

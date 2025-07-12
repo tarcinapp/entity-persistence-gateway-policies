@@ -568,6 +568,278 @@ test_not_allow_to_entities_create_member_by_multiple_invalid_groups if {
     })
 }
 
+# ========================================
+# FIELD-LEVEL ROLE TESTS
+# ========================================
+
+# Test field-level roles for member roles - should allow forbidden fields when user has field-level permissions
+# Test _createdBy field access for global member with field-level create permission
+test_allow_to_global_member_with_createdBy_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for records scope member with field-level create permission
+test_allow_to_records_member_with_createdBy_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.records.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for entities scope member with field-level create permission
+test_allow_to_entities_member_with_createdBy_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for entities create operation member with field-level create permission
+test_allow_to_entities_create_member_with_createdBy_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.create.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _creationDateTime field access for member roles with field-level create permission
+# Test _creationDateTime field access for global member with field-level create permission
+test_allow_to_global_member_with_creationDateTime_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_creationDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._creationDateTime.create")
+}
+
+# Test _creationDateTime field access for records scope member with field-level create permission
+test_allow_to_records_member_with_creationDateTime_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.records.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_creationDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._creationDateTime.create")
+}
+
+# Test _creationDateTime field access for entities scope member with field-level create permission
+test_allow_to_entities_member_with_creationDateTime_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_creationDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._creationDateTime.create")
+}
+
+# Test _creationDateTime field access for entities create operation member with field-level create permission
+test_allow_to_entities_create_member_with_creationDateTime_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.create.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_creationDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._creationDateTime.create")
+}
+
+# Test _ownerUsers field access for member roles with field-level create permission
+# Test _ownerUsers field access for global member with field-level create permission
+test_allow_to_global_member_with_ownerUsers_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerUsers": ["user-1", "user-2"]  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._ownerUsers.create")
+}
+
+# Test _ownerUsers field access for records scope member with field-level create permission
+test_allow_to_records_member_with_ownerUsers_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.records.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerUsers": ["user-1", "user-2"]  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._ownerUsers.create")
+}
+
+# Test _ownerUsers field access for entities scope member with field-level create permission
+test_allow_to_entities_member_with_ownerUsers_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerUsers": ["user-1", "user-2"]  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._ownerUsers.create")
+}
+
+# Test _ownerUsers field access for entities create operation member with field-level create permission
+test_allow_to_entities_create_member_with_ownerUsers_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.create.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerUsers": ["user-1", "user-2"]  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._ownerUsers.create")
+}
+
+# Test field-level manage permission (should grant all field permissions)
+# Test _createdBy field access for global member with field-level manage permission
+test_allow_to_global_member_with_createdBy_manage_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level manage permission
+    }, "tarcinapp.entities.fields._createdBy.manage")
+}
+
+# Test _createdBy field access for entities scope member with field-level manage permission
+test_allow_to_entities_member_with_createdBy_manage_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level manage permission
+    }, "tarcinapp.entities.fields._createdBy.manage")
+}
+
+# Test field-level roles for editor roles - should allow forbidden fields when user has field-level permissions
+# Test _createdBy field access for global editor with field-level create permission
+test_allow_to_global_editor_with_createdBy_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.editor", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for records scope editor with field-level create permission
+test_allow_to_records_editor_with_createdBy_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.records.editor", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for entities scope editor with field-level create permission
+test_allow_to_entities_editor_with_createdBy_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.editor", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for entities create operation editor with field-level create permission
+test_allow_to_entities_create_editor_with_createdBy_field_permission if {
+    allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.create.editor", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test field-level roles for visitor roles - should NOT allow creation even with field-level permissions
+# Test _createdBy field access for global visitor with field-level create permission (should still deny)
+test_not_allow_to_global_visitor_with_createdBy_field_permission if {
+    not allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.visitor", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # Should still be denied - visitors cannot create
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for records scope visitor with field-level create permission (should still deny)
+test_not_allow_to_records_visitor_with_createdBy_field_permission if {
+    not allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.records.visitor", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # Should still be denied - visitors cannot create
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for entities scope visitor with field-level create permission (should still deny)
+test_not_allow_to_entities_visitor_with_createdBy_field_permission if {
+    not allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.visitor", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # Should still be denied - visitors cannot create
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test _createdBy field access for entities create operation visitor with field-level create permission (should still deny)
+test_not_allow_to_entities_create_visitor_with_createdBy_field_permission if {
+    not allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.create.visitor", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # Should still be denied - visitors cannot create
+    }, "tarcinapp.entities.fields._createdBy.create")
+}
+
+# Test field-level roles with wrong scope - should NOT allow access
+# Test _createdBy field access for global member with lists scope field permission (should deny)
+test_not_allow_to_global_member_with_lists_scope_field_permission if {
+    not allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # Should be denied - wrong scope (lists vs entities)
+    }, "tarcinapp.lists.fields._createdBy.create")
+}
+
+# Test _createdBy field access for entities member with lists scope field permission (should deny)
+test_not_allow_to_entities_member_with_lists_scope_field_permission if {
+    not allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # Should be denied - wrong scope (lists vs entities)
+    }, "tarcinapp.lists.fields._createdBy.create")
+}
+
+# Test field-level roles with wrong operation - should NOT allow access
+# Test _createdBy field access for global member with find-only field permission (should deny)
+test_not_allow_to_global_member_with_find_only_field_permission if {
+    not allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # Should be denied - find permission doesn't allow create
+    }, "tarcinapp.entities.fields._createdBy.find")
+}
+
+# Test _createdBy field access for entities member with update-only field permission (should deny)
+test_not_allow_to_entities_member_with_update_only_field_permission if {
+    not allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_createdBy": "some-user"  # Should be denied - update permission doesn't allow create
+    }, "tarcinapp.entities.fields._createdBy.update")
+}
+
 # Visitor role tests (should not allow creation)
 # Test global visitor role (tarcinapp.visitor)
 test_not_allow_to_global_visitor if {
@@ -724,6 +996,26 @@ produce_input_doc_by_role(roles, is_email_verified, requestPayload) = test_body 
             "email_verified": is_email_verified,
             "groups": ["group-1", "group-3"],  # User belongs to group-1 and group-3
             "roles": [roles],
+        }),
+        "requestPayload": requestPayload
+    }
+}
+
+# Helper function to create test input with field-level permissions
+produce_input_doc_by_role_with_field_permission(roles, is_email_verified, requestPayload, fieldPermission) = test_body if {
+    test_body = {
+        "appShortcode": "tarcinapp",
+        "httpMethod": "POST",
+        "requestPath": "/generic-entities",
+        "queryParams": {},
+        "encodedJwt": test.produce_token({
+            "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
+            "name": "John Doe",
+            "admin": true,
+            "iat": 1516239022,
+            "email_verified": is_email_verified,
+            "groups": ["group-1", "group-3"],  # User belongs to group-1 and group-3
+            "roles": [roles, fieldPermission],  # Include both operation role and field-level permission
         }),
         "requestPayload": requestPayload
     }
