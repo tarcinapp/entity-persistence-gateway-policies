@@ -13,7 +13,7 @@ test_allow_to_admin if {
         "_name": "Test Entity",
         "description": "Test Description",
         "_visibility": "public",
-        "_createdDateTime": "2025-01-01T00:00:00Z"
+        "_createdBy": "some-user"
     })
 }
 
