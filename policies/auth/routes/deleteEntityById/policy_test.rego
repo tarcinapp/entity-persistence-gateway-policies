@@ -32,19 +32,21 @@ test_not_allow_to_any_other_roles if {
 
 produce_input_doc_by_role(roles) = test_body if {
     test_body = {
-        "appShortcode":"tarcinapp",
-		"httpMethod": "POST",
-		"requestPath": "/generic-entities",
-		"queryParams": {},
-		"encodedJwt": test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "John Doe",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": true,
-			"groups": [],
-			"roles": roles,
-		}),
-        "requestPayload": {}
-	}
+        "appShortcode": "tarcinapp",
+        "httpMethod": "DELETE",
+        "requestPath": "/generic-entities/123",
+        "queryParams": {},
+        "encodedJwt": test.produce_token({
+            "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
+            "name": "John Doe",
+            "admin": true,
+            "iat": 1516239022,
+            "email_verified": true,
+            "groups": ["my-group"],
+            "roles": roles,
+        }),
+        "requestPayload": {
+            "id": "123"
+        }
+    }
 }
