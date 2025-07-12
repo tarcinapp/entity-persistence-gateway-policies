@@ -66,37 +66,3 @@ member_has_problem_with_groups if {
     input.requestPayload["ownerGroups"]
     not token.payload.groups[0]
 }
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload != null
-    input.requestPayload != {}
-    input.requestPayload.name != null
-    input.requestPayload.name != ""
-    input.requestPayload.description != null
-    input.requestPayload.description != ""
-    input.requestPayload.visibility != null
-    input.requestPayload.visibility != ""
-    input.requestPayload.ownerUsers != null
-    input.requestPayload.ownerUsers != []
-    input.requestPayload.ownerGroups != null
-    input.requestPayload.ownerGroups != []
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-    input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime == null
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime == null
-    some i
-    input.requestPayload.ownerUsers[i] == input.encodedJwt.payload.sub
-    some j, k
-    input.requestPayload.ownerGroups[j] == input.encodedJwt.payload.groups[k]
-}

@@ -128,7 +128,13 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
 # this method only selects the field array for given role and operation
 get_fields_for(role, operation) = result_fields if {   
-    result_fields := [result_field | forbiddenFields[i].role==role; result_field := forbiddenFields[i].operations[operation]]
+    result_fields := [result_field | 
+        some i
+        forbiddenFields[i].role == role
+        forbiddenFields[i].operations[operation]
+        some j
+        result_field := forbiddenFields[i].operations[operation][j]
+    ]
 }
 
 # We need this operation in order to get merged list of fields for different operations.
