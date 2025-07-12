@@ -74,6 +74,7 @@ test_not_allow_other_roles if {
 
 produce_input_doc_by_role(role, is_email_verified) = test_body if {
     test_body = {
+		"appShortcode": "tarcinapp",
 		"httpMethod": "POST",
 		"requestPath": "/generic-entities",
 		"queryParams": {},
