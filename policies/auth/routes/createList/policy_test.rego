@@ -160,7 +160,7 @@ test_allow_to_global_member_correct_group if {
         "_name": "Test List",
         "description": "Test Description",
         "_visibility": "public",
-        "ownerGroups": ["group-1"]  # User belongs to group-1
+        "_ownerGroups": ["group-1"]  # User belongs to group-1
     })
 }
 
@@ -170,7 +170,7 @@ test_allow_to_records_member_correct_group if {
         "_name": "Test List",
         "description": "Test Description",
         "_visibility": "public",
-        "ownerGroups": ["group-1"]  # User belongs to group-1
+        "_ownerGroups": ["group-1"]  # User belongs to group-1
     })
 }
 
@@ -180,7 +180,7 @@ test_allow_to_lists_member_correct_group if {
         "_name": "Test List",
         "description": "Test Description",
         "_visibility": "public",
-        "ownerGroups": ["group-1"]  # User belongs to group-1
+        "_ownerGroups": ["group-1"]  # User belongs to group-1
     })
 }
 
@@ -190,7 +190,134 @@ test_allow_to_lists_create_member_correct_group if {
         "_name": "Test List",
         "description": "Test Description",
         "_visibility": "public",
-        "ownerGroups": ["group-1"]  # User belongs to group-1
+        "_ownerGroups": ["group-1"]  # User belongs to group-1
+    })
+}
+
+# ========================================
+# COMPREHENSIVE _OWNERGROUPS VALIDATION TESTS
+# ========================================
+
+# Test multiple valid groups for member roles
+# Test multiple valid groups for global member
+test_allow_to_global_member_multiple_valid_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-1", "group-3"]  # User belongs to both groups
+    })
+}
+
+# Test multiple valid groups for records scope member
+test_allow_to_records_member_multiple_valid_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.records.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-1", "group-3"]  # User belongs to both groups
+    })
+}
+
+# Test multiple valid groups for lists scope member
+test_allow_to_lists_member_multiple_valid_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.lists.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-1", "group-3"]  # User belongs to both groups
+    })
+}
+
+# Test multiple valid groups for lists create operation member
+test_allow_to_lists_create_member_multiple_valid_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.lists.create.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-1", "group-3"]  # User belongs to both groups
+    })
+}
+
+# Test no groups provided (should be allowed)
+# Test no groups for global member
+test_allow_to_global_member_no_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public"
+        # No _ownerGroups provided - should be allowed
+    })
+}
+
+# Test no groups for records scope member
+test_allow_to_records_member_no_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.records.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public"
+        # No _ownerGroups provided - should be allowed
+    })
+}
+
+# Test no groups for lists scope member
+test_allow_to_lists_member_no_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.lists.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public"
+        # No _ownerGroups provided - should be allowed
+    })
+}
+
+# Test no groups for lists create operation member
+test_allow_to_lists_create_member_no_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.lists.create.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public"
+        # No _ownerGroups provided - should be allowed
+    })
+}
+
+# Test empty groups array (should be allowed)
+# Test empty groups for global member
+test_allow_to_global_member_empty_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": []  # Empty array - should be allowed
+    })
+}
+
+# Test empty groups for records scope member
+test_allow_to_records_member_empty_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.records.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": []  # Empty array - should be allowed
+    })
+}
+
+# Test empty groups for lists scope member
+test_allow_to_lists_member_empty_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.lists.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": []  # Empty array - should be allowed
+    })
+}
+
+# Test empty groups for lists create operation member
+test_allow_to_lists_create_member_empty_groups if {
+    allow with input as produce_input_doc_by_role("tarcinapp.lists.create.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": []  # Empty array - should be allowed
     })
 }
 
@@ -324,7 +451,7 @@ test_not_allow_to_global_member_by_invalid_group if {
         "_name": "Test List",
         "description": "Test Description",
         "_visibility": "public",
-        "ownerGroups": ["group-2"]  # User doesn't belong to group-2
+        "_ownerGroups": ["group-2"]  # User doesn't belong to group-2
     })
 }
 
@@ -334,7 +461,7 @@ test_not_allow_to_records_member_by_invalid_group if {
         "_name": "Test List",
         "description": "Test Description",
         "_visibility": "public",
-        "ownerGroups": ["group-2"]  # User doesn't belong to group-2
+        "_ownerGroups": ["group-2"]  # User doesn't belong to group-2
     })
 }
 
@@ -344,7 +471,7 @@ test_not_allow_to_lists_member_by_invalid_group if {
         "_name": "Test List",
         "description": "Test Description",
         "_visibility": "public",
-        "ownerGroups": ["group-2"]  # User doesn't belong to group-2
+        "_ownerGroups": ["group-2"]  # User doesn't belong to group-2
     })
 }
 
@@ -354,7 +481,90 @@ test_not_allow_to_lists_create_member_by_invalid_group if {
         "_name": "Test List",
         "description": "Test Description",
         "_visibility": "public",
-        "ownerGroups": ["group-2"]  # User doesn't belong to group-2
+        "_ownerGroups": ["group-2"]  # User doesn't belong to group-2
+    })
+}
+
+# Comprehensive _ownerGroups validation negative tests
+# Test mixed valid and invalid groups for member roles
+# Test mixed groups for global member
+test_not_allow_to_global_member_by_mixed_groups if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-1", "group-2"]  # group-1 is valid, group-2 is invalid
+    })
+}
+
+# Test mixed groups for records scope member
+test_not_allow_to_records_member_by_mixed_groups if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.records.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-1", "group-2"]  # group-1 is valid, group-2 is invalid
+    })
+}
+
+# Test mixed groups for lists scope member
+test_not_allow_to_lists_member_by_mixed_groups if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.lists.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-1", "group-2"]  # group-1 is valid, group-2 is invalid
+    })
+}
+
+# Test mixed groups for lists create operation member
+test_not_allow_to_lists_create_member_by_mixed_groups if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.lists.create.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-1", "group-2"]  # group-1 is valid, group-2 is invalid
+    })
+}
+
+# Test multiple invalid groups for member roles
+# Test multiple invalid groups for global member
+test_not_allow_to_global_member_by_multiple_invalid_groups if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-2", "group-4"]  # User doesn't belong to either group
+    })
+}
+
+# Test multiple invalid groups for records scope member
+test_not_allow_to_records_member_by_multiple_invalid_groups if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.records.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-2", "group-4"]  # User doesn't belong to either group
+    })
+}
+
+# Test multiple invalid groups for lists scope member
+test_not_allow_to_lists_member_by_multiple_invalid_groups if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.lists.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-2", "group-4"]  # User doesn't belong to either group
+    })
+}
+
+# Test multiple invalid groups for lists create operation member
+test_not_allow_to_lists_create_member_by_multiple_invalid_groups if {
+    not allow with input as produce_input_doc_by_role("tarcinapp.lists.create.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerGroups": ["group-2", "group-4"]  # User doesn't belong to either group
     })
 }
 
@@ -512,7 +722,7 @@ produce_input_doc_by_role(roles, is_email_verified, requestPayload) = test_body 
             "admin": true,
             "iat": 1516239022,
             "email_verified": is_email_verified,
-            "groups": ["group-1"],
+            "groups": ["group-1", "group-3"],  # User belongs to group-1 and group-3
             "roles": [roles],
         }),
         "requestPayload": requestPayload
