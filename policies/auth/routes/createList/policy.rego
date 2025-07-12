@@ -51,9 +51,9 @@ payload_contains_any_field(fields) if {
 }
 
 member_has_problem_with_groups if {
-    input.requestPayload["ownerGroups"]
+    input.requestPayload["_ownerGroups"]
     some group
-    group = input.requestPayload["ownerGroups"][_]
+    group = input.requestPayload["_ownerGroups"][_]
     not group_in_token_groups(group)
 }
 
@@ -63,6 +63,6 @@ group_in_token_groups(group) if {
 }
 
 member_has_problem_with_groups if {
-    input.requestPayload["ownerGroups"]
+    input.requestPayload["_ownerGroups"]
     not token.payload.groups[0]
 }
