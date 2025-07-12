@@ -11,25 +11,35 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
     fields := get_effective_fields_for("admin", "find")
 
-    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
-    not is_user_admin
-    not is_user_editor
-    not is_user_member
-    not is_user_visitor
+	role_utils.is_user_admin("create")
 
-    which_fields_forbidden_for_create := []
+    fields := get_effective_fields_for("admin", "create")
+
+    which_fields_forbidden_for_create := [field | 
+        some i
+        field := fields[i]
+        not can_user_create_field(field)
+    ]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
-    not is_user_admin
-    not is_user_editor
-    not is_user_member
-    not is_user_visitor
+	role_utils.is_user_admin("update")
 
-    which_fields_forbidden_for_update := []
+    fields := get_effective_fields_for("admin", "update")
+
+    which_fields_forbidden_for_update := [field | 
+        some i
+        field := fields[i]
+        not can_user_update_field(field)
+    ]
 }
 
 #editor
@@ -38,25 +48,35 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
     fields := get_effective_fields_for("editor", "find")
 
-    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
-    is_user_admin
-    not is_user_editor
-    not is_user_member
-    not is_user_visitor
+	role_utils.is_user_editor("create")
 
-    which_fields_forbidden_for_create := []
+    fields := get_effective_fields_for("editor", "create")
+
+    which_fields_forbidden_for_create := [field | 
+        some i
+        field := fields[i]
+        not can_user_create_field(field)
+    ]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
-    is_user_admin
-    is_user_editor
-    not is_user_member
-    not is_user_visitor
+	role_utils.is_user_editor("update")
 
-    which_fields_forbidden_for_update := []
+    fields := get_effective_fields_for("editor", "update")
+
+    which_fields_forbidden_for_update := [field | 
+        some i
+        field := fields[i]
+        not can_user_update_field(field)
+    ]
 }
 
 #member
@@ -65,25 +85,35 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
     fields := get_effective_fields_for("member", "find")
 
-    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
 }
 
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
-    is_user_admin
-    is_user_editor
-    is_user_member
-    not is_user_visitor
+	role_utils.is_user_member("create")
 
-    which_fields_forbidden_for_create := []
+    fields := get_effective_fields_for("member", "create")
+
+    which_fields_forbidden_for_create := [field | 
+        some i
+        field := fields[i]
+        not can_user_create_field(field)
+    ]
 }
 
 which_fields_forbidden_for_update = which_fields_forbidden_for_update if {
-    is_user_admin
-    is_user_editor
-    is_user_member
-    is_user_visitor
+	role_utils.is_user_member("update")
 
-    which_fields_forbidden_for_update := []
+    fields := get_effective_fields_for("member", "update")
+
+    which_fields_forbidden_for_update := [field | 
+        some i
+        field := fields[i]
+        not can_user_update_field(field)
+    ]
 }
 
 #visitor
@@ -161,86 +191,4 @@ is_user_member if {
 
 is_user_visitor if {
     role_utils.is_user_visitor("create")
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.name != null
-    input.requestPayload.name != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.description != null
-    input.requestPayload.description != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.visibility != null
-    input.requestPayload.visibility != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.ownerUsers != null
-    input.requestPayload.ownerUsers != []
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.ownerGroups != null
-    input.requestPayload.ownerGroups != []
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-    input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime == null
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-}
-
-allow if {
-    input.httpMethod == "POST"
-    input.requestPath == "/lists"
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime == null
 }
