@@ -196,6 +196,74 @@ policy input is a json file in the following structure
 }
 ```
 
+## Role Structure in Tarcinapp
+
+Tarcinapp supports a flexible, fine-grained role system that governs access across resources and fields. Roles are defined using a consistent naming convention that allows system administrators to grant permissions at both operation and field levels.
+
+### Role Name Prefix (`tarcinapp.`)
+
+Each role begins with an application-specific prefix, such as `tarcinapp.`. This prefix is a configurable application short code, designed to support scenarios where a single user may have different roles across multiple Tarcinapp instances.
+
+### Operation-Level Roles
+
+These roles control access to operations on resources such as entities, lists and reactions.
+
+**Format:**
+```
+<app-code>[.<scope>][.<operation>].<level>
+```
+
+- **app-code**: Application-specific prefix (e.g., `tarcinapp`)
+- **scope**: Resource domain. If not specified in the role name, it means that the role is valid for all scopes.
+  Examples: `records`, `entities`, `lists`, `reactions`, `entity-reactions`, `list-reactions`
+- **operation**: (optional) Operation being granted  
+  Examples: `create`, `update`, `updateall`, `find`, `count`, `delete`  
+  If omitted, the role grants all operations under the scope.
+- **level**: Access tier  
+  Examples: `admin`, `editor`, `member`, `visitor`
+
+**Examples:**
+
+| Role | Meaning |
+|------|---------|
+| `tarcinapp.admin` | Admin access to all operations |
+| `tarcinapp.records.admin` | Admin access to all record operations |
+| `tarcinapp.entities.create.editor` | Editor can create entities |
+| `tarcinapp.lists.find.member` | Member can query (read) lists |
+| `tarcinapp.reactions.delete.admin` | Admin can delete reactions |
+
+### Field-Level Roles
+
+These roles allow precise control over access to individual fields within records.
+
+**Format:**
+```
+<app-code>.<scope>.fields.<fieldname>.<operation>
+```
+
+- **app-code**: Application-specific prefix (e.g., `tarcinapp`)
+- **scope**: Resource domain (same as above)
+- **fieldname**: Name of the field (e.g., `_visibility`, `_createdDateTime`)
+- **operation**:  
+  Options: `find`, `create`, `update`, `manage`  
+  `manage` grants all permissions on the field.
+
+**Examples:**
+
+| Role | Meaning |
+|------|---------|
+| `tarcinapp.entities.fields._visibility.find` | Can read the `_visibility` field of entities |
+| `tarcinapp.records.fields._createdDateTime.update` | Can update `_createdDateTime` on records |
+| `tarcinapp.lists.fields._viewerGroups.manage` | Full access to `_viewerGroups` field on lists |
+
+### Design Benefits
+
+- Consistency: Predictable structure makes it easy to understand and manage
+- Modularity: Different scopes for different resource types
+- Flexibility: Field-level and operation-level access can be independently controlled
+- Multi-Tenant Ready: Role prefix allows isolation across Tarcinapp instances
+
+
 ## Structuring the JWT Token (Keycloak Guide)
 Policies within entity-persistence-policies search for the `roles` field within the JWT token, specifically under the `payload` section. However, in the default configuration of Keycloak, the roles are nested under `realm_access.roles`. To align them with the `payload` section, you must create a custom 'Role Mapper' in Keycloak. This mapper allows you to restructure the JWT token during the token issuance process. Here's how to do it:
 1. Log in to your Keycloak admin console.
