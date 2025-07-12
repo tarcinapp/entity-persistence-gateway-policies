@@ -135,7 +135,8 @@ get_fields_for(role, operation) = result_fields if {
         some i
         forbiddenFields[i].role == role
         forbiddenFields[i].operations[operation]
-        result_field := forbiddenFields[i].operations[operation]
+        some j
+        result_field := forbiddenFields[i].operations[operation][j]
     ]
 }
 
