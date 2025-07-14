@@ -55,7 +55,7 @@ can_user_see_this_record if {
 can_user_see_this_record if {
     original_record.is_belong_to_users_groups
     not original_record.is_passive                # record is either pending or active
-    input.originalRecord.visibility != "private"  # record is either public or protected
+    not original_record.is_private                # record is either public or protected
 }
 
 # user can see this record, because it is public and active record
@@ -73,6 +73,6 @@ can_user_see_this_record if {
 # user can see this record, because he is in viewerGroups, and record is active
 can_user_see_this_record if {
     original_record.is_user_in_viewerGroups
-    input.originalRecord.visibility != "private"  # record is either public or protected
+    not original_record.is_private                # record is either public or protected
     original_record.is_active
 }

@@ -21,6 +21,14 @@ is_public if {
     input.originalRecord.visibility == "public"
 }
 
+is_protected if {
+    input.originalRecord.visibility == "protected"
+}
+
+is_private if {
+    input.originalRecord.visibility == "private"
+}
+
 is_belong_to_user if {
     some i
     token.payload.sub = input.originalRecord.ownerUsers[i]
