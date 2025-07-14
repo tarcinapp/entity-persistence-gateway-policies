@@ -81,7 +81,7 @@ is_record_belongs_to_this_user if {
 
 user_id_in_ownerUsers if {
 	some i
-	input.requestPayload.ownerUsers[i] == token.payload.sub
+	input.requestPayload._ownerUsers[i] == token.payload.sub
 }
 
 member_has_problem_with_ownerGroups if {
