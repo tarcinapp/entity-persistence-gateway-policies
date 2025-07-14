@@ -13,7 +13,7 @@ member_validFrom_range_in_seconds := 300
 
 member_validUntil_range_for_inactivation_in_seconds := 300
 
-# visitiors cannot update any record
+# visitors cannot update any record
 
 #-----------------------------------------------
 
@@ -76,7 +76,7 @@ is_record_belongs_to_this_user if {
 
 is_record_belongs_to_this_user if {
 	original_record.is_belong_to_users_groups
-	input.originalRecord.visibility != "private"
+	not original_record.is_private                # record is either public or protected
 }
 
 user_id_in_ownerUsers if {
@@ -172,38 +172,4 @@ payload_contains_any_field(fields) if {
 	some field
 	field = fields[_]
 	input.requestPayload[field]
-}
-
-allow if {
-    input.httpMethod == "PUT"
-    input.requestPath == "/generic-entities"
-    input.requestPayload != null
-    input.requestPayload != {}
-    input.requestPayload.name != null
-    input.requestPayload.name != ""
-    input.requestPayload.description != null
-    input.requestPayload.description != ""
-    input.requestPayload.visibility != null
-    input.requestPayload.visibility != ""
-    input.requestPayload.ownerUsers != null
-    input.requestPayload.ownerUsers != []
-    input.requestPayload.ownerGroups != null
-    input.requestPayload.ownerGroups != []
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-    input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime == null
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime == null
-    some i
-    input.requestPayload.ownerUsers[i] == input.encodedJwt.payload.sub
-    some j, k
-    input.requestPayload.ownerGroups[j] == input.encodedJwt.payload.groups[k]
 }
