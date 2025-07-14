@@ -85,13 +85,13 @@ user_id_in_ownerUsers if {
 }
 
 member_has_problem_with_ownerGroups if {
-	payload_contains_any_field(["ownerGroups"])
+	payload_contains_any_field(["_ownerGroups"])
 	no_ownerGroups_item_in_users_groups
 }
 
 no_ownerGroups_item_in_users_groups if {
 	some group
-	group = input.requestPayload["ownerGroups"][_]
+	group = input.requestPayload["_ownerGroups"][_]
 	not group_in_token_groups(group)
 }
 
@@ -106,9 +106,9 @@ group_in_token_groups(group) if {
 # As this attempt means changing the approval time, 
 # or unapproving already approved reacord, should not be allowed for members
 member_has_problem_with_validFrom if {
-	forbidden_fields.can_user_update_field("validFromDateTime")
-	payload_contains_any_field(["validFromDateTime"])
-	original_record.has_value("validFromDateTime")
+	forbidden_fields.can_user_update_field("_validFromDateTime")
+	payload_contains_any_field(["_validFromDateTime"])
+	original_record.has_value("_validFromDateTime")
 }
 
 # user can update validFrom
@@ -116,29 +116,29 @@ member_has_problem_with_validFrom if {
 # user tries to add a validFrom
 # but validFrom is not in correct range
 member_has_problem_with_validFrom if {
-	forbidden_fields.can_user_update_field("validFromDateTime")
-	payload_contains_any_field(["validFromDateTime"])
+	forbidden_fields.can_user_update_field("_validFromDateTime")
+	payload_contains_any_field(["_validFromDateTime"])
 	not is_validFrom_in_correct_range
 }
 
 member_has_problem_with_validUntil if {
-	forbidden_fields.can_user_update_field("validUntilDateTime")
-	payload_contains_any_field(["validUntilDateTime"])
-	original_record.has_value("validUntilDateTime")
+	forbidden_fields.can_user_update_field("_validUntilDateTime")
+	payload_contains_any_field(["_validUntilDateTime"])
+	original_record.has_value("_validUntilDateTime")
 }
 
 # validUntil must be in correct range for inactivation
 member_has_problem_with_validUntil if {
-	forbidden_fields.can_user_update_field("validUntilDateTime")
-	payload_contains_any_field(["validUntilDateTime"])
+	forbidden_fields.can_user_update_field("_validUntilDateTime")
+	payload_contains_any_field(["_validUntilDateTime"])
 	not is_validUntil_in_correct_range_for_inactivation
 }
 
 is_validFrom_in_correct_range if {
-	payload_contains_any_field(["validFromDateTime"])
-	input.requestPayload.validFromDateTime != null
+	payload_contains_any_field(["_validFromDateTime"])
+	input.requestPayload._validFromDateTime != null
 	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
-	validFromSec := time.parse_rfc3339_ns(input.requestPayload.validFromDateTime) / ((1000 * 1000) * 1000)
+	validFromSec := time.parse_rfc3339_ns(input.requestPayload._validFromDateTime) / ((1000 * 1000) * 1000)
 
 	validFromSec <= nowSec
 	validFromSec > nowSec - member_validFrom_range_in_seconds
@@ -147,10 +147,10 @@ is_validFrom_in_correct_range if {
 }
 
 is_validUntil_in_correct_range_for_inactivation if {
-	payload_contains_any_field(["validUntilDateTime"])
-	input.requestPayload.validUntilDateTime != null
+	payload_contains_any_field(["_validUntilDateTime"])
+	input.requestPayload._validUntilDateTime != null
 	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
-	validUntilSec := time.parse_rfc3339_ns(input.requestPayload.validUntilDateTime) / ((1000 * 1000) * 1000)
+	validUntilSec := time.parse_rfc3339_ns(input.requestPayload._validUntilDateTime) / ((1000 * 1000) * 1000)
 
 	validUntilSec <= nowSec
 	validUntilSec > nowSec - member_validUntil_range_for_inactivation_in_seconds
