@@ -18,6 +18,19 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
     ]
 }
 
+# If user is admin for update, they should also be treated as admin for find
+which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
+	role_utils.is_user_admin("update")
+
+    fields := get_effective_fields_for("admin", "find")
+
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
+}
+
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
 	role_utils.is_user_admin("create")
 
@@ -122,7 +135,11 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 
     fields := get_effective_fields_for("visitor", "find")
 
-    which_fields_forbidden_for_finding := [field | not can_user_find_field(fields[i]); field := fields[i]]
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
 }
 #-----------------------------------------------
 
@@ -166,35 +183,27 @@ get_effective_fields_for(role, operation) = result_fields if {
 }
 
 can_user_find_field(fieldName) if {
+	input.appShortcode
+	token.payload.roles
 	role = token.payload.roles[_]
 	pattern := sprintf(`%s\.(records|lists)\.fields\.%s\.(find|update|create|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
 can_user_create_field(fieldName) if {
+	input.appShortcode
+	token.payload.roles
 	role := token.payload.roles[_]
 	pattern := sprintf(`%s\.(records|lists)\.fields\.%s\.(create|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
 can_user_update_field(fieldName) if {
+	input.appShortcode
+	token.payload.roles
 	role := token.payload.roles[_]
 	pattern := sprintf(`%s\.(records|lists)\.fields\.%s\.(update|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
-is_user_admin if {
-    role_utils.is_user_admin("create")
-}
 
-is_user_editor if {
-    role_utils.is_user_editor("create")
-}
-
-is_user_member if {
-    role_utils.is_user_member("create")
-}
-
-is_user_visitor if {
-    role_utils.is_user_visitor("create")
-}
