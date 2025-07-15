@@ -27,35 +27,3 @@ allow if {
 token = {"payload": payload} if {
     [header, payload, signature] := io.jwt.decode(input.encodedJwt)
 }
-
-allow if {
-    input.httpMethod == "PUT"
-    input.requestPath == "/lists"
-    input.requestPayload != null
-    input.requestPayload != {}
-    input.requestPayload.name != null
-    input.requestPayload.name != ""
-    input.requestPayload.description != null
-    input.requestPayload.description != ""
-    input.requestPayload.visibility != null
-    input.requestPayload.visibility != ""
-    input.requestPayload.ownerUsers != null
-    input.requestPayload.ownerUsers != []
-    input.requestPayload.ownerGroups != null
-    input.requestPayload.ownerGroups != []
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-    input.requestPayload.validFromDateTime < input.requestPayload.validUntilDateTime
-    input.requestPayload.validFromDateTime != null
-    input.requestPayload.validFromDateTime != ""
-    input.requestPayload.validUntilDateTime == null
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime != null
-    input.requestPayload.validUntilDateTime != ""
-    input.requestPayload.validFromDateTime == null
-    input.requestPayload.validUntilDateTime == null
-    input.requestPayload.ownerUsers[_] = input.encodedJwt.payload.sub
-    input.requestPayload.ownerGroups[_] = input.encodedJwt.payload.groups[_]
-}
