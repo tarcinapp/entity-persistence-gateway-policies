@@ -17,6 +17,19 @@ which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
     ]
 }
 
+# If user is admin for update, they should also be treated as admin for find
+which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
+	role_utils.is_user_admin("update")
+
+    fields := get_effective_fields_for("admin", "find")
+
+    which_fields_forbidden_for_finding := [field | 
+        some i
+        field := fields[i]
+        not can_user_find_field(field)
+    ]
+}
+
 which_fields_forbidden_for_create = which_fields_forbidden_for_create if {
 	role_utils.is_user_admin("create")
 

@@ -393,11 +393,11 @@ produce_input(verified, roles, groups, ownerUsers, ownerGroups, visibility, vali
 		}),
 		"originalRecord": {
 			"name": "any-record",
-			"ownerUsers": ownerUsers,
-			"ownerGroups": ownerGroups,
-			"visibility": visibility,
-            "validFromDateTime": validFrom,
-            "validUntilDateTime": validUntil
+			"_ownerUsers": ownerUsers,
+			"_ownerGroups": ownerGroups,
+			"_visibility": visibility,
+            "_validFromDateTime": validFrom,
+            "_validUntilDateTime": validUntil
 		},
 	}
 }
@@ -419,13 +419,13 @@ produce_input_with_viewerUsers(verified, roles, groups, ownerUsers, ownerGroups,
 		}),
 		"originalRecord": {
 			"name": "any-record",
-			"ownerUsers": ownerUsers,
-			"ownerGroups": ownerGroups,
-			"visibility": visibility,
-            "validFromDateTime": validFrom,
-            "validUntilDateTime": validUntil,
-            "viewerUsers": viewerUsers,
-            "viewerGroups": viewerGroups
+			"_ownerUsers": ownerUsers,
+			"_ownerGroups": ownerGroups,
+			"_visibility": visibility,
+            "_validFromDateTime": validFrom,
+            "_validUntilDateTime": validUntil,
+            "_viewerUsers": viewerUsers,
+            "_viewerGroups": viewerGroups
 		},
 	}
 }
@@ -447,13 +447,13 @@ produce_input_with_viewerGroups(verified, roles, groups, ownerUsers, ownerGroups
 		}),
 		"originalRecord": {
 			"name": "any-record",
-			"ownerUsers": ownerUsers,
-			"ownerGroups": ownerGroups,
-			"visibility": visibility,
-            "validFromDateTime": validFrom,
-            "validUntilDateTime": validUntil,
-            "viewerUsers": viewerUsers,
-            "viewerGroups": viewerGroups
+			"_ownerUsers": ownerUsers,
+			"_ownerGroups": ownerGroups,
+			"_visibility": visibility,
+            "_validFromDateTime": validFrom,
+            "_validUntilDateTime": validUntil,
+            "_viewerUsers": viewerUsers,
+            "_viewerGroups": viewerGroups
 		},
 	}
 }
