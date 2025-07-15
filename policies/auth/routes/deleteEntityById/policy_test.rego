@@ -35,18 +35,18 @@ produce_input_doc_by_role(roles) = test_body if {
         "appShortcode": "tarcinapp",
         "httpMethod": "DELETE",
         "requestPath": "/generic-entities/123",
-        "queryParams": {},
-        "encodedJwt": test.produce_token({
-            "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-            "name": "John Doe",
-            "admin": true,
-            "iat": 1516239022,
-            "email_verified": true,
+		"queryParams": {},
+		"encodedJwt": test.produce_token({
+			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
+			"name": "John Doe",
+			"admin": true,
+			"iat": 1516239022,
+			"email_verified": true,
             "groups": ["my-group"],
-            "roles": roles,
-        }),
+			"roles": roles,
+		}),
         "requestPayload": {
             "id": "123"
         }
-    }
+	}
 }
