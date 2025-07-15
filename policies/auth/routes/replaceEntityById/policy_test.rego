@@ -521,6 +521,26 @@ test_allow_member_group_record_public if {
     })
 }
 
+test_allow_member_records_role_own_record if {
+    allow with input as produce_input_replace("tarcinapp.records.member", true, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "protected",
+        "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+        "_ownerGroups": ["group-1"],
+        "_validFromDateTime": null,
+        "_validUntilDateTime": null
+    }, {
+        "_name": "Test Entity",
+        "description": "Test Description",
+        "_visibility": "protected",
+        "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+        "_ownerGroups": ["group-1"],
+        "_validFromDateTime": null,
+        "_validUntilDateTime": null
+    })
+}
+
 # Negative tests
 test_not_allow_member_other_user_record if {
     not allow with input as produce_input_replace("tarcinapp.member", true, {
