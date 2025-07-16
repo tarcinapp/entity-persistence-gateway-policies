@@ -17,8 +17,7 @@ allow if {
     verification.is_email_verified
     # payload cannot contain any field that requestor cannot see or update
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
-    # forbidden fields for update in payload must have same values as original record
-    forbidden_fields_for_update_have_same_value_with_original_record
+    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)
 }
 
 allow if {
@@ -26,8 +25,7 @@ allow if {
     verification.is_email_verified
     # payload cannot contain any field that requestor cannot see or update
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
-    # forbidden fields for update in payload must have same values as original record
-    forbidden_fields_for_update_have_same_value_with_original_record
+    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)
 }
 
 #-----------------------------------------------
@@ -36,17 +34,4 @@ payload_contains_any_field(fields) if {
     some field
     field = fields[_]
     input.requestPayload[field]
-}
-
-# Check if forbidden fields for update in payload have same values as original record
-forbidden_fields_for_update_have_same_value_with_original_record if {
-    count(forbidden_fields_for_update_with_different_values) == 0
-}
-
-# Find forbidden fields for update that have different values
-forbidden_fields_for_update_with_different_values[field] if {
-    field = forbidden_fields.which_fields_forbidden_for_update[_]
-    input.requestPayload[field]
-    input.originalRecord[field]
-    input.requestPayload[field] != input.originalRecord[field]
 }
