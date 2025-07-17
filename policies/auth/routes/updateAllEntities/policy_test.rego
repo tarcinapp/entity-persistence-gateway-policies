@@ -51,6 +51,10 @@ test_not_allow_to_non_admin_editor_roles if {
     not allow with input as produce_input_doc_by_role("tarcinapp.entities.visitor", true)
 }
 
+test_not_allow_to_editor_with_forbidden_field if {
+    not allow with input as produce_input_doc_by_role_with_forbidden_field("tarcinapp.editor", true, "_creationDateTime")
+}
+
 produce_input_doc_by_role(role, is_email_verified) = test_body if {
     test_body = {
         "appShortcode":"tarcinapp",
@@ -71,7 +75,6 @@ produce_input_doc_by_role(role, is_email_verified) = test_body if {
 			],
 		}),
         "requestPayload": {
-			"_id": "123",
 			"_name": "test entity",
 			"description": "test description",
 			"_visibility": "public",
@@ -103,7 +106,6 @@ produce_input_doc_by_role_with_forbidden_field(role, is_email_verified, forbidde
 			],
 		}),
         "requestPayload": {
-			"_id": "123",
 			"_name": "test entity",
 			"description": "test description",
 			"_visibility": "public",
