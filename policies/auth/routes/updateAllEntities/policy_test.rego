@@ -6,12 +6,28 @@ test_allow_to_admin if {
     allow with input as produce_input_doc_by_role("tarcinapp.admin", true)
 }
 
+test_allow_to_records_admin if {
+    allow with input as produce_input_doc_by_role("tarcinapp.records.admin", true)
+}
+
+test_allow_to_entities_admin if {
+    allow with input as produce_input_doc_by_role("tarcinapp.entities.admin", true)
+}
+
 test_not_allow_to_admin_without_email_verification if {
     not allow with input as produce_input_doc_by_role("tarcinapp.admin", false)
 }
 
 test_allow_to_editor if {
     allow with input as produce_input_doc_by_role("tarcinapp.editor", true)
+}
+
+test_allow_to_records_editor if {
+    allow with input as produce_input_doc_by_role("tarcinapp.records.editor", true)
+}
+
+test_allow_to_entities_editor if {
+    allow with input as produce_input_doc_by_role("tarcinapp.entities.editor", true)
 }
 
 test_not_allow_to_editor_without_email_verification if {
@@ -30,24 +46,27 @@ test_not_allow_to_visitor if {
     not allow with input as produce_input_doc_by_role("tarcinapp.visitor", true)
 }
 
-test_allow_to_admin_patterns if {
-    allow with input as produce_input_doc_by_role("tarcinapp.admin", true)
-    allow with input as produce_input_doc_by_role("tarcinapp.records.admin", true)
-    allow with input as produce_input_doc_by_role("tarcinapp.entities.admin", true)
-}
-
-test_allow_to_editor_patterns if {
-    allow with input as produce_input_doc_by_role("tarcinapp.editor", true)
-    allow with input as produce_input_doc_by_role("tarcinapp.records.editor", true)
-    allow with input as produce_input_doc_by_role("tarcinapp.entities.editor", true)
-}
-
-test_not_allow_to_non_admin_editor_roles if {
+test_not_allow_to_non_admin_editor_roles_member if {
     not allow with input as produce_input_doc_by_role("tarcinapp.member", true)
+}
+
+test_not_allow_to_non_admin_editor_roles_visitor if {
     not allow with input as produce_input_doc_by_role("tarcinapp.visitor", true)
+}
+
+test_not_allow_to_non_admin_editor_roles_records_member if {
     not allow with input as produce_input_doc_by_role("tarcinapp.records.member", true)
+}
+
+test_not_allow_to_non_admin_editor_roles_entities_member if {
     not allow with input as produce_input_doc_by_role("tarcinapp.entities.member", true)
+}
+
+test_not_allow_to_non_admin_editor_roles_records_visitor if {
     not allow with input as produce_input_doc_by_role("tarcinapp.records.visitor", true)
+}
+
+test_not_allow_to_non_admin_editor_roles_entities_visitor if {
     not allow with input as produce_input_doc_by_role("tarcinapp.entities.visitor", true)
 }
 

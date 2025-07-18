@@ -15,6 +15,7 @@ default allow = false
 allow if {
     role_utils.is_user_admin("update")
     verification.is_email_verified
+
     # payload cannot contain any field that requestor cannot see or update
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)
@@ -23,6 +24,7 @@ allow if {
 allow if {
     role_utils.is_user_editor("update")
     verification.is_email_verified
+    
     # payload cannot contain any field that requestor cannot see or update
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
     not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)
