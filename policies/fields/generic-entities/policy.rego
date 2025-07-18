@@ -4,6 +4,10 @@ import data.policies.util.common.token as token
 import data.policies.util.genericentities.roles as role_utils
 import data.policies.fields.genericentities.policy.forbiddenFields as forbiddenFields
 
+default which_fields_forbidden_for_finding = []
+default which_fields_forbidden_for_create = []
+default which_fields_forbidden_for_update = []
+
 # admin
 which_fields_forbidden_for_finding = which_fields_forbidden_for_finding if {
 	role_utils.is_user_admin("find")

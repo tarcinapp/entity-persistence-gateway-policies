@@ -9,7 +9,6 @@
         "_ownerUsers": ["any-owner"],
         "_ownerGroups": ["any-owner-group"],
         "_validFromDateTime": "2020-01-01T00:00:00Z",
-        "_validUntilDateTime": "2020-01-01T00:00:00Z",
-        "_creationDateTime": "2020-01-01T00:00:00Z"
+        "_validUntilDateTime": "2020-01-01T00:00:00Z"
     }
 }
