@@ -13,69 +13,39 @@ member_validFrom_range_in_seconds:= 300
 
 member_validUntil_range_for_inactivation_in_seconds := 300
 
-
-# visitiors cannot update any record
-
 #-----------------------------------------------
-
 
 # By default, deny requests.
 default allow = false
 #-----------------------------------------------
 
-
-# Decide allow if any of the following section is true
-#-----------------------------------------------
+# Admin users are allowed to update the original record notwithstanding the payload and original record
 allow if {
 	role_utils.is_user_admin("update")
 	verification.is_email_verified
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	forbidden_fields_has_same_value_with_original_record
 }
 
+# Editor users are allowed to update the record if payload satisfy 'all' of the conditions
 allow if {
 	role_utils.is_user_editor("update")
 	verification.is_email_verified
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	forbidden_fields_has_same_value_with_original_record
 }
 
+# Members are allowed to update the entity if following conditions are met
 allow if {
 	role_utils.is_user_member("update")
 	verification.is_email_verified
-}
-
-allow if {
-	role_utils.is_user_visitor("update")
-	verification.is_email_verified
-}
-
-#-----------------------------------------------
-
-# Decide allow if any of the following section is true
-#-----------------------------------------------
-allow if {
-	role_utils.is_user_admin("update")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-}
-
-allow if {
-	role_utils.is_user_editor("update")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-}
-
-allow if {
-	role_utils.is_user_member("update")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
-}
-
-allow if {
-	role_utils.is_user_visitor("update")
-	verification.is_email_verified
-	not is_owner_users_empty
-	not is_owner_groups_empty
+	is_record_belongs_to_this_user
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	forbidden_fields_has_same_value_with_original_record
+	user_id_in_ownerUsers
+	not member_has_problem_with_ownerGroups
+	not member_has_problem_with_validFrom
+	not member_has_problem_with_validUntil
 }
 
 #-----------------------------------------------
@@ -101,7 +71,7 @@ user_id_in_ownerUsers if {
 }
 
 member_has_problem_with_ownerGroups if {
-  input.requestPayload["ownerGroups"]
+  payload_contains_any_field(["ownerGroups"])
   no_ownerGroups_item_in_users_groups
 }
 
