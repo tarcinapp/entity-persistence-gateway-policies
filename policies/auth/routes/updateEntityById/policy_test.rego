@@ -226,69 +226,108 @@ test_allow_to_admin_with_all_fields if {
 # ADMIN TESTS - DIFFERENT ORIGINAL RECORD SCENARIOS
 # ============================================================================
 
-# Test admin with private original record
 test_allow_to_admin_with_private_original_record if {
-    private_original_record := object.union(base_original_record, {
-        "_visibility": "private"
-    })
-    
     allow with input as produce_input_doc(
         "tarcinapp.admin", true, default_admin_groups,
         base_payload,
-        private_original_record
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "private",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
     )
 }
 
-# Test admin with protected original record
 test_allow_to_admin_with_protected_original_record if {
-    protected_original_record := object.union(base_original_record, {
-        "_visibility": "protected"
-    })
-    
     allow with input as produce_input_doc(
         "tarcinapp.admin", true, default_admin_groups,
         base_payload,
-        protected_original_record
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "protected",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
     )
 }
 
-# Test admin with different owner in original record
 test_allow_to_admin_with_different_owner if {
-    different_owner_original_record := object.union(base_original_record, {
-        "_ownerUsers": ["different-user-id"],
-        "_ownerGroups": ["different-group"]
-    })
-    
     allow with input as produce_input_doc(
         "tarcinapp.admin", true, default_admin_groups,
         base_payload,
-        different_owner_original_record
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "public",
+            "_ownerUsers": ["different-user-id"],
+            "_ownerGroups": ["different-group"],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
     )
 }
 
-# Test admin with pending original record (no validFromDateTime)
 test_allow_to_admin_with_pending_original_record if {
-    pending_original_record := object.union(base_original_record, {
-        "_validFromDateTime": null
-    })
-    
     allow with input as produce_input_doc(
         "tarcinapp.admin", true, default_admin_groups,
         base_payload,
-        pending_original_record
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": null,
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
     )
 }
 
-# Test admin with inactive original record (has validUntilDateTime)
 test_allow_to_admin_with_inactive_original_record if {
-    inactive_original_record := object.union(base_original_record, {
-        "_validUntilDateTime": "2021-01-01T00:00:00Z"
-    })
-    
     allow with input as produce_input_doc(
         "tarcinapp.admin", true, default_admin_groups,
         base_payload,
-        inactive_original_record
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": "2021-01-01T00:00:00Z",
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
     )
 }
 
@@ -355,8 +394,6 @@ test_allow_to_member_as_owner_group_public if {
 }
 
 test_allow_to_member_as_owner_group_protected if {
-    protected_original_record := object.union(base_original_record, {"_visibility": "protected"})
-    
     allow with input as produce_input_doc(
         "tarcinapp.member", true, ["my-group"],
         {
@@ -368,13 +405,24 @@ test_allow_to_member_as_owner_group_protected if {
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null
         },
-        protected_original_record
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "protected",
+            "_ownerUsers": ["different-user"],
+            "_ownerGroups": ["my-group"],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
     )
 }
 
 test_not_allow_to_member_as_owner_group_private if {
-    private_original_record := object.union(base_original_record, {"_visibility": "private"})
-    
     not allow with input as produce_input_doc(
         "tarcinapp.member", true, ["my-group"],
         {
@@ -386,7 +434,20 @@ test_not_allow_to_member_as_owner_group_private if {
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null
         },
-        private_original_record
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "private",
+            "_ownerUsers": ["different-user"],
+            "_ownerGroups": ["my-group"],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
     )
 }
 
