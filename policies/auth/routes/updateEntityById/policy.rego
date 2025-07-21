@@ -56,7 +56,7 @@ is_record_belongs_to_this_user if {
 
 is_record_belongs_to_this_user if {
   original_record.is_belong_to_users_groups
-  input.originalRecord.visibility != "private"
+  input.originalRecord._visibility != "private"
 }
 
 # if ownerUsers exists in the payload, then it must contains user's id
