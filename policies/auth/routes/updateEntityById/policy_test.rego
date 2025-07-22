@@ -809,3 +809,122 @@ test_allow_to_member_with_field_level_update_role if {
         "tarcinapp.entities.fields._creationDateTime.update"
     )
 } 
+
+test_not_allow_to_member_update_validFrom_no_field_role if {
+    not allow with input as produce_input_doc(
+        "tarcinapp.member", true, [default_group],
+        {
+            "_name": "Updated Entity",
+            "description": "Updated description",
+            "_visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:05:00Z"
+        },
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": null,
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
+    )
+}
+
+test_not_allow_to_member_update_validFrom_with_role_but_original_not_null if {
+    not allow with input as produce_input_doc_by_role_with_field_permission(
+        "tarcinapp.member", true,
+        {
+            "_name": "Updated Entity",
+            "description": "Updated description",
+            "visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:10:00Z"
+        },
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:05:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        },
+        "tarcinapp.entities.fields._validFromDateTime.update"
+    )
+}
+
+test_not_allow_to_member_update_validFrom_with_role_but_value_not_in_range if {
+    not allow with input as produce_input_doc_by_role_with_field_permission(
+        "tarcinapp.member", true,
+        {
+            "_name": "Updated Entity",
+            "description": "Updated description",
+            "visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2000-01-01T00:00:00Z"  # way out of range
+        },
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": null,
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        },
+        "tarcinapp.entities.fields._validFromDateTime.update"
+    )
+}
+
+test_allow_to_member_update_validFrom_with_role_and_value_in_range if {
+    # Set up a fake 'now' and a validFrom value 100 seconds before it
+    fake_now := 1700000000000000000  # 2023-11-14T12:26:40Z in nanoseconds
+    validFrom := "2023-11-14T12:25:00Z"  # 100 seconds before fake_now
+
+    allow with input as produce_input_doc_by_role_with_field_permission(
+        "tarcinapp.member", true,
+        {
+            "_name": "Updated Entity",
+            "description": "Updated description",
+            "visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": validFrom
+        },
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": null,
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        },
+        "tarcinapp.entities.fields._validFromDateTime.update"
+    ) with time.now_ns as fake_now
+} 

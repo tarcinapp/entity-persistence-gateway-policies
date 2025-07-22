@@ -127,17 +127,16 @@ is_validUntil_in_correct_range_for_inactivation if {
     validUntilSec > (nowSec - member_validUntil_range_for_inactivation_in_seconds)
 }
 
-# if there is no forbidden field for update, this expression must return true
-forbidden_fields_has_same_value_with_original_record if {
-    not forbidden_fields.which_fields_forbidden_for_update[0]
+# Returns true if there exists a forbidden field for update in the payload with a different value
+forbidden_update_field_changed if {
+    field := forbidden_fields.which_fields_forbidden_for_update[_]
+    input.requestPayload[field]
+    input.requestPayload[field] != input.originalRecord[field]
 }
 
 # All forbidden-for-update fields present in the payload must have the same value as in the original record
 forbidden_fields_has_same_value_with_original_record if {
-    not some field
-    field := forbidden_fields.which_fields_forbidden_for_update[_]
-    input.requestPayload[field]
-    input.requestPayload[field] != input.originalRecord[field]
+    not forbidden_update_field_changed
 }
 
 payload_contains_any_field(fields) if {
