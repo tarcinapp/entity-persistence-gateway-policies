@@ -337,7 +337,7 @@ test_allow_to_admin_with_inactive_original_record if {
 
 test_allow_to_member_as_owner_user if {
     allow with input as produce_input_doc(
-        "tarcinapp.member", true, [default_group],
+        "tarcinapp.member", true, ["my-group", "other-group"],
         {
             "_name": "Updated Entity",
             "description": "Updated description",

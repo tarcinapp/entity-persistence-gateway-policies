@@ -62,21 +62,21 @@ is_record_belongs_to_this_user if {
 # if ownerUsers exists in the payload, then it must contains user's id
 # if ownerUsers is not in the payload, then we can assume this control 'true'
 user_id_in_ownerUsers if {
-	not payload_contains_any_field(["ownerUsers"])
+	not payload_contains_any_field(["_ownerUsers"])
 }
 
 user_id_in_ownerUsers if {
-	payload_contains_any_field(["ownerUsers"])
-	input.requestPayload.ownerUsers[_] = token.payload.sub
+	payload_contains_any_field(["_ownerUsers"])
+	input.requestPayload._ownerUsers[_] = token.payload.sub
 }
 
 member_has_problem_with_ownerGroups if {
-  payload_contains_any_field(["ownerGroups"])
+  payload_contains_any_field(["_ownerGroups"])
   no_ownerGroups_item_in_users_groups
 }
 
 no_ownerGroups_item_in_users_groups if {
-	token.payload.groups[_] != input.requestPayload.ownerGroups[_]
+	token.payload.groups[_] != input.requestPayload._ownerGroups[_]
 }
 
 # user can update validFrom
@@ -85,8 +85,8 @@ no_ownerGroups_item_in_users_groups if {
 # As this attempt means changing the approval time, 
 # or unapproving already approved reacord, should not be allowed for members
 member_has_problem_with_validFrom if {
-	payload_contains_any_field(["validFromDateTime"])
-	original_record.has_value("validFromDateTime")
+	payload_contains_any_field(["_validFromDateTime"])
+	original_record.has_value("_validFromDateTime")
 }
 
 # user can update validFrom
@@ -94,24 +94,24 @@ member_has_problem_with_validFrom if {
 # user tries to add a validFrom
 # but validFrom is not in correct range
 member_has_problem_with_validFrom if {
-	payload_contains_any_field(["validFromDateTime"])
+	payload_contains_any_field(["_validFromDateTime"])
 	not is_validFrom_in_correct_range
 }
 
 member_has_problem_with_validUntil if {
-	payload_contains_any_field(["validUntilDateTime"])
-	original_record.has_value("validUntilDateTime")
+	payload_contains_any_field(["_validUntilDateTime"])
+	original_record.has_value("_validUntilDateTime")
 }
 
 # validUntil must be in correct range for inactivation
 member_has_problem_with_validUntil if {
-	payload_contains_any_field(["validUntilDateTime"])
+	payload_contains_any_field(["_validUntilDateTime"])
     not is_validUntil_in_correct_range_for_inactivation
 } 
 
 is_validFrom_in_correct_range if {
 	nowSec := time.now_ns()/(1000*1000*1000)
-	validFromSec := time.parse_rfc3339_ns(input.requestPayload.validFromDateTime)/(1000*1000*1000)
+	validFromSec := time.parse_rfc3339_ns(input.requestPayload._validFromDateTime)/(1000*1000*1000)
     
 	validFromSec <= nowSec
     validFromSec > (nowSec - member_validFrom_range_in_seconds)
@@ -121,7 +121,7 @@ is_validFrom_in_correct_range if {
 
 is_validUntil_in_correct_range_for_inactivation if {
 	nowSec := time.now_ns()/(1000*1000*1000)
-    validUntilSec := time.parse_rfc3339_ns(input.requestPayload.validUntilDateTime)/(1000*1000*1000)
+    validUntilSec := time.parse_rfc3339_ns(input.requestPayload._validUntilDateTime)/(1000*1000*1000)
 
     validUntilSec <= nowSec
     validUntilSec > (nowSec - member_validUntil_range_for_inactivation_in_seconds)
@@ -129,13 +129,15 @@ is_validUntil_in_correct_range_for_inactivation if {
 
 # if there is no forbidden field for update, this expression must return true
 forbidden_fields_has_same_value_with_original_record if {
-	not forbidden_fields.which_fields_forbidden_for_update[0]
+    not forbidden_fields.which_fields_forbidden_for_update[0]
 }
 
+# All forbidden-for-update fields present in the payload must have the same value as in the original record
 forbidden_fields_has_same_value_with_original_record if {
-	forbidden_field_for_update := forbidden_fields.which_fields_forbidden_for_update[_]
-	
-	input.requestPayload[forbidden_field_for_update] = input.originalRecord[forbidden_field_for_update]
+    not some field
+    field := forbidden_fields.which_fields_forbidden_for_update[_]
+    input.requestPayload[field]
+    input.requestPayload[field] != input.originalRecord[field]
 }
 
 payload_contains_any_field(fields) if {
@@ -146,11 +148,11 @@ payload_contains_any_field(fields) if {
 # Helper functions
 #-----------------------------------------------
 is_owner_users_empty if {
-    count(input.originalRecord.ownerUsers) == 0
+    count(input.originalRecord._ownerUsers) == 0
 }
 
 is_owner_groups_empty if {
-    count(input.originalRecord.ownerGroups) == 0
+    count(input.originalRecord._ownerGroups) == 0
 }
 
 #-----------------------------------------------
