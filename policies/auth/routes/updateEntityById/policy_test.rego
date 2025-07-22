@@ -748,3 +748,64 @@ test_not_allow_to_admin_with_invalid_token if {
     
     not allow with input as test_body
 } 
+
+test_not_allow_to_member_with_forbidden_update_field_changed if {
+    not allow with input as produce_input_doc(
+        "tarcinapp.member", true, [default_group],
+        {
+            "_name": "Updated Entity",
+            "description": "Updated description",
+            "_visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2022-01-01T00:00:00Z"  # forbidden for update, changed value
+        },
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        }
+    )
+}
+
+test_allow_to_member_with_field_level_update_role if {
+    allow with input as produce_input_doc_by_role_with_field_permission(
+        "tarcinapp.member", true,
+        {
+            "_name": "Updated Entity",
+            "description": "Updated description",
+            "_visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2022-01-01T00:00:00Z"  # forbidden for update, changed value
+        },
+        {
+            "_id": "123",
+            "_name": "Original Entity",
+            "description": "Original description",
+            "_visibility": "public",
+            "_ownerUsers": [default_user_id],
+            "_ownerGroups": [default_group],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": null,
+            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+            "_lastUpdatedBy": "original-user",
+            "_createdBy": "original-user"
+        },
+        "tarcinapp.entities.fields._creationDateTime.update"
+    )
+} 
