@@ -344,7 +344,6 @@ test_allow_to_member_as_owner_user if {
             "_visibility": "public",
             "_ownerUsers": [default_user_id],
             "_ownerGroups": ["other-group"],
-            "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null
         },
         {
