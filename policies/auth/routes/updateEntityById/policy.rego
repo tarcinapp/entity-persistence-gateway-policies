@@ -59,15 +59,46 @@ is_record_belongs_to_this_user if {
   input.originalRecord._visibility != "private"
 }
 
-# if ownerUsers exists in the payload, then it must contains user's id
-# if ownerUsers is not in the payload, then we can assume this control 'true'
+# user_id_in_ownerUsers is a policy control rule.
+# It returns true if the payload's ownerUsers field is acceptable for the current user:
+# - If ownerUsers is not present in the payload, no check is required (returns true).
+# - If ownerUsers is present in the payload and the user was in ownerUsers in the original record,
+#   the user must also be present in the payload's ownerUsers.
+# - If ownerUsers is present in the payload but the user was not in ownerUsers in the original record,
+#   there is no requirement to add the user ID.
 user_id_in_ownerUsers if {
-	not payload_contains_any_field(["_ownerUsers"])
+    # Pass if ownerUsers is not present in the payload
+    not payload_contains_any_field(["_ownerUsers"])
 }
 
 user_id_in_ownerUsers if {
-	payload_contains_any_field(["_ownerUsers"])
-	input.requestPayload._ownerUsers[_] = token.payload.sub
+    # Pass if ownerUsers is present in the payload and the user was in the original record's ownerUsers,
+    # and the user is also present in the payload's ownerUsers
+    payload_contains_any_field(["_ownerUsers"])
+    original_record.has_value("_ownerUsers")
+    user_id_in_list(token.payload.sub, input.originalRecord._ownerUsers)
+    user_id_in_list(token.payload.sub, input.requestPayload._ownerUsers)
+}
+
+user_id_in_ownerUsers if {
+    # Pass if ownerUsers is present in the payload, but the original record did not have ownerUsers
+    payload_contains_any_field(["_ownerUsers"])
+    not original_record.has_value("_ownerUsers")
+}
+
+user_id_in_ownerUsers if {
+    # Pass if ownerUsers is present in the payload, the original record had ownerUsers,
+    # but the user was not in the original record's ownerUsers (no requirement to add user ID)
+    payload_contains_any_field(["_ownerUsers"])
+    original_record.has_value("_ownerUsers")
+    not user_id_in_list(token.payload.sub, input.originalRecord._ownerUsers)
+}
+
+# Helper: returns true if user_id is in arr (safe for null arrays)
+user_id_in_list(user_id, arr) if {
+    arr != null
+    some i
+    arr[i] == user_id
 }
 
 member_has_problem_with_ownerGroups if {

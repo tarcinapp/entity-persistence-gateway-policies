@@ -1,14 +1,29 @@
 {
     "appShortcode": "tarcinapp",
-    "policyName": "/policies/auth/routes/updateAllEntities/policy",
+    "policyName": "/policies/auth/routes/updateEntityById/policy",
     "httpMethod": "PUT",
-    "requestPath": "/generic-entities",
-    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImtUbU54aFI0TFdkaEp4bmtXTzZ3bk00dzJuQWtxTm5YYUw4Vm5HYkItUW8ifQ.eyJleHAiOjE2OTc4NzQxMzcsImlhdCI6MTY5NzgzODEzNywianRpIjoiZjhmODExZWQtZmVlYy00NDRkLTlkNTQtMmVhOWQ2ZjIzNGRkIiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAta2V5Y2xvYWsuaDN0NGVnLmVhc3lwYW5lbC5ob3N0L3JlYWxtcy90YXJjaW5hcHAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiMTkwOWFhMjgtNzc4Yi00MTFiLWI4N2YtMDExOWNlNDAxYzEwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoicG9zdG1hbiIsInNlc3Npb25fc3RhdGUiOiJhNThlMjQxYi1hNmYyLTQzMzctYWRkMi1lNzM5ZjczNmQ1NTgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ0YXJjaW5hcHAuZW50aXRpZXMuZmllbGRzLnZhbGlkRnJvbURhdGVUaW1lLnVwZGF0ZSIsImRlZmF1bHQtcm9sZXMtdGFyY2luYXBwIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsInRhcmNpbmFwcC5tZW1iZXIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiYTU4ZTI0MWItYTZmMi00MzM3LWFkZDItZTczOWY3MzZkNTU4IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInJvbGVzIjpbInRhcmNpbmFwcC5lbnRpdGllcy5maWVsZHMudmFsaWRGcm9tRGF0ZVRpbWUudXBkYXRlIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLmVudGl0aWVzLnVwZGF0ZS5lZGl0b3IiXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidXNlci1iYXNpYy12ZXJpZmllZC1tZW1iZXItMSIsImdpdmVuX25hbWUiOiIiLCJmYW1pbHlfbmFtZSI6IiJ9.OivSGvuq_ggQG8hArXEnBDBafpxK7-DX03shTVs-cN_hNABz6GXMNiwHSYYMzrMr1uEhaIlbT2Q8OxjT9SB51uQTFIEN0g8paAts_DZVBwJ7w2WHWs2tCBGD-cp9k-IPrFVIuY4GHKv1R-wqvNv1cUAM_c_mMlKl7RapSWh-wHIYu83V4n4uBx17hfHUGICBu33A69tVOsTyqNyOEzzUSFiJJ0gDDV-4dOCqVu6_NWrsUQMIgxKZBIAzoxgkYrPb6Ek2zhjzLXNmF1QYQkUCWTpw0HTfTsDCvvW7Vx_9RnucR3qD5QQ9bQ76crAXZxMqGNrhxAK6_TPoyVdE9PTzbg",
+    "requestPath": "/generic-entities/123",
+    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTc4NzQxMzcsImlhdCI6MTY5NzgzODEzNywianRpIjoiZjhmODExZWQtZmVlYy00NDRkLTlkNTQtMmVhOWQ2ZjIzNGRkIiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAta2V5Y2xvYWsuaDN0NGVnLmVhc3lwYW5lbC5ob3N0L3JlYWxtcy90YXJjaW5hcHAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZGVmYXVsdC11c2VyLWlkIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoicG9zdG1hbiIsInNlc3Npb25fc3RhdGUiOiJhNThlMjQxYi1hNmYyLTQzMzctYWRkMi1lNzM5ZjczNmQ1NTgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ0YXJjaW5hcHAubWVtYmVyIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwiZ3JvdXBzIjpbIm15LWdyb3VwIiwib3RoZXItZ3JvdXAiXSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6ImE1OGUyNDFiLWE2ZjItNDMzNy1hZGQyLWU3MzlmNzM2ZDU1OCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJyb2xlcyI6WyJ0YXJjaW5hcHAubWVtYmVyIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl0sInByZWZlcnJlZF91c2VybmFtZSI6InVzZXItYmFzaWMtdmVyaWZpZWQtbWVtYmVyLTEiLCJnaXZlbl9uYW1lIjoiIiwiZmFtaWx5X25hbWUiOiIifQ.I7A77QFEJ9XyY5R9X0dSSqpEPuaZEfKmaJ4IVFq84roDwmp4hxh9ilOeOBRlrOrwb1GxZ22GndsOArVEAXm1ZuDHe9APRupnAkFParHz4_jiNIjMRqMd3fB_ANdiWEur_KcVCMkMfgGQIUbEIWKefOLGAmbCPcw2wEX8DGBVb3MDTYmgH8VAFgQnYSZuOOxQCd2gkKRBZcqadBR60wgujHew4b6oggTNhOniAwZqE0m2emMIIlDMGDLLl0u2NL9fQcf-y_T5qGNctbp1n3pnKKgDUehWwK_74N1eR5JEuPRKozteTWog9zLqWz14mqewNq9EdFjHV0-3IpX0n5FjLw",
     "requestPayload": {
+        "_name": "Updated Entity",
+        "description": "Updated description",
         "_visibility": "public",
-        "_ownerUsers": ["any-owner"],
-        "_ownerGroups": ["any-owner-group"],
+        "_ownerUsers": ["default-user-id"],
+        "_ownerGroups": ["other-group"],
+        "_validUntilDateTime": null
+    },
+    "originalRecord": {
+        "_id": "123",
+        "_name": "Original Entity",
+        "description": "Original description",
+        "_visibility": "public",
+        "_ownerUsers": ["default-user-id"],
+        "_ownerGroups": ["other-group"],
         "_validFromDateTime": "2020-01-01T00:00:00Z",
-        "_validUntilDateTime": "2020-01-01T00:00:00Z"
+        "_validUntilDateTime": null,
+        "_creationDateTime": "2020-01-01T00:00:00Z",
+        "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
+        "_lastUpdatedBy": "original-user",
+        "_createdBy": "original-user"
     }
 }

@@ -372,7 +372,6 @@ test_allow_to_member_as_owner_group_public if {
             "_visibility": "public",
             "_ownerUsers": ["different-user"],
             "_ownerGroups": ["my-group"],
-            "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null
         },
         {

@@ -19,7 +19,7 @@ This policy evaluates the user's role, email verification status, request payloa
         - One of the user's groups is specified in the record's `ownerGroups` field, and the visibility is 'not private' (it is either 'protected' or 'public').
     - Payload cannot contain any field that the user is not allowed to see (forbidden fields for finding).
     - Payload can contain fields that the user is allowed to see but not allowed to update (forbidden fields for update), but the value of such fields in the payload must be exactly the same as in the original record (including `null`). The user cannot change or clear the value of such fields.
-    - If `ownerUsers` exists in the payload, it must contain the caller user ID.
+    - If `ownerUsers` exists in the payload **and** the user was in `ownerUsers` in the original record, the payload must also contain the user ID. If the user was not in `ownerUsers` in the original record, there is no requirement to add them to `ownerUsers` in the payload.
     - All group names specified in the `ownerGroups` field of the payload must be from the user's groups.
     - If the `validFromDateTime` field exists in the payload:
         - `validFrom` field must be null in the original record.

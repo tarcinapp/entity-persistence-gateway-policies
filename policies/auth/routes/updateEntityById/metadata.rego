@@ -16,7 +16,7 @@ description := `This policy evaluates the user's role, email verification status
         - one of the user's groups is specified in the records ownerGroups field, and visibilitiy is 'not private' (it is protected or public).
     - payload cannot contain any field that user is not allowed to see (which_fields_forbidden_for_finding)
     - payload can contain fields that user is not allowed to update (which_fields_forbidden_for_update), but their values must be the same as in the original record
-    - if ownerUsers exists, it must contain the user id
+    - if ownerUsers exists in the payload and the user was in ownerUsers in the original record, the payload must also contain the user id. If the user was not in ownerUsers in the original record, there is no requirement to add them to ownerUsers in the payload.
     - all group names specified in ownerGroups field of the payload must be from the user's groups
     - if validFromDateTime field exists in the payload
         - user must have the required roles for updating the validFromDateTime
