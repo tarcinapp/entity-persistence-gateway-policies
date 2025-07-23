@@ -25,7 +25,22 @@ description := `This policy evaluates the user's role, email verification status
     - if validUntilDateTime field exists in the payload
         - user must have the required roles for updating the validUntilDateTime
         - validUntil fields must be null in the original record
-        - validUntilDateTime must specify a time in last 300 seconds`
+        - validUntilDateTime must specify a time in last 300 seconds
+
+General Principles for Payload Fields:
+- Visibility: The payload must not contain any field that the user is not allowed to see (forbidden-for-finding fields). Only fields the user is eligible to see may be included in the payload.
+- Update Permissions: If the payload contains a field that the user is allowed to see but not allowed to update (forbidden-for-update fields), the value of that field in the payload must be exactly the same as in the original record. This applies regardless of the value (including null). The user cannot change or clear the value of such fields.
+
+Application to _validUntilDateTime:
+- If the user does not have the required role to update _validUntilDateTime:
+  - The payload can only include _validUntilDateTime if its value is identical to the value in the original record (including if both are null).
+  - The user cannot set a new value or clear an existing value.
+- If the user has the required role to update _validUntilDateTime:
+  - The payload may set a new value, but only if the original value is null and the new value is a timestamp within the last 300 seconds.
+
+This ensures:
+- Users cannot see or update fields they are not permitted to.
+- Fields that are visible but not updatable remain unchanged by users without the appropriate permissions.`
 
 fields := {
     "encodedJwt": "Encoded JWT string.",

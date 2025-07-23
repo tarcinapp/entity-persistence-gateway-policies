@@ -18,16 +18,21 @@ This policy evaluates the user's role, email verification status, request payloa
         - The user's ID is in `ownerUsers`.
         - One of the user's groups is specified in the record's `ownerGroups` field, and the visibility is 'not private' (it is either 'protected' or 'public').
     - Payload cannot contain any field that the user is not allowed to see (forbidden fields for finding).
-    - Payload can contain fields that the user is not allowed to update (forbidden fields for update), but their values must be the same as in the original record.
+    - Payload can contain fields that the user is allowed to see but not allowed to update (forbidden fields for update), but the value of such fields in the payload must be exactly the same as in the original record (including `null`). The user cannot change or clear the value of such fields.
     - If `ownerUsers` exists in the payload, it must contain the caller user ID.
     - All group names specified in the `ownerGroups` field of the payload must be from the user's groups.
     - If the `validFromDateTime` field exists in the payload:
         - `validFrom` field must be null in the original record.
         - `validFromDateTime` must specify a time in the last 300 seconds.
     - If the `validUntilDateTime` field exists in the payload:
-        - `validUntil` fields must be null in the original record.
-        - `validUntilDateTime` must specify a time in the last 300 seconds.
+        - If the original value of `_validUntilDateTime` is **not null**, member users **cannot update or clear it**.
+        - If the original value is `null` and the user does **not** have the required role to update, the payload can only set `_validUntilDateTime` to `null` (it must match the original).
+        - If the original value is `null` and the user **has** the required role to update, the payload may set a new value, but only if it is a timestamp within the last 300 seconds.
 - **Visitors** cannot update any record.
+
+**This ensures:**
+- Users cannot see or update fields they are not permitted to.
+- Fields that are visible but not updatable remain unchanged by users without the appropriate permissions.
 
 ## Fields
 

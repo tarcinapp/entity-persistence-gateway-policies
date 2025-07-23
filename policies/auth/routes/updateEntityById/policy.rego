@@ -75,9 +75,17 @@ member_has_problem_with_ownerGroups if {
   no_ownerGroups_item_in_users_groups
 }
 
+# This rule checks that every group listed in _ownerGroups in the payload
+# is present in the user's group list (from the JWT). If any group in
+# _ownerGroups is not found in the user's groups, this rule returns true
+# and the update is denied for members.
 no_ownerGroups_item_in_users_groups if {
-	token.payload.groups[_] != input.requestPayload._ownerGroups[_]
+    some i
+    group := input.requestPayload._ownerGroups[i]
+    not group in token.payload.groups
 }
+
+
 
 # user can update validFrom
 # user tries to change validFrom
@@ -98,16 +106,52 @@ member_has_problem_with_validFrom if {
 	not is_validFrom_in_correct_range
 }
 
-member_has_problem_with_validUntil if {
-	payload_contains_any_field(["_validUntilDateTime"])
-	original_record.has_value("_validUntilDateTime")
+# Helper: true if _validUntilDateTime is forbidden for update for this user
+validUntil_forbidden if {
+    forbidden_fields.which_fields_forbidden_for_update[_] == "_validUntilDateTime"
 }
 
-# validUntil must be in correct range for inactivation
+# Case 1: If the original value is not null, members cannot update or clear it
 member_has_problem_with_validUntil if {
-	payload_contains_any_field(["_validUntilDateTime"])
+    payload_contains_any_field(["_validUntilDateTime"])
+    original_record.has_value("_validUntilDateTime")
+    input.originalRecord._validUntilDateTime != null
+    input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
+}
+
+# Case 2a: Original does not have the field at all and field is forbidden for update
+member_has_problem_with_validUntil if {
+    payload_contains_any_field(["_validUntilDateTime"])
+    not original_record.has_value("_validUntilDateTime")
+    validUntil_forbidden
+    input.requestPayload._validUntilDateTime != null
+}
+
+# Case 2b: Original has the field and it is null, field is forbidden for update
+member_has_problem_with_validUntil if {
+    payload_contains_any_field(["_validUntilDateTime"])
+    input.originalRecord._validUntilDateTime == null
+    validUntil_forbidden
+    input.requestPayload._validUntilDateTime != null
+}
+
+# Case 3a: Original does not have the field at all, user has update permission
+member_has_problem_with_validUntil if {
+    payload_contains_any_field(["_validUntilDateTime"])
+    not original_record.has_value("_validUntilDateTime")
+    not validUntil_forbidden
+    input.requestPayload._validUntilDateTime != null
     not is_validUntil_in_correct_range_for_inactivation
-} 
+}
+
+# Case 3b: Original has the field and it is null, user has update permission
+member_has_problem_with_validUntil if {
+    payload_contains_any_field(["_validUntilDateTime"])
+    input.originalRecord._validUntilDateTime == null
+    not validUntil_forbidden
+    input.requestPayload._validUntilDateTime != null
+    not is_validUntil_in_correct_range_for_inactivation
+}
 
 is_validFrom_in_correct_range if {
 	nowSec := time.now_ns()/(1000*1000*1000)
