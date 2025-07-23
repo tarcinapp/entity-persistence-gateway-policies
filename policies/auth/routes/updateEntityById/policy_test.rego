@@ -486,7 +486,6 @@ test_allow_to_member_with_ownerUsers_in_payload if {
             "_visibility": "public",
             "_ownerUsers": [default_user_id],
             "_ownerGroups": ["other-group"],
-            "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null
         },
         {
@@ -544,7 +543,6 @@ test_allow_to_member_with_ownerGroups_in_payload if {
             "_visibility": "public",
             "_ownerUsers": ["different-user"],
             "_ownerGroups": ["my-group"],
-            "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null
         },
         {
