@@ -36,7 +36,7 @@ is_belong_to_user if {
 
 is_belong_to_users_groups if {
     some i
-    token.payload.groups[i] = input.originalRecord._ownerGroups[i]
+    token.payload.groups[i] in input.originalRecord._ownerGroups
 }
 
 is_user_in_viewerUsers if {
