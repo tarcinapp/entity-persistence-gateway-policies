@@ -17,7 +17,7 @@ description := `This policy evaluates the user's role, email verification status
         - user's id is in ownerUsers of the original record
         - one of the user's groups is specified in the original record's ownerGroups field, and visibilitiy is 'not private' (it must either be 'protected' or 'public').
     - ownerUsers field of the request payload contains the user's user id
-    - all group names specified in ownerGroups field of the request payload must be from the user's groups
+    - If the payload adds any new group(s) to ownerGroups (i.e., groups not present in the original record), those new group(s) must be from the user's groups. The user cannot add a group to a record that they are not a member of. Existing groups in the original record that the user is not a member of may remain.
     - For validFromDateTime, if user is allowed the change the value
         - validFromDateTime field of the original record must be empty
         - it must be within the last 300 seconds
