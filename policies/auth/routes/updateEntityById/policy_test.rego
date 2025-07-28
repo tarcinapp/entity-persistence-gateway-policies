@@ -478,6 +478,8 @@ test_not_allow_to_member_not_owner if {
 }
 
 test_allow_to_member_with_ownerUsers_in_payload if {
+
+
     allow with input as produce_input_doc(
         "tarcinapp.member", true, [default_group],
         {
@@ -485,7 +487,8 @@ test_allow_to_member_with_ownerUsers_in_payload if {
             "description": "Updated description",
             "_visibility": "public",
             "_ownerUsers": [default_user_id],
-            "_ownerGroups": ["other-group"],
+            
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null
         },
         {

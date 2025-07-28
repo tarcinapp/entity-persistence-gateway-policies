@@ -67,10 +67,6 @@ allow if {
 
 #-----------------------------------------------
 
-debug_is_record_belongs_to_this_user if {
-	ownerUsers_unchanged
-}
-
 is_record_belongs_to_this_user if {
 	is_record_belongs_to_this_user_through_user_id
 }
