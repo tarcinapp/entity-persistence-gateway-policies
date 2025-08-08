@@ -114,6 +114,38 @@ test_not_allow_member_remove_other_group_they_do_not_belong_to if {
         "roles": ["tarcinapp.member"]
     })
 }
+# Member tries to update an inactive record (should be denied)
+test_not_allow_member_update_inactive_record if {
+    not allow with input as produce_input_replace(
+        ["tarcinapp.member"], true,
+        {
+            "_name": "Test Entity",
+            "description": "Test Description",
+            "_visibility": "public",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1"],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": "2021-01-01T00:00:00Z"
+        },
+        {
+            "_name": "Original Entity",
+            "description": "Original Description",
+            "_visibility": "public",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1"],
+            "_validFromDateTime": "2020-01-01T00:00:00Z",
+            "_validUntilDateTime": "2021-01-01T00:00:00Z"
+        }
+    ) with input.encodedJwt as test.produce_token({
+        "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
+        "name": "John Doe",
+        "admin": true,
+        "iat": 1516239022,
+        "email_verified": true,
+        "groups": ["group-1"],
+        "roles": ["tarcinapp.member"]
+    })
+}
 
 test_allow_admin_records_role if {
     allow with input as produce_input_replace(["tarcinapp.records.admin"], true, {
