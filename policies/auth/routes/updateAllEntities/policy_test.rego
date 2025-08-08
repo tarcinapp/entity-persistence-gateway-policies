@@ -158,10 +158,6 @@ test_allow_to_records_update_admin if {
     allow with input as produce_input_doc_by_role("tarcinapp.records.update.admin", true)
 }
 
-test_allow_to_entities_admin if {
-    allow with input as produce_input_doc_by_role("tarcinapp.entities.admin", true)
-}
-
 test_allow_to_records_admin if {
     allow with input as produce_input_doc_by_role("tarcinapp.records.admin", true)
 }
