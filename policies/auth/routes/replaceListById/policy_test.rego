@@ -661,4 +661,118 @@ produce_input_replace(role, is_email_verified, requestPayload, originalRecord) =
         "requestPayload": requestPayload,
         "originalRecord": originalRecord
     }
+}
+
+# Enhanced group ownership tests
+
+# Test: Member cannot modify ownerUsers if record belongs to their group
+test_not_allow_member_modify_ownerUsers_if_record_belongs_to_his_group if {
+    not allow with input as produce_input_replace("tarcinapp.member", true, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerUsers": ["other-user", "ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+        "_ownerGroups": ["group-1"],
+        "_validFromDateTime": null,
+        "_validUntilDateTime": null
+    }, {
+        "_name": "Test List",
+        "description": "Test Description",
+        "_visibility": "public",
+        "_ownerUsers": ["other-user"],
+        "_ownerGroups": ["group-1"],
+        "_validFromDateTime": null,
+        "_validUntilDateTime": null
+    })
+}
+
+# Test: Member owns by group (group in _ownerGroups, visibility protected)
+# User is not in _ownerUsers but is in a group listed in _ownerGroups, visibility is protected
+# Expected: Allowed
+test_allow_member_own_by_group_protected if {
+    allow with input as produce_input_replace(
+        "tarcinapp.member", true,
+        {
+            "_name": "Test List",
+            "description": "Test Description",
+            "_visibility": "protected",
+            "_ownerUsers": ["other-user"],
+            "_ownerGroups": ["group-1"],
+            "_validUntilDateTime": null,
+            "_validFromDateTime": "2020-01-01T00:00:00Z"
+        },
+        {
+            "_name": "Original List",
+            "description": "Original Description",
+            "_visibility": "protected",
+            "_ownerUsers": ["other-user"],
+            "_ownerGroups": ["group-1"],
+            "_validUntilDateTime": null,
+            "_validFromDateTime": "2020-01-01T00:00:00Z"
+        }
+    )
+}
+
+# Test: Additive ownerGroups - Allow if new group is user's group
+# User is a member of group-1 and group-2, adds group-2 to ownerGroups
+# Expected: Allowed
+test_allow_member_add_ownerGroup_they_belong_to if {
+    allow with input as produce_input_replace(
+        "tarcinapp.member", true,
+        {
+            "_name": "Test List",
+            "description": "Test Description",
+            "_visibility": "public",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1", "group-2"],
+            "_validUntilDateTime": null
+        },
+        {
+            "_name": "Original List",
+            "description": "Original Description",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1"],
+            "_validUntilDateTime": null
+        }
+    ) with input.encodedJwt as test.produce_token({
+        "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
+        "name": "John Doe",
+        "admin": true,
+        "iat": 1516239022,
+        "email_verified": true,
+        "groups": ["group-1", "group-2"],
+        "roles": ["tarcinapp.member"]
+    })
+}
+
+# Test: Additive ownerGroups - Deny if new group is not user's group
+# User is a member of group-1 only, tries to add other-group
+# Expected: Denied
+test_not_allow_member_add_ownerGroup_they_do_not_belong_to if {
+    not allow with input as produce_input_replace(
+        "tarcinapp.member", true,
+        {
+            "_name": "Test List",
+            "description": "Test Description",
+            "_visibility": "public",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1", "other-group"],
+            "_validUntilDateTime": null
+        },
+        {
+            "_name": "Original List",
+            "description": "Original Description",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1"],
+            "_validUntilDateTime": null
+        }
+    ) with input.encodedJwt as test.produce_token({
+        "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
+        "name": "John Doe",
+        "admin": true,
+        "iat": 1516239022,
+        "email_verified": true,
+        "groups": ["group-1"],
+        "roles": ["tarcinapp.member"]
+    })
 } 

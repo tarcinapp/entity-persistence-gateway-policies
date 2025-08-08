@@ -21,8 +21,12 @@ This policy evaluates the user's role, email verification status, request payloa
   - The record must belong to that user. A record belongs to the user if 'at least one' of the following is true:
     - User's ID is in ownerUsers of the original record.
     - One of the user's groups is specified in the original record's ownerGroups field, and visibility is 'not private' (it must be either 'protected' or 'public').
-  - The ownerUsers field of the request payload contains the user's user ID.
+  - The ownerUsers field of the request payload contains the user's user ID if the user owns the record through user ID ownership - not through group ownership.
   - If the payload adds any new group(s) to ownerGroups (i.e., groups not present in the original record), those new group(s) must be from the user's groups. The user cannot add a group to a record that they are not a member of. Existing groups in the original record that the user is not a member of may remain.
+  - If the user owns the record through group ownership only (i.e., the user's ID is not in ownerUsers of the original record, but at least one of the user's groups is in ownerGroups and the record is not private), the following restrictions apply:
+    - Cannot remove existing groups from ownerGroups.
+    - Cannot change visibility to 'private'.
+    - Cannot modify the ownerUsers field.
   - For validFromDateTime, if the user is allowed to change the value:
     - The validFromDateTime field of the original record must be empty.
     - It must be within the last 300 seconds.

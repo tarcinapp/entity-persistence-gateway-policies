@@ -13,7 +13,7 @@ member_validFrom_range_in_seconds := 300
 
 member_validUntil_range_for_inactivation_in_seconds := 300
 
-# visitiors cannot update any record
+# visitors cannot update any record
 
 #-----------------------------------------------
 
@@ -61,9 +61,6 @@ allow if {
 	is_record_belongs_to_this_user # over user's groups or user's id
 	not original_record.is_passive # only pending and active records are updateable by members for now, maybe we can let users to 'undo' their inactivation operation by letting them to modify inactive records as well
 
-	user_id_in_ownerUsers # user id must always be in the ownerUsers array
-	not member_has_problem_with_ownerGroups # member cannot use any group name that he is not belongs to
-
 	not member_has_problem_with_validFrom # updating validFrom (approving) requires some specific roles, validFrom > (now - 60s)
 	not member_has_problem_with_validUntil # updating validUntil (deleting) requires some specific roles, (validUntil > now - 60s)
 }
@@ -71,12 +68,26 @@ allow if {
 #-----------------------------------------------
 
 is_record_belongs_to_this_user if {
-	original_record.is_belong_to_user
+	is_record_belongs_to_this_user_through_user_id
 }
 
 is_record_belongs_to_this_user if {
+	is_record_belongs_to_this_user_through_groups
+}
+
+is_record_belongs_to_this_user_through_user_id if {
+	original_record.is_belong_to_user
+	user_id_in_ownerUsers
+	all_new_groups_from_user_groups
+}
+
+is_record_belongs_to_this_user_through_groups if {
 	original_record.is_belong_to_users_groups
-	input.originalRecord._visibility != "private"
+	not original_record.is_private                # record is either public or protected
+	input.requestPayload._visibility != "private" # user cannot change visibility to private
+	all_new_groups_from_user_groups
+	no_original_groups_removed
+	ownerUsers_unchanged
 }
 
 user_id_in_ownerUsers if {
@@ -84,20 +95,119 @@ user_id_in_ownerUsers if {
 	input.requestPayload._ownerUsers[i] == token.payload.sub
 }
 
-member_has_problem_with_ownerGroups if {
-	payload_contains_any_field(["_ownerGroups"])
-	no_ownerGroups_item_in_users_groups
-}
-
-no_ownerGroups_item_in_users_groups if {
-	some group
-	group = input.requestPayload["_ownerGroups"][_]
-	not group_in_token_groups(group)
-}
-
 group_in_token_groups(group) if {
 	some i
 	token.payload.groups[i] == group
+}
+
+# all groups in the originalRecord's _ownerGroups must still be in the requestPayload._ownerGroups
+# meaning no group is removed
+# returns true if no groups are removed OR if all original groups are still present
+no_original_groups_removed if {
+	not has_removed_groups
+}
+
+no_original_groups_removed if {
+	has_removed_groups
+	all_original_groups_still_present
+}
+
+# check if there are any groups that were removed (groups in original that aren't in request)
+has_removed_groups if {
+	some original_group
+	original_group = input.originalRecord._ownerGroups[_]
+	not group_in_request_payload(original_group)
+}
+
+# check if all original groups are still present in request payload
+all_original_groups_still_present if {
+	some original_group
+	original_group = input.originalRecord._ownerGroups[_]
+	group_in_request_payload(original_group)
+	not has_removed_group
+}
+
+# check if there are any original groups that are NOT in request payload
+has_removed_group if {
+	some original_group
+	original_group = input.originalRecord._ownerGroups[_]
+	not group_in_request_payload(original_group)
+}
+
+group_in_request_payload(group) if {
+	some i
+	input.requestPayload._ownerGroups[i] == group
+}
+
+# all newly added groups in the requestPayload._ownerGroups are from the user's own groups
+# returns true if there are no new groups OR if all new groups are from user's groups
+all_new_groups_from_user_groups if {
+	not has_new_groups
+}
+
+all_new_groups_from_user_groups if {
+	has_new_groups
+	all_new_groups_are_from_user_groups
+}
+
+# check if there are any new groups (groups in request payload that weren't in original)
+has_new_groups if {
+	some new_group
+	new_group = input.requestPayload._ownerGroups[_]
+	not group_in_original_record(new_group)
+}
+
+# check if all new groups are from user's groups
+all_new_groups_are_from_user_groups if {
+	some new_group
+	new_group = input.requestPayload._ownerGroups[_]
+	not group_in_original_record(new_group)
+	group_in_token_groups(new_group)
+	not has_new_group_not_from_user_groups
+}
+
+# check if there are any new groups that are NOT from user's groups
+has_new_group_not_from_user_groups if {
+	some new_group
+	new_group = input.requestPayload._ownerGroups[_]
+	not group_in_original_record(new_group)
+	not group_in_token_groups(new_group)
+}
+
+group_in_original_record(group) if {
+	some i
+	input.originalRecord._ownerGroups[i] == group
+}
+
+# all items in requestPayload._ownerUsers are same with all items in originalRecord._ownerUsers
+# returns true if owner users are unchanged (no additions, no removals)
+ownerUsers_unchanged if {
+	not has_removed_users
+	not has_added_users
+}
+
+# check if there are any users that were removed (users in original that aren't in request)
+has_removed_users if {
+	some original_user
+	original_user = input.originalRecord._ownerUsers[_]
+	not user_in_request_payload(original_user)
+}
+
+# check if there are any users that were added (users in request that weren't in original)
+has_added_users if {
+	some request_user
+	request_user = input.requestPayload._ownerUsers[_]
+	not user_in_original_record(request_user)
+}
+
+user_in_request_payload(user) if {
+	some i
+	input.requestPayload._ownerUsers[i] == user
+}
+
+user_in_original_record(user) if {
+	some i
+	input.originalRecord._ownerUsers[i] == user
 }
 
 # user can update validFrom
@@ -105,10 +215,12 @@ group_in_token_groups(group) if {
 # but original value is not null
 # As this attempt means changing the approval time, 
 # or unapproving already approved reacord, should not be allowed for members
+# user can only send same value for validFrom
 member_has_problem_with_validFrom if {
-	forbidden_fields.can_user_update_field("_validFromDateTime")
-	payload_contains_any_field(["_validFromDateTime"])
-	original_record.has_value("_validFromDateTime")
+	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.requestPayload._validFromDateTime != null
+	input.originalRecord._validFromDateTime != null
+	input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
 }
 
 # user can update validFrom
@@ -116,21 +228,58 @@ member_has_problem_with_validFrom if {
 # user tries to add a validFrom
 # but validFrom is not in correct range
 member_has_problem_with_validFrom if {
-	forbidden_fields.can_user_update_field("_validFromDateTime")
-	payload_contains_any_field(["_validFromDateTime"])
+	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.originalRecord._validFromDateTime == null
+	input.requestPayload._validFromDateTime != null
 	not is_validFrom_in_correct_range
 }
 
+# if user cannot find the field, he cannot send the field in the request payload
+# purpose: to prevent users from sending fields that they cannot see
 member_has_problem_with_validUntil if {
-	forbidden_fields.can_user_update_field("_validUntilDateTime")
+	"_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
 	payload_contains_any_field(["_validUntilDateTime"])
-	original_record.has_value("_validUntilDateTime")
 }
 
-# validUntil must be in correct range for inactivation
+# if user can 
+#   find the _validUntilDateTime field and,
+#   cannot update it because of the lack of the field level role and,
+#   original value is null
+# then
+#   he cannot send any value than null for the _validUntilDateTime field
+# purpose: to prevent users from sending different values than the original value if he does not have the field level role to update it
 member_has_problem_with_validUntil if {
-	forbidden_fields.can_user_update_field("_validUntilDateTime")
-	payload_contains_any_field(["_validUntilDateTime"])
+	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
+	"_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.originalRecord._validUntilDateTime == null
+	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
+}
+
+# if user can 
+#   find the _validUntilDateTime field and,
+#   can update it because of the field level role and,
+#   field has a value in the original record
+# then
+#   he cannot send any value different than the original value for the _validUntilDateTime field
+# purpose: if original validUntilDateTime is not null, user cannot set anything different than the original value
+member_has_problem_with_validUntil if {
+	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
+	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.originalRecord._validUntilDateTime != null
+	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
+}
+
+# if user can 
+#   find the _validUntilDateTime field and,
+#   can update it because of the field level role and,
+#   field has no value in the original record
+# then
+#   he cannot send any value that is not in the correct range for inactivation
+member_has_problem_with_validUntil if {
+	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
+	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.originalRecord._validUntilDateTime == null
+	input.requestPayload._validUntilDateTime != null
 	not is_validUntil_in_correct_range_for_inactivation
 }
 
