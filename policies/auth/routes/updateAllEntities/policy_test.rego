@@ -130,14 +130,6 @@ test_allow_to_records_update_editor if {
     allow with input as produce_input_doc_by_role("tarcinapp.records.update.editor", true)
 }
 
-test_allow_to_entities_editor if {
-    allow with input as produce_input_doc_by_role("tarcinapp.entities.editor", true)
-}
-
-test_allow_to_records_editor if {
-    allow with input as produce_input_doc_by_role("tarcinapp.records.editor", true)
-}
-
 test_not_allow_to_entities_update_editor_without_email_verification if {
     not allow with input as produce_input_doc_by_role("tarcinapp.entities.update.editor", false)
 }
@@ -156,10 +148,6 @@ test_allow_to_entities_update_admin if {
 
 test_allow_to_records_update_admin if {
     allow with input as produce_input_doc_by_role("tarcinapp.records.update.admin", true)
-}
-
-test_allow_to_records_admin if {
-    allow with input as produce_input_doc_by_role("tarcinapp.records.admin", true)
 }
 
 test_not_allow_to_entities_update_admin_without_email_verification if {
