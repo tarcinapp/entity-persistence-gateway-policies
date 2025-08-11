@@ -147,6 +147,60 @@ test_not_allow_member_update_inactive_record if {
     })
 }
 
+# Member tries to set validFromDateTime just inside the allowed window with field-level role (should be allowed)
+test_allow_member_set_validFromDateTime_inside_window_with_role if {
+    now := time.now_ns() / 1000000000
+    validFrom := now - 80 # 1 second inside the 300s window
+    validFromStr := time.format([validFrom * 1000000000, "UTC", "RFC3339"])
+    allow with input as produce_input_replace(
+        ["tarcinapp.member", "tarcinapp.entities.fields._validFromDateTime.update"], true,
+        {
+            "_name": "Test Entity",
+            "description": "Test Description",
+            "_visibility": "public",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1"],
+            "_validFromDateTime": validFromStr,
+            "_validUntilDateTime": null
+        },
+        {
+            "_name": "Original Entity",
+            "description": "Original Description",
+            "_visibility": "public",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1"],
+            "_validFromDateTime": null,
+            "_validUntilDateTime": null
+        }
+    )
+}
+
+# Member tries to set validUntilDateTime just outside the allowed window (should be denied)
+test_not_allow_member_set_validUntilDateTime_outside_window if {
+    now := time.now_ns() / 1000000000
+    validUntil := now - 301 # 1 second outside the 300s window
+    validUntilStr := time.format([validUntil * 1000000000, "UTC", "RFC3339"])
+    not allow with input as produce_input_replace(
+        ["tarcinapp.member", "tarcinapp.entities.fields._validUntilDateTime.update"], true,
+        {
+            "_name": "Test Entity",
+            "description": "Test Description",
+            "_visibility": "public",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1"],
+            "_validUntilDateTime": validUntilStr
+        },
+        {
+            "_name": "Original Entity",
+            "description": "Original Description",
+            "_visibility": "public",
+            "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+            "_ownerGroups": ["group-1"],
+            "_validUntilDateTime": null
+        }
+    )
+}
+
 test_allow_admin_records_role if {
     allow with input as produce_input_replace(["tarcinapp.records.admin"], true, {
         "_name": "Test Entity",
