@@ -20,7 +20,7 @@ The Tarcinapp suite is a comprehensive and flexible application framework, harmo
 At its core is the **Entity Persistence Service**, an easily adaptable REST-based backend application built on the [Loopback 4](https://loopback.io) framework. This service utilizes on a schemaless MongoDB database to provide a scalable and highly adaptable data persistence layer. Offering a generic data model with predefined fields such as `id`, `name`,  `kind`, `lastUpdateDateTime`, `creationDateTime`, `ownerUsers` and [more](#programming-conventions), it effortlessly adapts to diverse use cases.  
 
 The integration with the **Entity Persistence Gateway** empowers users to implement enhanced validation, authentication, authorization, and rate-limiting functionalities, ensuring a secure and efficient environment. Leveraging the power of **Redis**, the application seamlessly manages distributed locks, enabling robust data synchronization and rate limiting. Furthermore, the ecosystem includes the **Open Policy Agent (OPA)** to enforce policies, safeguarding your application against unauthorized access and ensuring compliance with your security and operational requirements. These policies, combined with the entire suite of components, form a cohesive and powerful ecosystem, paving the way for efficient and secure microservice development.  
-Here is an example request and response to the one of the most basic endpoint: `/generic-entities`:
+Here is an example request and response to the one of the most basic endpoint: `/entities`:
 <p align="left">
   <img src="./doc/img/request-response.png" alt="Sample request and response">
 </p>  
@@ -36,7 +36,7 @@ The Entity Persistence Policies application operates as a REST API, serving requ
 
 - **Authentication Policies**: These policies, responsible for answering questions like "Can the user perform this operation?" are placed within the `/policies/auth/routes` directory. Each folder contains required files to form an OPA policy. Actual policy file is named as `policy.rego` under each route.
 
-- **Field Policies**: These policies handle questions such as "Can the user view, create, or modify a specific field?" and are located in the `/policies/fields` directory. You can find folders named with record types (e.g. generic-entities, lists, etc).
+- **Field Policies**: These policies handle questions such as "Can the user view, create, or modify a specific field?" and are located in the `/policies/fields` directory. You can find folders named with record types (e.g. entities, lists, etc).
 
 ### Executing Policies
 To execute a policy, follow these steps:
@@ -44,7 +44,7 @@ To execute a policy, follow these steps:
 2. Compose a request based on the policy type and policy name.  
 For example: 
    - To execute a policy to check if a user is authorized to call `findEntities`, make an HTTP POST request to the following endpoint: `/v1/data/policies/auth/routes/findEntities/policy`. Request body should contain the required [policy execution input](#policy-execution-input) built properly. 
-   - To get what fields are forbidden for a specific user to view, create or modify, perform an HTTP POST request to: `/v1/data/policies/fields/generic-entities/policy`. Request body should contain the required [policy execution input](#policy-execution-input) built properly. 
+   - To get what fields are forbidden for a specific user to view, create or modify, perform an HTTP POST request to: `/v1/data/policies/fields/entities/policy`. Request body should contain the required [policy execution input](#policy-execution-input) built properly. 
 
 Understanding the project structure and endpoint designations is crucial for precise policy execution. Utilize this guide to seamlessly interact with Entity Persistence Policies and enforce authorization and access control based on your use case.
 
@@ -57,7 +57,7 @@ This section outlines the required input parameters for executing policies withi
 
 - **httpMethod**: The HTTP method used for the request (e.g., "GET", "POST", "PUT",  "PATCH").
 
-- **requestPath**: The request path that corresponds to the reques (e.g., "/generic-entities", "/generic-entities/e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e").
+- **requestPath**: The request path that corresponds to the reques (e.g., "/entities", "/entities/e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e").
 
 - **queryParams**: Any query parameters included in the request if any (e.g., "page": "2").
 
@@ -73,7 +73,7 @@ Sample policy input:
     "policyName": "/policies/auth/routes/updateEntityById/policy",
     "appShortcode": "tarcinapp",
     "httpMethod": "PATCH",
-    "requestPath": "/generic-entities/e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e",
+    "requestPath": "/entities/e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e",
     "queryParams": {}, // not applicable for PATCH. Applicable for GET
     "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJrVG1OeGhSNExXZGhKeG5rV082d25NNHcybkFrcU5uWGFMOFZuR2JCLVFvIn0.eyJleHAiOjE2OTc4NzQxMzcsImlhdCI6MTY5NzgzODEzNywianRpIjoiZjhmODExZWQtZmVlYy00NDRkLTlkNTQtMmVhOWQ2ZjIzNGRkIiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAta2V5Y2xvYWsuaDN0NGVnLmVhc3lwYW5lbC5ob3N0L3JlYWxtcy90YXJjaW5hcHAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiMTkwOWFhMjgtNzc4Yi00MTFiLWI4N2YtMDExOWNlNDAxYzEwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoicG9zdG1hbiIsInNlc3Npb25fc3RhdGUiOiJhNThlMjQxYi1hNmYyLTQzMzctYWRkMi1lNzM5ZjczNmQ1NTgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ0YXJjaW5hcHAuZW50aXRpZXMuZmllbGRzLnZhbGlkRnJvbURhdGVUaW1lLnVwZGF0ZSIsImRlZmF1bHQtcm9sZXMtdGFyY2luYXBwIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsInRhcmNpbmFwcC5tZW1iZXIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiYTU4ZTI0MWItYTZmMi00MzM3LWFkZDItZTczOWY3MzZkNTU4IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInJvbGVzIjpbInRhcmNpbmFwcC5lbnRpdGllcy5maWVsZHMudmFsaWRGcm9tRGF0ZVRpbWUudXBkYXRlIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLm1lbWJlciJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ1c2VyLWJhc2ljLXZlcmlmaWVkLW1lbWJlci0xIiwiZ2l2ZW5fbmFtZSI6IiIsImZhbWlseV9uYW1lIjoiIn0.CojiA9ShXSmOm5yTlIl2W3sZqKbvFZbsVAatqLXguYKVFcDhR7oH4BcU9rNs_x1PVqKZwq4gdwMvBNGYJ1Q2vtvWhGNdhgtbYKwvt4TPCWaHZ51QerBA0Kk8q5n3xeqgjZ93eft5rG9aFeaJtVsx0DfMWK1DbrjfXawRO9Te4GEPJgMkm_QSZXgOWkNI2rqfn45YvGr4lXxAH3iRXGbS-8rmFg1RnOgPAeTS-OoHKxSCO_Pa1KZSEi5ZeayY5_KS4GPg_7xnc0e9ltbq1U_yx8k4VfF_hb0TiMoC9zt6lrEUGWme4zQ1VzHIwBrnDvGMmhXTP_LAysz4Q1_MDtCTyw",
     "requestPayload": {
@@ -171,7 +171,7 @@ policy input is a json file in the following structure
 ```json
 {
     "httpMethod": "GET",
-    "requestPath": "/generic-entities",
+    "requestPath": "/entities",
     "queryParams": {},
     "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ1ZGtwaElQVFB1X0tpb28zWWlxYnFESS1IYlpVVWZieHVpMFRuWjRmanVnIn0.eyJleHAiOjE2OTEzMzA2OTYsImlhdCI6MTY5MTMzMDM5NiwianRpIjoiYWY4ZmMyZDctMjczOS00ZGYzLThhMTItMzkwMzVmZTY2YzM1IiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAtaWRtLWtleWNsb2FrLnRvdjNxbS5lYXN5cGFuZWwuaG9zdC9yZWFsbXMvdGFyY2luYXBwIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjczMGVjODg2LThhN2YtNGZlNS04OTZkLWJjNWY0YzgyODE2MyIsInR5cCI6IkJlYXJlciIsImF6cCI6InBvc3RtYW4iLCJzZXNzaW9uX3N0YXRlIjoiMGQwYTUxY2UtMDkzMC00MGU5LWFkMjgtMWRlMWU0ZWNkZTdhIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovL3d3dy5nZXRwb3N0bWFuLmNvbSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLm1lbWJlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiIwZDBhNTFjZS0wOTMwLTQwZTktYWQyOC0xZGUxZTRlY2RlN2EiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6Ikt1cnNhdCBUb2twdW5hciIsInByZWZlcnJlZF91c2VybmFtZSI6Imt1cnNhdHRva3BpbmFyIiwiZ2l2ZW5fbmFtZSI6Ikt1cnNhdCIsImZhbWlseV9uYW1lIjoiVG9rcHVuYXIiLCJlbWFpbCI6Imt1cnNhdHRva3BpbmFyQGdtYWlsLmNvbSJ9.nHBtP1-dLpjHWeCCB8FBaVNA4htYH0_BKBm6vB_rNS_a2e8xC_qQ2OtBogQsY42gd1S9d763a84OBWr3iF_pzJElMRuvdexXwQpu8eQ5YzvZyLrVeVGovM-Ep-EeeHRao0zj_92_E6SvlwBwqhNhXBdZ5Q6qLJuIuAxRfz_QMG4F67usuP4Fmmjw6fHddaJXJaLI8yKR5gOP1sPDpoS-acf1SRJipeuZzdbuEHvr5n9dP5YN8uD4_7DWa7A9zcM-2Z1jW3ij7USIugn7xxX4uschUFQQ6B48IxG145gq8N1MuVddQIvb5jOkRYuvjw_s3kXxfA1s3CI7JrEoCUffrA",
     "requestPayload": {
