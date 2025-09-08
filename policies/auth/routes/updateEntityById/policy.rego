@@ -39,10 +39,10 @@ allow if {
 allow if {
 	role_utils.is_user_member("update")
 	verification.is_email_verified
-	is_record_belongs_to_this_user # This will check either through user_id or groups
+    is_record_belongs_to_this_user # This will check either through user_id or groups
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
-	not member_has_problem_with_validFrom
+	#not member_has_problem_with_validFrom
 	not member_has_problem_with_validUntil
 }
 
@@ -161,6 +161,7 @@ user_in_original_record(user) if {
 member_has_problem_with_validFrom if {
 	payload_contains_any_field(["_validFromDateTime"])
 	original_record.has_value("_validFromDateTime")
+    input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
 }
 
 # user can update validFrom
