@@ -39,11 +39,9 @@ allow if {
 allow if {
 	role_utils.is_user_member("update")
 	verification.is_email_verified
-	is_record_belongs_to_this_user
+	is_record_belongs_to_this_user # This will check either through user_id or groups
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
-	user_id_in_ownerUsers
-	not member_has_problem_with_ownerGroups
 	not member_has_problem_with_validFrom
 	not member_has_problem_with_validUntil
 }
@@ -51,104 +49,106 @@ allow if {
 #-----------------------------------------------
 
 is_record_belongs_to_this_user if {
-  original_record.is_belong_to_user
+	is_record_belongs_to_this_user_through_user_id
 }
 
 is_record_belongs_to_this_user if {
-  original_record.is_belong_to_users_groups
-  input.originalRecord._visibility != "private"
+	is_record_belongs_to_this_user_through_groups
 }
 
-# user_id_in_ownerUsers is a policy control rule.
-# It returns true if the payload's ownerUsers field is acceptable for the current user:
-# - If ownerUsers is not present in the payload, no check is required (returns true).
-# - If ownerUsers is present in the payload and the original record is only owned through ownerUsers,
-#   the user's id must also be present in the payload's ownerUsers.
-# - If ownerUsers is present in the payload but the user was not in ownerUsers in the original record,
-#   there is no requirement to check ownerUsers.
-# Note: Ownership checks through ownerGroups or ownerUsers is performed by other rule: is_record_belongs_to_this_user
+is_record_belongs_to_this_user_through_user_id if {
+	original_record.is_belong_to_user
+	user_id_in_ownerUsers
+	all_new_groups_from_user_groups
+}
+
+is_record_belongs_to_this_user_through_groups if {
+	original_record.is_belong_to_users_groups
+	not original_record.is_private                # record must be public or protected
+	not has_visibility_change_to_private         # cannot change to private
+	all_new_groups_from_user_groups             # new groups must be from user's groups
+	no_original_groups_removed                  # cannot remove original groups
+	ownerUsers_unchanged                        # cannot modify ownerUsers
+}
+
+has_visibility_change_to_private if {
+	payload_contains_any_field(["_visibility"])
+	input.requestPayload._visibility == "private"
+}
+
 user_id_in_ownerUsers if {
-    # Pass if ownerUsers is not present in the payload
-    # This means no change to ownerUsers, so no check is needed
+    # Pass if ownerUsers is not in payload (no change)
     not payload_contains_any_field(["_ownerUsers"])
 }
 
 user_id_in_ownerUsers if {
-    # Pass if ownerUsers is present in the payload and the user was in the original record's ownerUsers,
-    # and the user is also present in the payload's ownerUsers
-    # this check is important if user owns through ownerUsers only
+    # For user-owned records, user ID must be in payload's ownerUsers
     original_record.is_belong_to_user
     not original_record.is_belong_to_users_groups
-    original_record.has_value("_ownerUsers")
-    user_id_in_list(token.payload.sub, input.requestPayload._ownerUsers)
+    input.requestPayload._ownerUsers[_] == token.payload.sub
 }
 
-# Pass if user owns through group.
-# no need to check if user is in ownerUsers if record is owned through groups
 user_id_in_ownerUsers if {
+    # Pass if owned through groups only
     not original_record.is_belong_to_user
     original_record.is_belong_to_users_groups
 }
 
-# Helper: returns true if user_id is in arr (safe for null arrays)
-user_id_in_list(user_id, arr) if {
-    arr != null
+all_new_groups_from_user_groups if {
+    # Pass if no ownerGroups in payload (no change)
+    not payload_contains_any_field(["_ownerGroups"])
+}
+
+all_new_groups_from_user_groups if {
+    # All groups in payload must be user's groups
+    payload_contains_any_field(["_ownerGroups"])
+    every group in input.requestPayload._ownerGroups {
+        group in token.payload.groups
+    }
+}
+
+no_original_groups_removed if {
+    # Pass if no ownerGroups in payload (no change)
+    not payload_contains_any_field(["_ownerGroups"])
+}
+
+no_original_groups_removed if {
+    # All original groups must be in payload
+    payload_contains_any_field(["_ownerGroups"])
+    every group in input.originalRecord._ownerGroups {
+        group in input.requestPayload._ownerGroups
+    }
+}
+
+# all items in requestPayload._ownerUsers are same with all items in originalRecord._ownerUsers
+# returns true if owner users are unchanged (no additions, no removals)
+ownerUsers_unchanged if {
+    not has_removed_users
+    not has_added_users
+}
+
+# check if there are any users that were removed (users in original that aren't in request)
+has_removed_users if {
+    some original_user
+    original_user = input.originalRecord._ownerUsers[_]
+    not user_in_request_payload(original_user)
+}
+
+# check if there are any users that were added (users in request that weren't in original)
+has_added_users if {
+    some request_user
+    request_user = input.requestPayload._ownerUsers[_]
+    not user_in_original_record(request_user)
+}
+
+user_in_request_payload(user) if {
     some i
-    arr[i] == user_id
+    input.requestPayload._ownerUsers[i] == user
 }
 
-member_has_problem_with_ownerGroups if {
-  payload_contains_any_field(["_ownerGroups"])
-  no_ownerGroups_item_in_users_groups
-}
-
-# Additional check for group-only ownership restrictions
-member_has_problem_with_ownerGroups if {
-  # Check if user owns through group only:
-  # 1. User must NOT be in ownerUsers
-  not original_record.is_belong_to_user
-  # 2. User must be in at least one of the ownerGroups
-  original_record.is_belong_to_users_groups
-  # 3. Record must not be private (this is implicit in is_belong_to_users_groups)
-  
-  # Cannot remove existing groups
-  existing_group := input.originalRecord._ownerGroups[_]
-  not existing_group in input.requestPayload._ownerGroups
-}
-
-member_has_problem_with_ownerGroups if {
-  # Check if user owns through group only:
-  # 1. User must NOT be in ownerUsers
-  not original_record.is_belong_to_user
-  # 2. User must be in at least one of the ownerGroups
-  original_record.is_belong_to_users_groups
-  # 3. Record must not be private (this is implicit in is_belong_to_users_groups)
-  
-  # Cannot change visibility to private
-  payload_contains_any_field(["_visibility"])
-  input.requestPayload._visibility == "private"
-}
-
-member_has_problem_with_ownerGroups if {
-  # Check if user owns through group only:
-  # 1. User must NOT be in ownerUsers
-  not original_record.is_belong_to_user
-  # 2. User must be in at least one of the ownerGroups
-  original_record.is_belong_to_users_groups
-  # 3. Record must not be private (this is implicit in is_belong_to_users_groups)
-  
-  # Cannot modify ownerUsers
-  input.requestPayload._ownerUsers == input.originalRecord._ownerUsers
-}
-
-# This rule checks that every group listed in _ownerGroups in the payload
-# is present in the user's group list (from the JWT). If any group in
-# _ownerGroups is not found in the user's groups, this rule returns true
-# and the update is denied for members.
-no_ownerGroups_item_in_users_groups if {
+user_in_original_record(user) if {
     some i
-    group := input.requestPayload._ownerGroups[i]
-    not group in token.payload.groups
+    input.originalRecord._ownerUsers[i] == user
 }
 
 
