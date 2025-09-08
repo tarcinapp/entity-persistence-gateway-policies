@@ -225,13 +225,15 @@ member_has_problem_with_validUntil if {
 }
 
 is_validFrom_in_correct_range if {
-	nowSec := time.now_ns()/(1000*1000*1000)
-	validFromSec := time.parse_rfc3339_ns(input.requestPayload._validFromDateTime)/(1000*1000*1000)
-    
-	validFromSec <= nowSec
-    validFromSec > (nowSec - member_validFrom_range_in_seconds)
+	payload_contains_any_field(["_validFromDateTime"])
+	input.requestPayload._validFromDateTime != null
+	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
+	validFromSec := time.parse_rfc3339_ns(input.requestPayload._validFromDateTime) / ((1000 * 1000) * 1000)
 
-	validFromDifferenceInSeconds := nowSec-validFromSec
+	validFromSec <= nowSec
+	validFromSec > nowSec - member_validFrom_range_in_seconds
+
+	validFromDifferenceInSeconds := nowSec - validFromSec
 }
 
 is_validUntil_in_correct_range_for_inactivation if {

@@ -894,9 +894,9 @@ test_not_allow_to_member_update_validFrom_with_role_but_value_not_in_range if {
 }
 
 test_allow_to_member_update_validFrom_with_role_and_value_in_range if {
-    # Set up a fake 'now' and a validFrom value 100 seconds before it
-    fake_now := 1700000000000000000  # 2023-11-14T12:26:40Z in nanoseconds
-    validFrom := "2023-11-14T12:25:00Z"  # 100 seconds before fake_now
+    now := time.now_ns() / 1000000000
+    validFrom := now - 80 # 1 second inside the 300s window
+    validFromStr := time.format([validFrom * 1000000000, "UTC", "RFC3339"])
 
     allow with input as produce_input_doc_by_role_with_field_permission(
         "tarcinapp.member", true,
@@ -906,7 +906,7 @@ test_allow_to_member_update_validFrom_with_role_and_value_in_range if {
             "visibility": "public",
             "_ownerUsers": [default_user_id],
             "_ownerGroups": [default_group],
-            "_validFromDateTime": validFrom
+            "_validFromDateTime": validFromStr
         },
         {
             "_id": "123",
@@ -923,5 +923,5 @@ test_allow_to_member_update_validFrom_with_role_and_value_in_range if {
             "_createdBy": "original-user"
         },
         "tarcinapp.entities.fields._validFromDateTime.update"
-    ) with time.now_ns as fake_now
+    )
 } 
