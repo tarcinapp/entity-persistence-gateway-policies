@@ -844,7 +844,7 @@ test_not_allow_to_member_update_validFrom_with_role_but_original_not_null if {
             "visibility": "public",
             "_ownerUsers": [default_user_id],
             "_ownerGroups": [default_group],
-            "_validFromDateTime": "202-01-01T00:10:00Z"
+            "_validFromDateTime": "2020-01-01T00:10:00Z"
         },
         {
             "_id": "123",

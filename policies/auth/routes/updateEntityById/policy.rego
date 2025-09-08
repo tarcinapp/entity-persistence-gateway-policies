@@ -42,7 +42,7 @@ allow if {
     is_record_belongs_to_this_user # This will check either through user_id or groups
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
-	#not member_has_problem_with_validFrom
+	not member_has_problem_with_validFrom
 	not member_has_problem_with_validUntil
 }
 
@@ -158,10 +158,12 @@ user_in_original_record(user) if {
 # but original value is not null
 # As this attempt means changing the approval time, 
 # or unapproving already approved reacord, should not be allowed for members
+# user can only send same value for validFrom
 member_has_problem_with_validFrom if {
-	payload_contains_any_field(["_validFromDateTime"])
-	original_record.has_value("_validFromDateTime")
-    input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
+	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.requestPayload._validFromDateTime != null
+	input.originalRecord._validFromDateTime != null
+	input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
 }
 
 # user can update validFrom
@@ -169,7 +171,9 @@ member_has_problem_with_validFrom if {
 # user tries to add a validFrom
 # but validFrom is not in correct range
 member_has_problem_with_validFrom if {
-	payload_contains_any_field(["_validFromDateTime"])
+	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.originalRecord._validFromDateTime == null
+	input.requestPayload._validFromDateTime != null
 	not is_validFrom_in_correct_range
 }
 
