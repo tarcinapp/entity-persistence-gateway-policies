@@ -81,12 +81,6 @@ user_id_in_ownerUsers if {
 }
 
 user_id_in_ownerUsers if {
-    # Pass if ownerUsers is present in the payload, but the original record did not have ownerUsers
-    payload_contains_any_field(["_ownerUsers"])
-    not original_record.has_value("_ownerUsers")
-}
-
-user_id_in_ownerUsers if {
     # Pass if ownerUsers is present in the payload, the original record had ownerUsers,
     # but the user was not in the original record's ownerUsers (no requirement to add user ID)
     payload_contains_any_field(["_ownerUsers"])
