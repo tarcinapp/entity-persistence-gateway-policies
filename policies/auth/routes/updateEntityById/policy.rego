@@ -100,6 +100,45 @@ member_has_problem_with_ownerGroups if {
   no_ownerGroups_item_in_users_groups
 }
 
+# Additional check for group-only ownership restrictions
+member_has_problem_with_ownerGroups if {
+  # Check if user owns through group only:
+  # 1. User must NOT be in ownerUsers
+  not original_record.is_belong_to_user
+  # 2. User must be in at least one of the ownerGroups
+  original_record.is_belong_to_users_groups
+  # 3. Record must not be private (this is implicit in is_belong_to_users_groups)
+  
+  # Cannot remove existing groups
+  existing_group := input.originalRecord._ownerGroups[_]
+  not existing_group in input.requestPayload._ownerGroups
+}
+
+member_has_problem_with_ownerGroups if {
+  # Check if user owns through group only:
+  # 1. User must NOT be in ownerUsers
+  not original_record.is_belong_to_user
+  # 2. User must be in at least one of the ownerGroups
+  original_record.is_belong_to_users_groups
+  # 3. Record must not be private (this is implicit in is_belong_to_users_groups)
+  
+  # Cannot change visibility to private
+  payload_contains_any_field(["_visibility"])
+  input.requestPayload._visibility == "private"
+}
+
+member_has_problem_with_ownerGroups if {
+  # Check if user owns through group only:
+  # 1. User must NOT be in ownerUsers
+  not original_record.is_belong_to_user
+  # 2. User must be in at least one of the ownerGroups
+  original_record.is_belong_to_users_groups
+  # 3. Record must not be private (this is implicit in is_belong_to_users_groups)
+  
+  # Cannot modify ownerUsers
+  payload_contains_any_field(["_ownerUsers"])
+}
+
 # This rule checks that every group listed in _ownerGroups in the payload
 # is present in the user's group list (from the JWT). If any group in
 # _ownerGroups is not found in the user's groups, this rule returns true
