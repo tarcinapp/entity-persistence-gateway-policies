@@ -62,30 +62,32 @@ is_record_belongs_to_this_user if {
 # user_id_in_ownerUsers is a policy control rule.
 # It returns true if the payload's ownerUsers field is acceptable for the current user:
 # - If ownerUsers is not present in the payload, no check is required (returns true).
-# - If ownerUsers is present in the payload and the user was in ownerUsers in the original record,
-#   the user must also be present in the payload's ownerUsers.
+# - If ownerUsers is present in the payload and the original record is only owned through ownerUsers,
+#   the user's id must also be present in the payload's ownerUsers.
 # - If ownerUsers is present in the payload but the user was not in ownerUsers in the original record,
-#   there is no requirement to add the user ID.
+#   there is no requirement to check ownerUsers.
+# Note: Ownership checks through ownerGroups or ownerUsers is performed by other rule: is_record_belongs_to_this_user
 user_id_in_ownerUsers if {
     # Pass if ownerUsers is not present in the payload
+    # This means no change to ownerUsers, so no check is needed
     not payload_contains_any_field(["_ownerUsers"])
 }
 
 user_id_in_ownerUsers if {
     # Pass if ownerUsers is present in the payload and the user was in the original record's ownerUsers,
     # and the user is also present in the payload's ownerUsers
-    payload_contains_any_field(["_ownerUsers"])
+    # this check is important if user owns through ownerUsers only
+    original_record.is_belong_to_user
+    not original_record.is_belong_to_users_groups
     original_record.has_value("_ownerUsers")
-    user_id_in_list(token.payload.sub, input.originalRecord._ownerUsers)
     user_id_in_list(token.payload.sub, input.requestPayload._ownerUsers)
 }
 
+# Pass if user owns through group.
+# no need to check if user is in ownerUsers if record is owned through groups
 user_id_in_ownerUsers if {
-    # Pass if ownerUsers is present in the payload, the original record had ownerUsers,
-    # but the user was not in the original record's ownerUsers (no requirement to add user ID)
-    payload_contains_any_field(["_ownerUsers"])
-    original_record.has_value("_ownerUsers")
-    not user_id_in_list(token.payload.sub, input.originalRecord._ownerUsers)
+    not original_record.is_belong_to_user
+    original_record.is_belong_to_users_groups
 }
 
 # Helper: returns true if user_id is in arr (safe for null arrays)
@@ -136,7 +138,7 @@ member_has_problem_with_ownerGroups if {
   # 3. Record must not be private (this is implicit in is_belong_to_users_groups)
   
   # Cannot modify ownerUsers
-  payload_contains_any_field(["_ownerUsers"])
+  input.requestPayload._ownerUsers == input.originalRecord._ownerUsers
 }
 
 # This rule checks that every group listed in _ownerGroups in the payload
