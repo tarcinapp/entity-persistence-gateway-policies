@@ -11,7 +11,7 @@ produce_input_doc_by_role_with_payload(role, is_email_verified, requestPayload) 
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -193,7 +193,7 @@ test_allow_to_editor_with_field_level_permission_for_creationDateTime if {
     allow with input as {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -221,7 +221,7 @@ test_allow_to_editor_with_field_level_manage_permission_for_creationDateTime if 
     allow with input as {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -249,7 +249,7 @@ test_allow_to_editor_with_field_level_permission_for_lastUpdatedDateTime if {
     allow with input as {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -285,7 +285,7 @@ test_allow_to_editor_with_multiple_field_permissions if {
     allow with input as {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -317,7 +317,7 @@ test_not_allow_to_editor_with_partial_field_permissions if {
     not allow with input as {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -377,7 +377,7 @@ test_allow_to_admin_with_field_level_permissions if {
     allow with input as {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -409,7 +409,7 @@ test_not_allow_to_editor_with_find_only_field_permission if {
     not allow with input as {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -437,7 +437,7 @@ test_not_allow_to_editor_with_create_only_field_permission if {
     not allow with input as {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",

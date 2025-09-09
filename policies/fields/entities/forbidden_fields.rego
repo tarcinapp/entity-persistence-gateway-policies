@@ -1,4 +1,4 @@
-package policies.fields.genericentities.policy
+package policies.fields.entities.policy
 
 # admins are allowed to see and manage all fields by definition
 default forbiddenFields = [

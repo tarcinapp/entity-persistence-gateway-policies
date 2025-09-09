@@ -76,7 +76,7 @@ produce_input_doc_by_role(role, is_email_verified) = test_body if {
     test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "POST",
-		"requestPath": "/generic-entities",
+		"requestPath": "/entities",
 		"queryParams": {},
 		"encodedJwt": test.produce_token({
 			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",

@@ -380,7 +380,7 @@ produce_input(verified, roles, groups, ownerUsers, ownerGroups, visibility, vali
 	test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "GET",
-		"requestPath": "/generic-entities",
+		"requestPath": "/entities",
 		"queryParams": {},
 		"encodedJwt": test.produce_token({
 			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -406,7 +406,7 @@ produce_input_with_viewerUsers(verified, roles, groups, ownerUsers, ownerGroups,
 	test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "GET",
-		"requestPath": "/generic-entities",
+		"requestPath": "/entities",
 		"queryParams": {},
 		"encodedJwt": test.produce_token({
 			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -434,7 +434,7 @@ produce_input_with_viewerGroups(verified, roles, groups, ownerUsers, ownerGroups
 	test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "GET",
-		"requestPath": "/generic-entities",
+		"requestPath": "/entities",
 		"queryParams": {},
 		"encodedJwt": test.produce_token({
 			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",

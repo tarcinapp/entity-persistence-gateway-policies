@@ -1,4 +1,4 @@
-package policies.util.genericentities.roles
+package policies.util.entities.roles
 
 import data.policies.util.common.token as token
 

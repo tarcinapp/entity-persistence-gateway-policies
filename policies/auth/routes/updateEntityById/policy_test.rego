@@ -39,7 +39,7 @@ produce_input_doc(role, is_email_verified, userGroups, payload, originalRecord) 
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities/123",
+        "requestPath": "/entities/123",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": default_user_id,
@@ -64,7 +64,7 @@ produce_input_doc_by_role_with_field_permission(role, is_email_verified, request
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities/123",
+        "requestPath": "/entities/123",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -90,7 +90,7 @@ produce_input_doc_by_role_with_groups(role, is_email_verified, userGroups, reque
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities/123",
+        "requestPath": "/entities/123",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -722,7 +722,7 @@ test_not_allow_to_admin_without_token if {
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities/123",
+        "requestPath": "/entities/123",
         "queryParams": {},
         "requestPayload": base_payload,
         "originalRecord": base_original_record
@@ -736,7 +736,7 @@ test_not_allow_to_admin_with_invalid_token if {
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities/123",
+        "requestPath": "/entities/123",
         "queryParams": {},
         "encodedJwt": "invalid.jwt.token",
         "requestPayload": base_payload,

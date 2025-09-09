@@ -1,11 +1,11 @@
 package policies.auth.routes.replaceEntityById.policy
 
-import data.policies.fields.genericentities.policy as forbidden_fields
+import data.policies.fields.entities.policy as forbidden_fields
 import data.policies.util.common.array as array
 import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
-import data.policies.util.genericentities.roles as role_utils
+import data.policies.util.entities.roles as role_utils
 
 # if record is being approved by a member, validFromDateTime cannot be before than the amount of seconds given below from now
 # this option enforces members to approve records immediately

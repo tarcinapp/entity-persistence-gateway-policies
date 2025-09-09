@@ -1,4 +1,4 @@
-package policies.fields.genericentities.metadata
+package policies.fields.entities.metadata
 
 description := `
     This policy evaluates user's roles to decide which fields are forbidden for a specific user. Forbidden fields can be configured by modifying 

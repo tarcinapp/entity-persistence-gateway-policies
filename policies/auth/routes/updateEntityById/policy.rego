@@ -1,7 +1,7 @@
 package policies.auth.routes.updateEntityById.policy
 
-import data.policies.util.genericentities.roles as role_utils
-import data.policies.fields.genericentities.policy as forbidden_fields
+import data.policies.util.entities.roles as role_utils
+import data.policies.fields.entities.policy as forbidden_fields
 import data.policies.util.common.token as token
 import data.policies.util.common.array as array
 import data.policies.util.common.verification as verification

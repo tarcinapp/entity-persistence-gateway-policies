@@ -785,7 +785,7 @@ produce_input_replace(roles, is_email_verified, requestPayload, originalRecord) 
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "PUT",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",

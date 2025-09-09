@@ -2,7 +2,7 @@ package policies.auth.routes.deleteEntityById.policy
 
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
-import data.policies.util.genericentities.roles as role_utils
+import data.policies.util.entities.roles as role_utils
 
 # By default, deny requests.
 default allow = false

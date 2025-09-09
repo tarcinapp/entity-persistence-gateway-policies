@@ -1,8 +1,8 @@
-package policies.fields.genericentities.policy
+package policies.fields.entities.policy
 
 import data.policies.util.common.token as token
-import data.policies.util.genericentities.roles as role_utils
-import data.policies.fields.genericentities.policy.forbiddenFields as forbiddenFields
+import data.policies.util.entities.roles as role_utils
+import data.policies.fields.entities.policy.forbiddenFields as forbiddenFields
 
 default which_fields_forbidden_for_finding = []
 default which_fields_forbidden_for_create = []

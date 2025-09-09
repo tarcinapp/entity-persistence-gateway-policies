@@ -1,7 +1,7 @@
 package policies.auth.routes.createEntity.policy
 
 import data.policies.util.common.test as test
-import data.policies.fields.genericentities.policy as forbidden_fields
+import data.policies.fields.entities.policy as forbidden_fields
 
 # End-to-end tests for createEntity policy
 # Tests all role patterns and forbidden field scenarios
@@ -986,7 +986,7 @@ produce_input_doc_by_role(roles, is_email_verified, requestPayload) = test_body 
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "POST",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
@@ -1006,7 +1006,7 @@ produce_input_doc_by_role_with_field_permission(roles, is_email_verified, reques
     test_body = {
         "appShortcode": "tarcinapp",
         "httpMethod": "POST",
-        "requestPath": "/generic-entities",
+        "requestPath": "/entities",
         "queryParams": {},
         "encodedJwt": test.produce_token({
             "sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
