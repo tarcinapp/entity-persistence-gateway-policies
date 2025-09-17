@@ -19,6 +19,7 @@ This policy evaluates the user's role, email verification status, request payloa
     - The record must belong to the user. A record belongs to the user if either of the following is true:
         - The user's ID is in `ownerUsers`.
         - One of the user's groups is specified in the record's `ownerGroups` field, and the visibility is 'not private' (it is either 'protected' or 'public').
+    - Note: If a user owns the record through both `ownerUsers` and `ownerGroups`, the policy treats this as ownership through `ownerUsers`.
     - If `ownerUsers` exists in the payload **and** the user was in `ownerUsers` in the original record, the payload must also contain the user ID. If the user was not in `ownerUsers` in the original record, there is no requirement to add them to `ownerUsers` in the payload.
     -  If the payload adds any new group(s) to ownerGroups (i.e., groups not present in the original record), those new group(s) must be from the user's groups. The user cannot add a group to a record that they are not a member of. Existing groups in the original record that the user is not a member of may remain.
      - If the user owns the record through group ownership only (i.e., the user's ID is not in ownerUsers of the original record, but at least one of the user's groups is in ownerGroups and the record is not private), the following restrictions apply:
