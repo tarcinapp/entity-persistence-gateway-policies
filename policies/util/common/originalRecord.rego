@@ -34,7 +34,9 @@ is_belong_to_user if {
     token.payload.sub = input.originalRecord._ownerUsers[i]
 }
 
+# Only consider group ownership if the user is not a direct owner
 is_belong_to_users_groups if {
+    not is_belong_to_user  # Check that user doesn't own through ownerUsers first
     some i
     token.payload.groups[i] in input.originalRecord._ownerGroups
 }
