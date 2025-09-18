@@ -6,5 +6,4 @@ COPY ./policies /policies
 RUN ["/opa", "test", "/policies", "-v"]
 
 ENTRYPOINT ["/opa"]
-CMD ["run", "--skip-version-check", "--ignore=.*", "--server", "--log-level=debug", "/policies"]
 CMD ["run", "--server", "--ignore=*_test.rego", "/policies"]
