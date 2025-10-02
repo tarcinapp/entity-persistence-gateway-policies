@@ -45,7 +45,7 @@ The policy validates that the request payload does not contain any fields that t
 - No forbidden fields (admins can access all fields)
 
 ### Editor Forbidden Fields
-- `_creationDateTime`
+- `_createdDateTime`
 - `_lastUpdatedDateTime`
 - `_lastUpdatedBy`
 - `_createdBy`
@@ -56,9 +56,9 @@ The policy validates that the request payload does not contain any fields that t
 For fields that are forbidden for updating, if they exist in the request payload, the policy ensures that their values match the corresponding values in the original record. This prevents users from modifying fields they don't have permission to change while still allowing them to include these fields in their requests (e.g., for partial updates).
 
 **Example:**
-- Original record has `_creationDateTime: "2023-01-01T00:00:00Z"`
-- Request payload includes `_creationDateTime: "2023-01-01T00:00:00Z"` ✅ (same value - allowed)
-- Request payload includes `_creationDateTime: "2023-01-02T00:00:00Z"` ❌ (different value - denied)
+- Original record has `_createdDateTime: "2023-01-01T00:00:00Z"`
+- Request payload includes `_createdDateTime: "2023-01-01T00:00:00Z"` ✅ (same value - allowed)
+- Request payload includes `_createdDateTime: "2023-01-02T00:00:00Z"` ❌ (different value - denied)
 
 ## Input Fields
 
@@ -81,7 +81,7 @@ For fields that are forbidden for updating, if they exist in the request payload
     "id": "123",
     "name": "Original Entity",
     "description": "Original description",
-    "_creationDateTime": "2023-01-01T00:00:00Z"
+    "_createdDateTime": "2023-01-01T00:00:00Z"
   }
 }
 ```
@@ -94,13 +94,13 @@ For fields that are forbidden for updating, if they exist in the request payload
     "id": "123",
     "name": "Updated Entity",
     "description": "Updated description",
-    "_creationDateTime": "2023-01-01T00:00:00Z"  // Same as original
+    "_createdDateTime": "2023-01-01T00:00:00Z"  // Same as original
   },
   "originalRecord": {
     "id": "123",
     "name": "Original Entity",
     "description": "Original description",
-    "_creationDateTime": "2023-01-01T00:00:00Z"
+    "_createdDateTime": "2023-01-01T00:00:00Z"
   }
 }
 ```
@@ -112,12 +112,12 @@ For fields that are forbidden for updating, if they exist in the request payload
   "requestPayload": {
     "id": "123",
     "name": "Updated Entity",
-    "_creationDateTime": "2023-01-02T00:00:00Z"  // Different from original
+    "_createdDateTime": "2023-01-02T00:00:00Z"  // Different from original
   },
   "originalRecord": {
     "id": "123",
     "name": "Original Entity",
-    "_creationDateTime": "2023-01-01T00:00:00Z"
+    "_createdDateTime": "2023-01-01T00:00:00Z"
   }
 }
 ```

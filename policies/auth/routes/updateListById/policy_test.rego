@@ -23,7 +23,7 @@ base_original_record = {
     "_visibility": "public",
     "_validFromDateTime": "2020-01-01T00:00:00Z",
     "_validUntilDateTime": null,
-    "_creationDateTime": "2020-01-01T00:00:00Z",
+    "_createdDateTime": "2020-01-01T00:00:00Z",
     "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
     "_lastUpdatedBy": "original-user",
     "_createdBy": "original-user"
@@ -135,7 +135,7 @@ test_allow_to_global_admin if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -164,7 +164,7 @@ test_not_allow_to_admin_without_email_verification if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -209,7 +209,7 @@ test_allow_to_admin_with_all_fields if {
         "_ownerGroups": [default_group],
         "_validFromDateTime": "2020-01-01T00:00:00Z",
         "_validUntilDateTime": null,
-        "_creationDateTime": "2020-01-01T00:00:00Z",
+        "_createdDateTime": "2020-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user"
@@ -239,7 +239,7 @@ test_allow_to_admin_with_private_original_record if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -260,7 +260,7 @@ test_allow_to_admin_with_protected_original_record if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -281,7 +281,7 @@ test_allow_to_admin_with_different_owner if {
             "_ownerGroups": ["different-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -302,7 +302,7 @@ test_allow_to_admin_with_pending_original_record if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": null,
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -323,7 +323,7 @@ test_allow_to_admin_with_inactive_original_record if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": "2021-01-01T00:00:00Z",
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -355,7 +355,7 @@ test_allow_to_member_as_owner_user if {
             "_ownerGroups": ["other-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -383,7 +383,7 @@ test_allow_to_member_as_owner_group_public if {
             "_ownerGroups": ["my-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -411,7 +411,7 @@ test_allow_to_member_as_owner_group_protected if {
             "_ownerGroups": ["my-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -440,7 +440,7 @@ test_not_allow_to_member_as_owner_group_private if {
             "_ownerGroups": ["my-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -469,7 +469,7 @@ test_not_allow_to_member_not_owner if {
             "_ownerGroups": ["different-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -499,7 +499,7 @@ test_allow_to_member_with_ownerUsers_in_payload if {
             "_ownerGroups": ["other-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -528,7 +528,7 @@ test_not_allow_to_member_with_ownerUsers_not_containing_user if {
             "_ownerGroups": ["other-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -556,7 +556,7 @@ test_allow_to_member_with_ownerGroups_in_payload if {
             "_ownerGroups": ["my-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -585,7 +585,7 @@ test_not_allow_to_member_with_ownerGroups_not_containing_user_groups if {
             "_ownerGroups": ["my-group"],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -618,7 +618,7 @@ test_not_allow_to_lists_admin if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -647,7 +647,7 @@ test_not_allow_to_reactions_admin if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -676,7 +676,7 @@ test_not_allow_to_lists_update_admin if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -705,7 +705,7 @@ test_not_allow_to_reactions_update_admin if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -757,7 +757,7 @@ test_not_allow_to_member_with_forbidden_update_field_changed if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2022-01-01T00:00:00Z"  # forbidden for update, changed value
+            "_createdDateTime": "2022-01-01T00:00:00Z"  # forbidden for update, changed value
         },
         {
             "_id": "123",
@@ -768,7 +768,7 @@ test_not_allow_to_member_with_forbidden_update_field_changed if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -787,7 +787,7 @@ test_allow_to_member_with_field_level_update_role if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2022-01-01T00:00:00Z"  # forbidden for update, changed value
+            "_createdDateTime": "2022-01-01T00:00:00Z"  # forbidden for update, changed value
         },
         {
             "_id": "123",
@@ -798,12 +798,12 @@ test_allow_to_member_with_field_level_update_role if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
         },
-        "tarcinapp.lists.fields._creationDateTime.update"
+        "tarcinapp.lists.fields._createdDateTime.update"
     )
 } 
 
@@ -827,7 +827,7 @@ test_not_allow_to_member_update_validFrom_no_field_role if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": null,
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -855,7 +855,7 @@ test_not_allow_to_member_update_validFrom_with_role_but_original_not_null if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": "2020-01-01T00:05:00Z",
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -884,7 +884,7 @@ test_not_allow_to_member_update_validFrom_with_role_but_value_not_in_range if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": null,
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"
@@ -917,7 +917,7 @@ test_allow_to_member_update_validFrom_with_role_and_value_in_range if {
             "_ownerGroups": [default_group],
             "_validFromDateTime": null,
             "_validUntilDateTime": null,
-            "_creationDateTime": "2020-01-01T00:00:00Z",
+            "_createdDateTime": "2020-01-01T00:00:00Z",
             "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
             "_lastUpdatedBy": "original-user",
             "_createdBy": "original-user"

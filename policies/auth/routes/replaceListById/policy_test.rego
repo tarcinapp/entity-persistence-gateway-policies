@@ -352,7 +352,7 @@ test_allow_editor_global_role_own_record if {
         "_ownerGroups": ["group-1"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -365,7 +365,7 @@ test_allow_editor_global_role_own_record if {
         "_ownerGroups": ["group-1"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -383,7 +383,7 @@ test_allow_editor_global_role_other_owner if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -396,7 +396,7 @@ test_allow_editor_global_role_other_owner if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -413,7 +413,7 @@ test_allow_editor_global_role_private_record if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -426,7 +426,7 @@ test_allow_editor_global_role_private_record if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -443,7 +443,7 @@ test_allow_editor_global_role_inactive_record if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": "2020-01-01T00:00:00Z",
         "_validUntilDateTime": "2021-01-01T00:00:00Z",
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -456,7 +456,7 @@ test_allow_editor_global_role_inactive_record if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": "2020-01-01T00:00:00Z",
         "_validUntilDateTime": "2021-01-01T00:00:00Z",
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -473,7 +473,7 @@ test_allow_editor_records_role_other_owner if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -486,7 +486,7 @@ test_allow_editor_records_role_other_owner if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -503,7 +503,7 @@ test_allow_editor_lists_role_other_owner if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -516,7 +516,7 @@ test_allow_editor_lists_role_other_owner if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z",
+        "_createdDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user",
@@ -525,7 +525,7 @@ test_allow_editor_lists_role_other_owner if {
 }
 
 # Editor forbidden field tests - should deny when forbidden fields have different values
-test_not_allow_editor_with_different_creationDateTime if {
+test_not_allow_editor_with_different_createdDateTime if {
     not allow with input as produce_input_replace(["tarcinapp.editor"], true, {
         "_name": "Test List",
         "description": "Test Description",
@@ -534,7 +534,7 @@ test_not_allow_editor_with_different_creationDateTime if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2023-01-01T00:00:00Z"
+        "_createdDateTime": "2023-01-01T00:00:00Z"
     }, {
         "_name": "Original List",
         "description": "Original Description",
@@ -543,7 +543,7 @@ test_not_allow_editor_with_different_creationDateTime if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z"
+        "_createdDateTime": "2022-01-01T00:00:00Z"
     })
 }
 
@@ -636,7 +636,7 @@ test_not_allow_editor_with_different_idempotencyKey if {
 }
 
 # Editor should allow when forbidden fields have same values
-test_allow_editor_with_same_creationDateTime if {
+test_allow_editor_with_same_createdDateTime if {
     allow with input as produce_input_replace(["tarcinapp.editor"], true, {
         "_name": "Test List",
         "description": "Test Description",
@@ -645,7 +645,7 @@ test_allow_editor_with_same_creationDateTime if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z"
+        "_createdDateTime": "2022-01-01T00:00:00Z"
     }, {
         "_name": "Original List",
         "description": "Original Description",
@@ -654,7 +654,7 @@ test_allow_editor_with_same_creationDateTime if {
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": null,
         "_validUntilDateTime": null,
-        "_creationDateTime": "2022-01-01T00:00:00Z"
+        "_createdDateTime": "2022-01-01T00:00:00Z"
     })
 }
 

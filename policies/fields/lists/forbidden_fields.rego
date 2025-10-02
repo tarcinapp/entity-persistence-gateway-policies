@@ -14,16 +14,16 @@ default forbiddenFields = [
         "role": "editor",
         "operations": {
             "find":   [],
-            "create": ["_creationDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_idempotencyKey"],
-            "update": ["_creationDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_idempotencyKey"],
+            "create": ["_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_idempotencyKey"],
+            "update": ["_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_idempotencyKey"],
         }
     },
     {
         "role": "member",
         "operations": {
             "find":   ["_version", "_idempotencyKey", "_application"],
-            "create": ["_creationDateTime", "_slug", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime", "_ownerUsers"],
-            "update": ["_kind", "_slug", "_creationDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
+            "create": ["_createdDateTime", "_slug", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime", "_ownerUsers"],
+            "update": ["_kind", "_slug", "_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
         }
     },
     {

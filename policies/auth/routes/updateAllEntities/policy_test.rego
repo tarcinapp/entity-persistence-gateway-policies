@@ -114,7 +114,7 @@ test_not_allow_to_non_admin_editor_roles_entities_visitor if {
 # Forbidden field test
 
 test_not_allow_to_editor_with_forbidden_field if {
-    forbidden_payload := object.union(base_payload, {"_creationDateTime": "2020-01-01T00:00:00Z"})
+    forbidden_payload := object.union(base_payload, {"_createdDateTime": "2020-01-01T00:00:00Z"})
     not allow with input as produce_input_doc_by_role_with_payload("tarcinapp.editor", true, forbidden_payload)
 }
 
@@ -161,7 +161,7 @@ test_not_allow_to_records_update_admin_without_email_verification if {
 test_allow_to_entities_update_admin_with_forbidden_fields if {
     # Admin should be allowed even with forbidden fields
     forbidden_payload := object.union(base_payload, {
-        "_creationDateTime": "2020-01-01T00:00:00Z",
+        "_createdDateTime": "2020-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2020-01-01T00:00:00Z"
     })
     allow with input as produce_input_doc_by_role_with_payload("tarcinapp.entities.update.admin", true, forbidden_payload)
@@ -170,7 +170,7 @@ test_allow_to_entities_update_admin_with_forbidden_fields if {
 test_allow_to_records_update_admin_with_forbidden_fields if {
     # Admin should be allowed even with forbidden fields
     forbidden_payload := object.union(base_payload, {
-        "_creationDateTime": "2020-01-01T00:00:00Z",
+        "_createdDateTime": "2020-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2020-01-01T00:00:00Z"
     })
     allow with input as produce_input_doc_by_role_with_payload("tarcinapp.records.update.admin", true, forbidden_payload)
@@ -180,14 +180,14 @@ test_allow_to_records_update_admin_with_forbidden_fields if {
 # FIELD-LEVEL PERMISSIONS (should override forbidden field restrictions)
 # ============================================================================
 
-test_allow_to_editor_with_field_level_permission_for_creationDateTime if {
-    # User has field-level permission to update _creationDateTime
-    custom_payload := object.union(base_payload, {"_creationDateTime": "2020-01-01T00:00:00Z"})
+test_allow_to_editor_with_field_level_permission_for_createdDateTime if {
+    # User has field-level permission to update _createdDateTime
+    custom_payload := object.union(base_payload, {"_createdDateTime": "2020-01-01T00:00:00Z"})
     custom_roles := [
         "offline_access",
         "uma_authorization",
         "tarcinapp.editor",
-        "tarcinapp.entities.fields._creationDateTime.update"
+        "tarcinapp.entities.fields._createdDateTime.update"
     ]
     
     allow with input as {
@@ -208,14 +208,14 @@ test_allow_to_editor_with_field_level_permission_for_creationDateTime if {
     }
 }
 
-test_allow_to_editor_with_field_level_manage_permission_for_creationDateTime if {
+test_allow_to_editor_with_field_level_manage_permission_for_createdDateTime if {
     # User has field-level manage permission (grants all operations)
-    custom_payload := object.union(base_payload, {"_creationDateTime": "2020-01-01T00:00:00Z"})
+    custom_payload := object.union(base_payload, {"_createdDateTime": "2020-01-01T00:00:00Z"})
     custom_roles := [
         "offline_access",
         "uma_authorization",
         "tarcinapp.editor",
-        "tarcinapp.entities.fields._creationDateTime.manage"
+        "tarcinapp.entities.fields._createdDateTime.manage"
     ]
     
     allow with input as {
@@ -271,14 +271,14 @@ test_allow_to_editor_with_field_level_permission_for_lastUpdatedDateTime if {
 test_allow_to_editor_with_multiple_field_permissions if {
     # User has multiple field-level permissions
     custom_payload := object.union(base_payload, {
-        "_creationDateTime": "2020-01-01T00:00:00Z",
+        "_createdDateTime": "2020-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2020-01-01T00:00:00Z"
     })
     custom_roles := [
         "offline_access",
         "uma_authorization",
         "tarcinapp.editor",
-        "tarcinapp.entities.fields._creationDateTime.update",
+        "tarcinapp.entities.fields._createdDateTime.update",
         "tarcinapp.entities.fields._lastUpdatedDateTime.update"
     ]
     
@@ -303,14 +303,14 @@ test_allow_to_editor_with_multiple_field_permissions if {
 test_not_allow_to_editor_with_partial_field_permissions if {
     # User has permission for one forbidden field but not another
     custom_payload := object.union(base_payload, {
-        "_creationDateTime": "2020-01-01T00:00:00Z",
+        "_createdDateTime": "2020-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2020-01-01T00:00:00Z"
     })
     custom_roles := [
         "offline_access",
         "uma_authorization",
         "tarcinapp.editor",
-        "tarcinapp.entities.fields._creationDateTime.update"
+        "tarcinapp.entities.fields._createdDateTime.update"
         # Missing permission for _lastUpdatedDateTime
     ]
     
@@ -363,14 +363,14 @@ test_not_allow_to_reactions_editor_with_reactions_scope if {
 test_allow_to_admin_with_field_level_permissions if {
     # Admin should be allowed even with field-level permissions
     custom_payload := object.union(base_payload, {
-        "_creationDateTime": "2020-01-01T00:00:00Z",
+        "_createdDateTime": "2020-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2020-01-01T00:00:00Z"
     })
     custom_roles := [
         "offline_access",
         "uma_authorization",
         "tarcinapp.admin",
-        "tarcinapp.entities.fields._creationDateTime.update",
+        "tarcinapp.entities.fields._createdDateTime.update",
         "tarcinapp.entities.fields._lastUpdatedDateTime.update"
     ]
     
@@ -398,12 +398,12 @@ test_allow_to_admin_with_field_level_permissions if {
 
 test_not_allow_to_editor_with_find_only_field_permission if {
     # User has find permission but not update permission for forbidden field
-    custom_payload := object.union(base_payload, {"_creationDateTime": "2020-01-01T00:00:00Z"})
+    custom_payload := object.union(base_payload, {"_createdDateTime": "2020-01-01T00:00:00Z"})
     custom_roles := [
         "offline_access",
         "uma_authorization",
         "tarcinapp.editor",
-        "tarcinapp.entities.fields._creationDateTime.find"  # Only find, not update
+        "tarcinapp.entities.fields._createdDateTime.find"  # Only find, not update
     ]
     
     not allow with input as {
@@ -426,12 +426,12 @@ test_not_allow_to_editor_with_find_only_field_permission if {
 
 test_not_allow_to_editor_with_create_only_field_permission if {
     # User has create permission but not update permission for forbidden field
-    custom_payload := object.union(base_payload, {"_creationDateTime": "2020-01-01T00:00:00Z"})
+    custom_payload := object.union(base_payload, {"_createdDateTime": "2020-01-01T00:00:00Z"})
     custom_roles := [
         "offline_access",
         "uma_authorization",
         "tarcinapp.editor",
-        "tarcinapp.entities.fields._creationDateTime.create"  # Only create, not update
+        "tarcinapp.entities.fields._createdDateTime.create"  # Only create, not update
     ]
     
     not allow with input as {

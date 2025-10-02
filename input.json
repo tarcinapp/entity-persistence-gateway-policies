@@ -20,7 +20,7 @@
         "_ownerGroups": ["other-group"],
         "_validFromDateTime": "2020-01-01T00:00:00Z",
         "_validUntilDateTime": null,
-        "_creationDateTime": "2020-01-01T00:00:00Z",
+        "_createdDateTime": "2020-01-01T00:00:00Z",
         "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
         "_lastUpdatedBy": "original-user",
         "_createdBy": "original-user"

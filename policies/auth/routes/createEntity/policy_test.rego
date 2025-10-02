@@ -613,45 +613,45 @@ test_allow_to_entities_create_member_with_createdBy_field_permission if {
     }, "tarcinapp.entities.fields._createdBy.create")
 }
 
-# Test _creationDateTime field access for member roles with field-level create permission
-# Test _creationDateTime field access for global member with field-level create permission
-test_allow_to_global_member_with_creationDateTime_field_permission if {
+# Test _createdDateTime field access for member roles with field-level create permission
+# Test _createdDateTime field access for global member with field-level create permission
+test_allow_to_global_member_with_createdDateTime_field_permission if {
     allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.member", true, {
         "_name": "Test Entity",
         "description": "Test Description",
         "_visibility": "public",
-        "_creationDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
-    }, "tarcinapp.entities.fields._creationDateTime.create")
+        "_createdDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdDateTime.create")
 }
 
-# Test _creationDateTime field access for records scope member with field-level create permission
-test_allow_to_records_member_with_creationDateTime_field_permission if {
+# Test _createdDateTime field access for records scope member with field-level create permission
+test_allow_to_records_member_with_createdDateTime_field_permission if {
     allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.records.member", true, {
         "_name": "Test Entity",
         "description": "Test Description",
         "_visibility": "public",
-        "_creationDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
-    }, "tarcinapp.entities.fields._creationDateTime.create")
+        "_createdDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdDateTime.create")
 }
 
-# Test _creationDateTime field access for entities scope member with field-level create permission
-test_allow_to_entities_member_with_creationDateTime_field_permission if {
+# Test _createdDateTime field access for entities scope member with field-level create permission
+test_allow_to_entities_member_with_createdDateTime_field_permission if {
     allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.member", true, {
         "_name": "Test Entity",
         "description": "Test Description",
         "_visibility": "public",
-        "_creationDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
-    }, "tarcinapp.entities.fields._creationDateTime.create")
+        "_createdDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdDateTime.create")
 }
 
-# Test _creationDateTime field access for entities create operation member with field-level create permission
-test_allow_to_entities_create_member_with_creationDateTime_field_permission if {
+# Test _createdDateTime field access for entities create operation member with field-level create permission
+test_allow_to_entities_create_member_with_createdDateTime_field_permission if {
     allow with input as produce_input_doc_by_role_with_field_permission("tarcinapp.entities.create.member", true, {
         "_name": "Test Entity",
         "description": "Test Description",
         "_visibility": "public",
-        "_creationDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
-    }, "tarcinapp.entities.fields._creationDateTime.create")
+        "_createdDateTime": "2023-01-01T00:00:00Z"  # This should be allowed due to field-level permission
+    }, "tarcinapp.entities.fields._createdDateTime.create")
 }
 
 # Test _ownerUsers field access for member roles with field-level create permission
