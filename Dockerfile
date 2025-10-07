@@ -1,4 +1,4 @@
-FROM openpolicyagent/opa:1.8.0-static
+FROM openpolicyagent/opa:1.9.0-static
 
 COPY ./policies /policies
 
