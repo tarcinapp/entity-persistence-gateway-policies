@@ -14,8 +14,8 @@ default forbiddenFields = [
         "role": "editor",
         "operations": {
             "find":   [],
-            "create": [],
-            "update": []
+            "create": ["_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_idempotencyKey"],
+            "update": ["_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_idempotencyKey"]
         }
     },
     {
