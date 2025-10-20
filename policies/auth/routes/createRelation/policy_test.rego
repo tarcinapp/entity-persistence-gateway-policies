@@ -100,10 +100,10 @@ test_allow_to_global_member if {
             "_validFromDateTime": "2020-01-01T00:00:00Z",
             "_validUntilDateTime": null,
             "_visibility": "protected",
-            "_ownerUsers": ["default-user-id"],
+            "_ownerUsers": [],
             "_ownerGroups": [],
             "_viewerUsers": [],
-            "_viewerGroups": []
+            "_viewerGroups": ["group-1"]
         }
     })
 }
