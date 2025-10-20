@@ -21,9 +21,9 @@ default forbiddenFields = [
     {
         "role": "member",
         "operations": {
-            "find":   [],
-            "create": [],
-            "update": []
+            "find":   ["_version", "_idempotencyKey", "_application"],
+            "create": ["_createdDateTime", "_slug", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime"],
+            "update": ["_kind", "_slug", "_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime"] # valid until is added as it requires additional role to inactivate the record for members
         }
     },
     {
