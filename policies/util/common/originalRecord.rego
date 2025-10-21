@@ -48,7 +48,7 @@ is_user_in_viewerUsers if {
 
 is_user_in_viewerGroups if {
     some i
-    token.payload.groups[i] = input.originalRecord._viewerGroups[i]
+    token.payload.groups[i] in input.originalRecord._viewerGroups
 }
 
 has_value(fieldName) if {

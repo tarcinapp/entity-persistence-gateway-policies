@@ -83,8 +83,8 @@ from_is_user_in_viewerUsers if {
 }
 
 from_is_user_in_viewerGroups if {
-	some i
-	token.payload.groups[i] = input.originalRecord._fromMetadata._viewerGroups[i]
+    some i
+    token.payload.groups[i] in input.originalRecord._fromMetadata._viewerGroups
 }
 
 from_has_value(fieldName) if {
@@ -140,8 +140,8 @@ to_is_user_in_viewerUsers if {
 }
 
 to_is_user_in_viewerGroups if {
-	some i
-	token.payload.groups[i] = input.originalRecord._toMetadata._viewerGroups[i]
+    some i
+    token.payload.groups[i] in input.originalRecord._toMetadata._viewerGroups
 }
 
 to_has_value(fieldName) if {
