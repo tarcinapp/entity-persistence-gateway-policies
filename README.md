@@ -30,126 +30,155 @@ Here is an example request and response to the one of the most basic endpoint: `
 **Note**: Endpoints can be configured with arbitrary values within the gateway component. For example, `/books` can be used for records with `kind: book`, and the field `kind` can be completely omitted from the API interaction.
 
 # Entity Persistence Policies Application in Detail
-The Entity Persistence Policies application operates as a REST API, serving requests on port 8181. The application processes policies based on their location within the project structure. Understanding the structure is essential for executing policies effectively.
 
-### Policy Organization
+This component centralizes authorization and field-level controls for the Tarcinapp Suite. Below we explain the high-level goals, the core principles that drive policy design, and how individual route policies are implemented and organized.
 
-- **Authentication Policies**: These policies, responsible for answering questions like "Can the user perform this operation?" are placed within the `/policies/auth/routes` directory. Each folder contains required files to form an OPA policy. Actual policy file is named as `policy.rego` under each route.
+## High-level goal and principles
+- Single source of truth: keep authorization and field-level rules in one place so decisions are consistent across the gateway and services.
+- Owner-first semantics: direct owners in `_ownerUsers` take precedence; group and viewer checks are evaluated only when the caller is not a direct owner.
+- Time-driven visibility: records can be pending, active, or passive via `_validFromDateTime` and `_validUntilDateTime`; visibility rules depend on these states.
+- Minimal list policies: the gateway is responsible for narrowing list/find queries according to ownership/visibility; route policies remain lightweight for list endpoints and focus on single-record checks when `originalRecord` is provided.
+- Field-level exceptions: field-level roles (e.g., `tarcinapp.entities.fields._createdBy.create`) allow safe exceptions to the default forbidden field lists defined under `policies/fields/*`.
 
-- **Field Policies**: These policies handle questions such as "Can the user view, create, or modify a specific field?" and are located in the `/policies/fields` directory. You can find folders named with record types (e.g. entities, lists, etc).
+### Field Masking - Forbidden Fields
 
-### Executing Policies
-To execute a policy, follow these steps:
-1. Determine the policy type (authentication/routes or field-related).
-2. Compose a request based on the policy type and policy name.  
-For example: 
-   - To execute a policy to check if a user is authorized to call `findEntities`, make an HTTP POST request to the following endpoint: `/v1/data/policies/auth/routes/findEntities/policy`. Request body should contain the required [policy execution input](#policy-execution-input) built properly. 
-   - To get what fields are forbidden for a specific user to view, create or modify, perform an HTTP POST request to: `/v1/data/policies/fields/entities/policy`. Request body should contain the required [policy execution input](#policy-execution-input) built properly. 
+Field-level rules are primarily a data-masking mechanism that enforces least-privilege at the field level. In plain terms:
 
-Understanding the project structure and endpoint designations is crucial for precise policy execution. Utilize this guide to seamlessly interact with Entity Persistence Policies and enforce authorization and access control based on your use case.
+- Protect sensitive or system-managed fields from being seen or changed by users who should not have that capability (examples: `_createdBy`, `_idempotencyKey`, `_ownerUsers`, `_validUntilDateTime`).
+- For reads (find/find-by-id), the field policy determines which fields must be redacted or omitted for a caller: use `which_fields_forbidden_for_finding` to drive response masking so users only receive permitted data.
+- For writes (create/update), the field policy determines which fields callers are not allowed to provide. Route policies reject requests that attempt to set forbidden fields.
+- This protects privacy (personal data, ownership lists), preserves audit integrity (creation/update timestamps and authors), and avoids accidental or malicious tampering with lifecycle or identity metadata.
 
-### Policy Execution Input
-This section outlines the required input parameters for executing policies within the Entity Persistence Service. In this example, we'll focus on a PATCH request; however, please note that GET, POST, and PUT requests are also acceptable in the application.
+Example: visitors should not see `_ownerUsers` or `_idempotencyKey` and cannot set `_validFromDateTime`; a member may be allowed to see some metadata but still not modify audit fields unless granted explicit field-level roles.
 
-- **policyName**: The policy name to be executed (e.g., "/policies/auth/routes/updateEntityById/policy").
+- Where it's defined
+  - Each resource keeps an authoritative list under `policies/fields/<resource>/forbidden_fields.rego`. These files declare a `default forbiddenFields` array of objects shaped like:
 
-- **appShortcode**: The shortcode of the application (e.g., "tarcinapp"). This helps administrator to give users different roles on different applications.
+    {
+      "role": "member",
+      "operations": {
+        "find": [...],
+        "create": [...],
+        "update": [...]
+      }
+    }
 
-- **httpMethod**: The HTTP method used for the request (e.g., "GET", "POST", "PUT",  "PATCH").
+- How the policy produces the effective forbidden lists
+  - The field policy file `policies/fields/<resource>/policy.rego` exposes three canonical helpers:
+    - `which_fields_forbidden_for_finding`
+    - `which_fields_forbidden_for_create`
+    - `which_fields_forbidden_for_update`
+  - These helpers call `get_fields_for` and `get_effective_fields_for` to merge `find` with `create`/`update` lists where needed and then filter out fields for which the caller has an explicit field-level role by calling the `can_user_*_field` predicates.
 
-- **requestPath**: The request path that corresponds to the reques (e.g., "/entities", "/entities/e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e").
+- How field-level role exceptions are matched
+  - Roles follow the pattern: `tarcinapp.<scope>.fields.<fieldName>.<operation>` or `...<fieldName>.manage` for full-field privileges.
+  - Examples:
+    - Entity create exception: `tarcinapp.entities.fields._createdBy.create` or `tarcinapp.records.fields._createdBy.create` (entity helpers accept both `records` and `entities` scopes).
+    - Relation field exception: `tarcinapp.relations.fields.<fieldName>.create` (relations use the `relations` scope).
+  - The field policy implements predicates such as `can_user_create_field(fieldName)` which check `token.payload.roles` against the expected role pattern and return true when a matching role is present.
 
-- **queryParams**: Any query parameters included in the request if any (e.g., "page": "2").
+- How route policies enforce forbidden fields
+  - Route policies import the corresponding field policy (for example `import data.policies.fields.entities.policy as forbidden_fields`) and reject payloads that include any forbidden field using a helper like `payload_contains_any_field`:
+    - `not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)`
+  - See `policies/auth/routes/createEntity/policy.rego` and `policies/auth/routes/createRelation/policy.rego` for canonical usage.
 
-- **encodedJwt**: The encoded JSON Web Token (JWT) associated with the user's request.
+- How to grant an exception (practical steps)
+  1. Add the field-level role to the user's token (or configure it in Keycloak). Example role: `tarcinapp.entities.fields._createdBy.create`.
+  2. In tests, use the helper `produce_input_doc_by_role_with_field_permission` to append the field-level role to the token roles array.
+  3. Assert that the field is no longer returned by `forbidden_fields.which_fields_forbidden_for_create` and that the route policy allows payloads that include the field.
 
-- **requestPayload**: The payload specific to the request. For example, when creating a new record, this field contains the whole payload as a JSON object.
+- Common pitfalls and troubleshooting
+  - Wrong scope in role name (use `records|entities` for entity fields, `relations` for relation fields).
+  - Missing or wrong `input.appShortcode` — the field predicates use `input.appShortcode` when constructing the expected role pattern.
+  - Token roles not present at `token.payload.roles` (ensure Keycloak role mappers are configured to place roles under `roles` in the token payload).
 
-- **originalRecord**: If applicable, the original record as a whole that corresponds to the request.
+## Ownership & Viewership
 
-Sample policy input:
+This project uses a clear, deterministic ownership and viewership model to decide who may see or operate on a record. The rules are applied consistently across entities, lists and relations (relations use the referenced records' metadata).
+
+- What counts as an owner
+  - Direct owner: any identifier listed in the record's `_ownerUsers` array that matches the requester's token `sub` claim.
+  - Group owner: any group listed in the record's `_ownerGroups` array that matches any group in the requester's token `groups` claim. Group ownership is only considered when the requester is not a direct owner.
+
+- Time/state semantics
+  - Pending: `_validFromDateTime` is null (record is not active yet). Direct owners may still see pending records.
+  - Active: `_validFromDateTime` is set and in the past, and `_validUntilDateTime` is null or in the future.
+  - Passive (inactive): `_validUntilDateTime` is set and in the past. Passive records are treated as non-viewable for most non-admin operations.
+
+- Visibility values
+  - `public`: visible to public, subject to `active` state when applicable.
+  - `protected`: visible to owners and group/viewer-based controls when the record is not `private` and is active.
+  - `private`: restricted — only direct owners (and certain admin/editor roles) may see private records; group-based viewer/owner checks do not permit access.
+
+- Viewer semantics
+  - Viewer user: if the requester's `sub` is listed in the record's `_viewerUsers` and the record is active, the requester may see the record (this includes private records if active).
+  - Viewer group: if any of the requester's groups is in the record's `_viewerGroups` and the record is active and not `private`, the requester may see the record.
+
+- Decision precedence (applied in order)
+  1. If requester's id is in `_ownerUsers` and record is not passive => allowed.
+  2. Else if requester's groups intersect `_ownerGroups` and record is not passive and not `private` => allowed.
+  3. Else if record is `public` and active => allowed.
+  4. Else if requester's id is in `_viewerUsers` and record is active => allowed.
+  5. Else if requester's groups intersect `_viewerGroups` and record is active and not `private` => allowed.
+  6. Otherwise => denied.
+
+- Relation endpoints
+  - Relations themselves do not carry ownership/viewer fields. For single-relation endpoints (create/replace/find-by-id) policies rely on `originalRecord` containing `_fromMetadata` and `_toMetadata` and require the caller to be able to see both the source and the target. For list queries (`findRelations`) the gateway must shape the query so that returned relations already match caller visibility constraints.
+
+- Implementation note
+  - Rego helpers are provided under `policies/util/common/originalRecord.rego` and can be reused via `with input as {"originalRecord": meta}` to avoid duplicating time/visibility logic.
+
+## Implementation patterns and structure
+- Routes: each route under `policies/auth/routes/<route>` contains:
+  - `policy.rego` — the route's decision logic
+  - `metadata.rego` — a short description and the policy's input/field contract
+  - `policy_test.rego` — unit tests showing expected behavior
+- Common utilities: shared helpers are under `policies/util` (token, verification, time/parse helpers, originalRecord helpers, role matchers, arrays). Reuse these helpers across route policies.
+- Field policies: `policies/fields/<resource>/policy.rego` describe forbidden fields per role and operation and are consulted by route policies to enforce field-level constraints.
+- Roles: role matching helpers implement multi-scope patterns (app-wide, records-wide, resource-scoped, and operation-specific variants) so a caller can be granted permissions at multiple levels.
+
+## Relation-specific notes
+- Relations do not carry owners/viewers themselves; instead, decision logic for relation endpoints must inspect both ends:
+  - `_fromMetadata`: metadata of the referenced list (source)
+  - `_toMetadata`: metadata of the referenced entity (target)
+- For a caller to access a single relation, the policy must ensure the caller can see both the source and the target. That is why single-relation endpoints (create/replace/find-by-id) receive or consult `originalRecord` that includes both `_fromMetadata` and `_toMetadata`.
+- For list find endpoints (e.g., `findRelations`) the gateway is expected to provide proper query constraints so the policy can remain minimal and efficient.
+
+## Policy execution input (relations-aware)
+Policies receive JSON input describing the request and context. Common fields:
+
+- `policyName`: path to the policy being executed (e.g., `/policies/auth/routes/replaceRelationById/policy`).
+- `appShortcode`: application shortcode (e.g., `tarcinapp`).
+- `httpMethod`: HTTP verb (`GET`, `POST`, `PUT`, `PATCH`, etc.).
+- `requestPath`: resource path (may contain ids for single-record operations).
+- `queryParams`: query parameters for list/find requests.
+- `encodedJwt`: caller's encoded JWT.
+- `requestPayload`: request body (create/replace/update payloads).
+- `originalRecord`: for single-record operations this holds the existing record. For relation-specific operations `originalRecord` contains both `_fromMetadata` and `_toMetadata` (so policies can evaluate source/target ownership and visibility).
+
+Example: a replace relation payload includes nested metadata
 ```json
 {
-    "policyName": "/policies/auth/routes/updateEntityById/policy",
-    "appShortcode": "tarcinapp",
-    "httpMethod": "PATCH",
-    "requestPath": "/entities/e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e",
-    "queryParams": {}, // not applicable for PATCH. Applicable for GET
-    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJrVG1OeGhSNExXZGhKeG5rV082d25NNHcybkFrcU5uWGFMOFZuR2JCLVFvIn0.eyJleHAiOjE2OTc4NzQxMzcsImlhdCI6MTY5NzgzODEzNywianRpIjoiZjhmODExZWQtZmVlYy00NDRkLTlkNTQtMmVhOWQ2ZjIzNGRkIiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAta2V5Y2xvYWsuaDN0NGVnLmVhc3lwYW5lbC5ob3N0L3JlYWxtcy90YXJjaW5hcHAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiMTkwOWFhMjgtNzc4Yi00MTFiLWI4N2YtMDExOWNlNDAxYzEwIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoicG9zdG1hbiIsInNlc3Npb25fc3RhdGUiOiJhNThlMjQxYi1hNmYyLTQzMzctYWRkMi1lNzM5ZjczNmQ1NTgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ0YXJjaW5hcHAuZW50aXRpZXMuZmllbGRzLnZhbGlkRnJvbURhdGVUaW1lLnVwZGF0ZSIsImRlZmF1bHQtcm9sZXMtdGFyY2luYXBwIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsInRhcmNpbmFwcC5tZW1iZXIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwic2lkIjoiYTU4ZTI0MWItYTZmMi00MzM3LWFkZDItZTczOWY3MzZkNTU4IiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInJvbGVzIjpbInRhcmNpbmFwcC5lbnRpdGllcy5maWVsZHMudmFsaWRGcm9tRGF0ZVRpbWUudXBkYXRlIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLm1lbWJlciJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ1c2VyLWJhc2ljLXZlcmlmaWVkLW1lbWJlci0xIiwiZ2l2ZW5fbmFtZSI6IiIsImZhbWlseV9uYW1lIjoiIn0.CojiA9ShXSmOm5yTlIl2W3sZqKbvFZbsVAatqLXguYKVFcDhR7oH4BcU9rNs_x1PVqKZwq4gdwMvBNGYJ1Q2vtvWhGNdhgtbYKwvt4TPCWaHZ51QerBA0Kk8q5n3xeqgjZ93eft5rG9aFeaJtVsx0DfMWK1DbrjfXawRO9Te4GEPJgMkm_QSZXgOWkNI2rqfn45YvGr4lXxAH3iRXGbS-8rmFg1RnOgPAeTS-OoHKxSCO_Pa1KZSEi5ZeayY5_KS4GPg_7xnc0e9ltbq1U_yx8k4VfF_hb0TiMoC9zt6lrEUGWme4zQ1VzHIwBrnDvGMmhXTP_LAysz4Q1_MDtCTyw",
-    "requestPayload": {
-        "ownerUsersCount": 0,
-        "ownerGroupsCount": 0,
-        "validFromDateTime": "2023-10-20T21:54:06.988Z"
-    },
-    "originalRecord": {
-        "id": "e613c7d0-3ea4-4815-80b6-eeb7e6f37b3e",
-        "kind": "book",
-        "name": "Karamazov Brothers",
-        "slug": "karamazov-brothers",
-        "visibility": "private",
-        "ownerUsers": [
-            "1909aa28-778b-411b-b87f-0119ce401c10"
-        ],
-        "ownerGroups": [],
-        "ownerUsersCount": 1,
-        "ownerGroupsCount": 0,
-        "lastUpdatedBy": "1909aa28-778b-411b-b87f-0119ce401c10",
-        "createdBy": "1909aa28-778b-411b-b87f-0119ce401c10",
-        "version": 3,
-        "idempotencyKey": "3678437ad111f82704f6a54954a1b96c105125264cb7e81e95ffca44986c307a",
-        "creationDateTime": "2023-10-20T21:26:06.988Z",
-        "lastUpdatedDateTime": "2023-10-20T21:31:56.937Z",
-        "author": "Dostoyevski"
-    }
+  "policyName": "/policies/auth/routes/replaceRelationById/policy",
+  "appShortcode": "tarcinapp",
+  "httpMethod": "PUT",
+  "requestPath": "/relations/RELATION_ID",
+  "encodedJwt": "...",
+  "requestPayload": { "_listId": "LIST_ID", "_entityId": "ENTITY_ID" },
+  "originalRecord": {
+    "id": "RELATION_ID",
+    "_listId": "LIST_ID",
+    "_entityId": "ENTITY_ID",
+    "_fromMetadata": { /* list metadata */ },
+    "_toMetadata": { /* entity metadata */ }
+  }
 }
 ```
-**Additional Notes:**
-- The provided input demonstrates a PATCH request, but similar input structures apply to GET, POST, and PUT requests as well.
-- The requestPayload is particularly important when creating new records, as it contains essential data.
-- Policies dynamically evaluate and make decisions based on these input parameters, ensuring secure and compliant interactions within the Entity Persistence Service.
 
+Note: `findRelations` is a list operation — the gateway should shape queries in such a way that returned items already match visibility/ownership constraints; per-item `originalRecord` entries are not passed to the list-level policy.
 
-### Policy Execution Output
-* For authentication policies, application returns either `"allow": true` or `"allow": false` in the request body, according to the result of the policy.
-* For field control policies application returns a response body similar to the following:
-    ```json
-    {
-        "which_fields_forbidden_for_create": [
-            "visibility",
-            "version",
-            "idempotencyKey",
-            "application",
-            "creationDateTime",
-            "slug",
-            "lastUpdatedDateTime",
-            "lastUpdatedBy",
-            "createdBy",
-            "validFromDateTime",
-            "validUntilDateTime",
-            "ownerUsers"
-        ],
-        "which_fields_forbidden_for_finding": [
-            "visibility",
-            "version",
-            "idempotencyKey",
-            "application"
-        ],
-        "which_fields_forbidden_for_update": [
-            "visibility",
-            "version",
-            "idempotencyKey",
-            "application",
-            "kind",
-            "slug",
-            "creationDateTime",
-            "lastUpdatedDateTime",
-            "lastUpdatedBy",
-            "createdBy",
-            "validUntilDateTime"
-        ]
-    }
-    ```
-
+## How to read individual policy READMEs
+Each route has its own README at `policies/auth/routes/<route>/README.md` explaining the semantic differences and specific checks applied (for example how `createRelation` validates the referenced list and target entity via `_fromMetadata`/`_toMetadata`). See the Policies list below for links to the route READMEs.
 
 
 # Policies
