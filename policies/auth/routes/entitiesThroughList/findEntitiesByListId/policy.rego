@@ -1,5 +1,5 @@
 package policies.auth.routes.entitiesThroughList.findEntitiesByListId.policy
 
-allow {
+allow if {
     true
 }

@@ -1,5 +1,5 @@
 package policies.auth.routes.reactionsThroughEntity.deleteReactionsByEntityId.policy
 
-allow {
+allow if {
     true
 }

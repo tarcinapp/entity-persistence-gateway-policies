@@ -1,5 +1,5 @@
 package policies.auth.routes.entityReactions.replaceEntityReactionById.policy
 
-allow {
+allow if {
     true
 }

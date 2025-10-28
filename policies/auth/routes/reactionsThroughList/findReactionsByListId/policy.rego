@@ -1,5 +1,5 @@
 package policies.auth.routes.reactionsThroughList.findReactionsByListId.policy
 
-allow {
+allow if {
     true
 }

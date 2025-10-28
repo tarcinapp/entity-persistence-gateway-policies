@@ -1,5 +1,5 @@
 package policies.auth.routes.entityReactions.createEntityReaction.policy
 
-allow {
+allow if {
     true
 }

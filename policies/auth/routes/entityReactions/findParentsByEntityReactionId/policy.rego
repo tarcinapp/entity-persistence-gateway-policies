@@ -1,5 +1,5 @@
 package policies.auth.routes.entityReactions.findParentsByEntityReactionId.policy
 
-allow {
+allow if {
     true
 }

@@ -1,5 +1,5 @@
 package policies.auth.routes.listReactions.deleteListReactionById.policy
 
-allow {
+allow if {
     true
 }

@@ -1,5 +1,5 @@
 package policies.auth.routes.listReactions.createChildListReaction.policy
 
-allow {
+allow if {
     true
 }

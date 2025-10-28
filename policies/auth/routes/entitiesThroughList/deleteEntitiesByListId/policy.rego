@@ -1,5 +1,5 @@
 package policies.auth.routes.entitiesThroughList.deleteEntitiesByListId.policy
 
-allow {
+allow if {
     true
 }
