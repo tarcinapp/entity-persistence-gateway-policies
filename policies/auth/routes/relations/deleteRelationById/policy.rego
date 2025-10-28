@@ -16,14 +16,5 @@ allow if {
 	verification.is_email_verified
 }
 
-allow if {
-	role_utils.is_user_editor("delete")
-	verification.is_email_verified
-}
-
-allow if {
-	role_utils.is_user_member("delete")
-	verification.is_email_verified
-}
 
 #-----------------------------------------------
