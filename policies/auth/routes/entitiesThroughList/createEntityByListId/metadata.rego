@@ -9,7 +9,7 @@ Behavior summary:
 - Members have additional restrictions: they must not include forbidden fields in the request payload; if they include _ownerGroups, those groups must be present in the token payload; list visibility for members depends on ownership/viewer and privacy flags.
 - Visitors are only allowed to see public & active records (and cannot create).
 
-If required inputs (such as `originalRecord`) are missing, the policy will deny since ownership/visibility cannot be established.`
+If required inputs (such as 'originalRecord') are missing, the policy will deny since ownership/visibility cannot be established.`
 
 fields := {
     "encodedJwt": "Encoded JWT string (required by token helpers).",

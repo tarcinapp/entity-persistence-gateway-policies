@@ -26,9 +26,7 @@ allow if {
     list_allowed
 }
 
-# ------------------------------
 # Creation rules (aligned with createEntity)
-# ------------------------------
 create_allowed if {
     entity_roles.is_user_admin("create")
     verification.is_email_verified
