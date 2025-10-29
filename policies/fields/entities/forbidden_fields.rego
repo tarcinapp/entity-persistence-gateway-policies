@@ -29,7 +29,7 @@ default forbiddenFields = [
     {
         "role": "visitor",
         "operations": {
-            "find": ["_validFromDateTime", "_validUntilDateTime", "_visibility", "_version", "_lastUpdatedBy", "_lastUpdatedDateTime", "_idempotencyKey", "_application"],
+            "find": ["_validFromDateTime", "_validUntilDateTime", "_visibility", "_version", "_lastUpdatedBy", "_lastUpdatedDateTime", "_idempotencyKey", "_application", "_viewerUsers", "_viewerGroups"],
         }
     }
 ]
