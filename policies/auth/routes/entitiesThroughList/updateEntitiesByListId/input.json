@@ -1,0 +1,14 @@
+{
+    "appShortcode": "tarcinapp",
+    "policyName": "/policies/auth/routes/entitiesThroughList/updateEntitiesByListId/policy",
+    "httpMethod": "PUT",
+    "requestPath": "/lists/123/entities",
+    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTc4NzQxMzcsImlhdCI6MTY5NzgzODEzNywianRpIjoiZjhmODExZWQtZmVlYy00NDRkLTlkNTQtMmVhOWQ2ZjIzNGRkIiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAta2V5Y2xvYWsuaDN0NGVnLmVhc3lwYW5lbC5ob3N0L3JlYWxtcy90YXJjaW5hcHAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZGVmYXVsdC11c2VyLWlkIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoicG9zdG1hbiIsInNlc3Npb25fc3RhdGUiOiJhNThlMjQxYi1hNmYyLTQzMzctYWRkMi1lNzM5ZjczNmQ1NTgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ0YXJjaW5hcHAubWVtYmVyIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwiZ3JvdXBzIjpbIm15LWdyb3VwIiwib3RoZXItZ3JvdXAiXSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6ImE1OGUyNDFiLWE2ZjItNDMzNy1hZGQyLWU3MzlmNzM2ZDU1OCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJyb2xlcyI6WyJ0YXJjaW5hcHAuYWRtaW4iLCJkZWZhdWx0LXJvbGVzLXRhcmNpbmFwcCIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXSwicHJlZmVycmVkX3VzZXJuYW1lIjoidXNlci1iYXNpYy12ZXJpZmllZC1tZW1iZXItMSIsImdpdmVuX25hbWUiOiIiLCJmYW1pbHlfbmFtZSI6IiJ9.ZySdXHV1WESNjPTG8NPkBa4oNX9QhnXZzpRtX0iquQRuoDtmTDipQqilHl2W7ZzYnhXHYprMsPJ9FMIZpFFoXIJJoN61g13913kiz3pg1Xa1xbmcJgOuWPeNECMhknx_LWce6WHm3eJsRP35toKxjCp9cbaCh1F7EZ_3qyMseFWsti9dn0KsO9FRx0FY2l4kmCO8hd78XX-8KowvVhuLHz_HdH8CDtHflxE9V6OHrv1qkev0gEZ1ksM77po64CPKKsL_dzIFsS89FbyP7m6q8R8E0vUGN3gnYGqo0RhV4eSAi_SP8pTDMoHpKUdA5k4LNC6yRWZxPEjvXb-tlt1mAw",
+    "requestPayload": {
+        "_name": "Updated Entity",
+        "description": "Updated description",
+        "_visibility": "public",
+        "_ownerUsers": ["default-user-id"],
+        "_ownerGroups": ["other-group"]
+    }
+}
