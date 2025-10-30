@@ -5,7 +5,7 @@ import data.policies.util.common.verification as verification
 import data.policies.util.relations.roles as role_utils
 
 # By default, deny requests.
-default allow = false
+default allow := false
 
 #-----------------------------------------------
 # Decide allow if any of the following section is true
@@ -83,8 +83,8 @@ from_is_user_in_viewerUsers if {
 }
 
 from_is_user_in_viewerGroups if {
-    some i
-    token.payload.groups[i] in input.originalRecord._fromMetadata._viewerGroups
+	some i
+	token.payload.groups[i] in input.originalRecord._fromMetadata._viewerGroups
 }
 
 from_has_value(fieldName) if {
@@ -140,8 +140,8 @@ to_is_user_in_viewerUsers if {
 }
 
 to_is_user_in_viewerGroups if {
-    some i
-    token.payload.groups[i] in input.originalRecord._toMetadata._viewerGroups
+	some i
+	token.payload.groups[i] in input.originalRecord._toMetadata._viewerGroups
 }
 
 to_has_value(fieldName) if {
@@ -158,13 +158,13 @@ to_is_empty(fieldName) if {
 
 can_user_see_source if {
 	from_is_belong_to_user
-	not from_is_passive                # record is either pending or active
+	not from_is_passive # record is either pending or active
 }
 
 can_user_see_source if {
 	from_is_belong_to_users_groups
-	not from_is_passive                # record is either pending or active
-	not from_is_private                # record is either public or protected
+	not from_is_passive # record is either pending or active
+	not from_is_private # record is either public or protected
 }
 
 can_user_see_source if {
@@ -179,20 +179,20 @@ can_user_see_source if {
 
 can_user_see_source if {
 	from_is_user_in_viewerGroups
-	not from_is_private                # record is either public or protected
+	not from_is_private # record is either public or protected
 	from_is_active
 }
 
 # Target visibility follows the same set of rules as entities/lists
 can_user_see_target if {
 	to_is_belong_to_user
-	not to_is_passive                # record is either pending or active
+	not to_is_passive # record is either pending or active
 }
 
 can_user_see_target if {
 	to_is_belong_to_users_groups
-	not to_is_passive                # record is either pending or active
-	not to_is_private                # record is either public or protected
+	not to_is_passive # record is either pending or active
+	not to_is_private # record is either public or protected
 }
 
 can_user_see_target if {
@@ -207,6 +207,6 @@ can_user_see_target if {
 
 can_user_see_target if {
 	to_is_user_in_viewerGroups
-	not to_is_private                # record is either public or protected
+	not to_is_private # record is either public or protected
 	to_is_active
 }

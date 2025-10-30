@@ -21,7 +21,7 @@ Field-level notes:
 Missing nested metadata should be treated as denial because ownership/visibility cannot be established.`
 
 fields := {
-    "encodedJwt": "Encoded JWT string used to derive caller identity, roles and groups.",
-    "requestPayload": "Request payload JSON object for the replace-by-id operation (relation fields and any allowed metadata overrides).",
-    "originalRecord": "The existing relation record returned by the database including `_fromMetadata` (list metadata) and `_toMetadata` (entity metadata) used for authorization checks."
+	"encodedJwt": "Encoded JWT string used to derive caller identity, roles and groups.",
+	"requestPayload": "Request payload JSON object for the replace-by-id operation (relation fields and any allowed metadata overrides).",
+	"originalRecord": "The existing relation record returned by the database including `_fromMetadata` (list metadata) and `_toMetadata` (entity metadata) used for authorization checks.",
 }

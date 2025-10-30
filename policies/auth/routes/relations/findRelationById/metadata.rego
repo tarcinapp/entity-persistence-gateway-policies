@@ -21,6 +21,6 @@ Notes:
 - Missing _fromMetadata or _toMetadata should be treated as denying the request because ownership/visibility cannot be established.`
 
 fields := {
-    "encodedJwt": "Encoded JWT string used to derive caller identity, roles and groups.",
-    "originalRecord": "The relation retrieval result used for authorization checks. Must include `_fromMetadata` (source list metadata) and `_toMetadata` (target entity metadata)."
+	"encodedJwt": "Encoded JWT string used to derive caller identity, roles and groups.",
+	"originalRecord": "The relation retrieval result used for authorization checks. Must include `_fromMetadata` (source list metadata) and `_toMetadata` (target entity metadata).",
 }

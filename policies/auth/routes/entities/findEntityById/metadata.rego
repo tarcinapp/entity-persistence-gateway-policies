@@ -11,8 +11,7 @@ description := `This policy evaluates the user's role, email verification status
     - original record contains at least one of the user's group in viewerGroups and record is active, and record is not private (either protected or public)
 - visitors are allowed to retrieve only active and public entities`
 
-
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "originalRecord": "The record which the user is querying by it's id."
+	"encodedJwt": "Encoded JWT string.",
+	"originalRecord": "The record which the user is querying by it's id.",
 }

@@ -23,7 +23,7 @@ To allow caller to create a child of the entity, caller must be able to find the
 - visitors are not allowed to create entity children`
 
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "requestPayload": "Request payload JSON object for the new child entity.",
-    "originalRecord": "The parent entity record under which the child will be created."
+	"encodedJwt": "Encoded JWT string.",
+	"requestPayload": "Request payload JSON object for the new child entity.",
+	"originalRecord": "The parent entity record under which the child will be created.",
 }

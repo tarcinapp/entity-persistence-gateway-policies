@@ -150,7 +150,7 @@ test_not_allow_pending_public_to_visitor if {
 	not allow with input as produce_input(false, ["tarcinapp.visitor"], ["users-group-1"], ["any-owner-user"], ["any-owner-group-1"], "public", null, null)
 }
 
-produce_input(verified, roles, groups, ownerUsers, ownerGroups, visibility, validFrom, validUntil) = test_body if {
+produce_input(verified, roles, groups, ownerUsers, ownerGroups, visibility, validFrom, validUntil) := test_body if {
 	test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "GET",
@@ -171,13 +171,13 @@ produce_input(verified, roles, groups, ownerUsers, ownerGroups, visibility, vali
 			"_ownerUsers": ownerUsers,
 			"_ownerGroups": ownerGroups,
 			"_visibility": visibility,
-            "_validFromDateTime": validFrom,
-            "_validUntilDateTime": validUntil
+			"_validFromDateTime": validFrom,
+			"_validUntilDateTime": validUntil,
 		},
 	}
 }
 
-produce_input_with_viewerUsers(verified, roles, groups, ownerUsers, ownerGroups, visibility, validFrom, validUntil, viewerUsers, viewerGroups) = test_body if {
+produce_input_with_viewerUsers(verified, roles, groups, ownerUsers, ownerGroups, visibility, validFrom, validUntil, viewerUsers, viewerGroups) := test_body if {
 	test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "GET",
@@ -198,15 +198,15 @@ produce_input_with_viewerUsers(verified, roles, groups, ownerUsers, ownerGroups,
 			"_ownerUsers": ownerUsers,
 			"_ownerGroups": ownerGroups,
 			"_visibility": visibility,
-            "_validFromDateTime": validFrom,
-            "_validUntilDateTime": validUntil,
-            "_viewerUsers": viewerUsers,
-            "_viewerGroups": viewerGroups
+			"_validFromDateTime": validFrom,
+			"_validUntilDateTime": validUntil,
+			"_viewerUsers": viewerUsers,
+			"_viewerGroups": viewerGroups,
 		},
 	}
 }
 
-produce_input_with_viewerGroups(verified, roles, groups, ownerUsers, ownerGroups, visibility, validFrom, validUntil, viewerUsers, viewerGroups) = test_body if {
+produce_input_with_viewerGroups(verified, roles, groups, ownerUsers, ownerGroups, visibility, validFrom, validUntil, viewerUsers, viewerGroups) := test_body if {
 	test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "GET",
@@ -227,10 +227,10 @@ produce_input_with_viewerGroups(verified, roles, groups, ownerUsers, ownerGroups
 			"_ownerUsers": ownerUsers,
 			"_ownerGroups": ownerGroups,
 			"_visibility": visibility,
-            "_validFromDateTime": validFrom,
-            "_validUntilDateTime": validUntil,
-            "_viewerUsers": viewerUsers,
-            "_viewerGroups": viewerGroups
+			"_validFromDateTime": validFrom,
+			"_validUntilDateTime": validUntil,
+			"_viewerUsers": viewerUsers,
+			"_viewerGroups": viewerGroups,
 		},
 	}
 }

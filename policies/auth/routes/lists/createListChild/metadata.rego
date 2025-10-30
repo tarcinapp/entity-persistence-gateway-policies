@@ -23,7 +23,7 @@ To allow caller to create a child of the list, caller must be able to find the p
 - visitors are not allowed to create list children`
 
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "requestPayload": "Request payload JSON object for the new child list.",
-    "originalRecord": "The parent list record under which the child will be created."
+	"encodedJwt": "Encoded JWT string.",
+	"requestPayload": "Request payload JSON object for the new child list.",
+	"originalRecord": "The parent list record under which the child will be created.",
 }

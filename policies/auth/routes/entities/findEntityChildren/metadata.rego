@@ -12,8 +12,7 @@ To allow caller to findChildren of the entity, caller must be able to find the e
     - original record contains at least one of the user's group in viewerGroups and record is active, and record is not private (either protected or public)
 - visitors are allowed to retrieve children only of active and public entities`
 
-
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "originalRecord": "The parent entity record which contains the children that the user is querying."
+	"encodedJwt": "Encoded JWT string.",
+	"originalRecord": "The parent entity record which contains the children that the user is querying.",
 }

@@ -12,8 +12,7 @@ To allow caller to findParents of the entity, caller must be able to find the en
     - original record contains at least one of the user's group in viewerGroups and record is active, and record is not private (either protected or public)
 - visitors are allowed to retrieve parents only of active and public entities`
 
-
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "originalRecord": "The root entity record whose parents the user is querying."
+	"encodedJwt": "Encoded JWT string.",
+	"originalRecord": "The root entity record whose parents the user is querying.",
 }

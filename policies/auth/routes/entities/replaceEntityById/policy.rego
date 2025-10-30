@@ -18,7 +18,7 @@ member_validUntil_range_for_inactivation_in_seconds := 300
 #-----------------------------------------------
 
 # By default, deny requests.
-default allow = false
+default allow := false
 
 #-----------------------------------------------
 
@@ -83,7 +83,7 @@ is_record_belongs_to_this_user_through_user_id if {
 
 is_record_belongs_to_this_user_through_groups if {
 	original_record.is_belong_to_users_groups
-	not original_record.is_private                # record is either public or protected
+	not original_record.is_private # record is either public or protected
 	input.requestPayload._visibility != "private" # user cannot change visibility to private
 	all_new_groups_from_user_groups
 	no_original_groups_removed
@@ -213,7 +213,7 @@ user_in_original_record(user) if {
 # user can update validFrom
 # user tries to change validFrom
 # but original value is not null
-# As this attempt means changing the approval time, 
+# As this attempt means changing the approval time,
 # or unapproving already approved reacord, should not be allowed for members
 # user can only send same value for validFrom
 member_has_problem_with_validFrom if {
@@ -241,7 +241,7 @@ member_has_problem_with_validUntil if {
 	payload_contains_any_field(["_validUntilDateTime"])
 }
 
-# if user can 
+# if user can
 #   find the _validUntilDateTime field and,
 #   cannot update it because of the lack of the field level role and,
 #   original value is null
@@ -255,7 +255,7 @@ member_has_problem_with_validUntil if {
 	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
 }
 
-# if user can 
+# if user can
 #   find the _validUntilDateTime field and,
 #   can update it because of the field level role and,
 #   field has a value in the original record
@@ -269,7 +269,7 @@ member_has_problem_with_validUntil if {
 	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
 }
 
-# if user can 
+# if user can
 #   find the _validUntilDateTime field and,
 #   can update it because of the field level role and,
 #   field has no value in the original record

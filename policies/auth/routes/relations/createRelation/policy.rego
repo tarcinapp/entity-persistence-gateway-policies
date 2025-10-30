@@ -1,12 +1,12 @@
 package policies.auth.routes.relations.createRelation.policy
 
-import data.policies.util.common.verification as verification
-import data.policies.util.relations.roles as role_utils
 import data.policies.fields.relations.policy as forbidden_fields
 import data.policies.util.common.token as token
+import data.policies.util.common.verification as verification
+import data.policies.util.relations.roles as role_utils
 
 # By default, deny requests.
-default allow = false
+default allow := false
 
 #-----------------------------------------------
 
@@ -20,6 +20,7 @@ allow if {
 allow if {
 	role_utils.is_user_editor("create")
 	verification.is_email_verified
+
 	# payload cannot contain any invalid field for the caller's role
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 }
@@ -27,12 +28,16 @@ allow if {
 allow if {
 	role_utils.is_user_member("create")
 	verification.is_email_verified
+
 	# payload cannot contain any invalid field for the caller's role
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+
 	# caller must own the referenced list
 	caller_owns_referenced_list
+
 	# referenced list must be valid/active for the creation
 	referenced_list_valid_for_creation
+
 	# caller must be able to see the target entity
 	caller_can_see_target_entity
 }

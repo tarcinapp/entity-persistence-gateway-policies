@@ -1,12 +1,12 @@
 package policies.auth.routes.lists.findListParents.policy
 
+import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
 import data.policies.util.lists.roles as role_utils
-import data.policies.util.common.originalRecord as original_record
 
 # By default, deny requests.
-default allow = false
+default allow := false
 
 #-----------------------------------------------
 
@@ -14,12 +14,12 @@ default allow = false
 #-----------------------------------------------
 allow if {
 	role_utils.is_user_admin("find")
-    verification.is_email_verified
+	verification.is_email_verified
 }
 
 allow if {
 	role_utils.is_user_editor("find")
-    verification.is_email_verified
+	verification.is_email_verified
 }
 
 #-----------------------------------------------
@@ -27,9 +27,9 @@ allow if {
 # Members can see list parents if they can see the root list
 #-----------------------------------------------
 allow if {
-    role_utils.is_user_member("find")
-    verification.is_email_verified
-    can_user_see_this_record
+	role_utils.is_user_member("find")
+	verification.is_email_verified
+	can_user_see_this_record
 }
 
 #-----------------------------------------------
@@ -37,42 +37,42 @@ allow if {
 # Visitors are allowed to retrieve parents only of active and public lists
 #-----------------------------------------------
 allow if {
-    role_utils.is_user_visitor("find")
-    verification.is_email_verified
-    original_record.is_public
-    original_record.is_active
+	role_utils.is_user_visitor("find")
+	verification.is_email_verified
+	original_record.is_public
+	original_record.is_active
 }
 
 #-----------------------------------------------
 
 # user can see this record's parents, because it's his record
 can_user_see_this_record if {
-    original_record.is_belong_to_user
-    not original_record.is_passive                # record is either pending or active
+	original_record.is_belong_to_user
+	not original_record.is_passive # record is either pending or active
 }
 
 # user can see this record's parents, because record belongs to his groups and record is not private
 can_user_see_this_record if {
-    original_record.is_belong_to_users_groups
-    not original_record.is_passive                # record is either pending or active
-    not original_record.is_private                # record is either public or protected
+	original_record.is_belong_to_users_groups
+	not original_record.is_passive # record is either pending or active
+	not original_record.is_private # record is either public or protected
 }
 
 # user can see this record's parents, because it is public and active record
 can_user_see_this_record if {
-    original_record.is_public
-    original_record.is_active
+	original_record.is_public
+	original_record.is_active
 }
 
 # user can see this record's parents, because he is in viewerUsers, and record is active
 can_user_see_this_record if {
-    original_record.is_user_in_viewerUsers
-    original_record.is_active
+	original_record.is_user_in_viewerUsers
+	original_record.is_active
 }
 
 # user can see this record's parents, because he is in viewerGroups, and record is active
 can_user_see_this_record if {
-    original_record.is_user_in_viewerGroups
-    not original_record.is_private                # record is either public or protected
-    original_record.is_active
+	original_record.is_user_in_viewerGroups
+	not original_record.is_private # record is either public or protected
+	original_record.is_active
 }

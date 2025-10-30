@@ -15,6 +15,6 @@ description := `This policy evaluates the user's role, email verification status
     Members can only specify their groups in the ownerGroups field. `
 
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "requestPayload": "Request payload JSON object."
+	"encodedJwt": "Encoded JWT string.",
+	"requestPayload": "Request payload JSON object.",
 }

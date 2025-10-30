@@ -12,7 +12,7 @@ member_validFrom_range_in_seconds := 300
 member_validUntil_range_for_inactivation_in_seconds := 300
 
 # By default, deny requests.
-default allow = false
+default allow := false
 
 #-----------------------------------------------
 # Allow rules (PATCH semantics — partial updates)
@@ -285,4 +285,3 @@ is_validUntil_in_correct_range_for_inactivation if {
 	validUntilSec <= nowSec
 	validUntilSec > nowSec - member_validUntil_range_for_inactivation_in_seconds
 }
-

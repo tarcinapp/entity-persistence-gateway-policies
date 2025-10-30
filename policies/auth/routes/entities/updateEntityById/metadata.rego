@@ -43,7 +43,7 @@ This ensures:
 - Fields that are visible but not updatable remain unchanged by users without the appropriate permissions.`
 
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "originalRecord": "The record which the user is querying by it's id.",
-    "requestPayload": "Request body"
+	"encodedJwt": "Encoded JWT string.",
+	"originalRecord": "The record which the user is querying by it's id.",
+	"requestPayload": "Request body",
 }

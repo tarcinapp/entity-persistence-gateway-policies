@@ -29,7 +29,7 @@ description := `This policy evaluates the user's role, email verification status
         - validUntilDateTime must specify a time in last 300 seconds`
 
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "originalRecord": "The record which the user is querying by it's id.",
-    "requestPayload": "Request body"
+	"encodedJwt": "Encoded JWT string.",
+	"originalRecord": "The record which the user is querying by it's id.",
+	"requestPayload": "Request body",
 }

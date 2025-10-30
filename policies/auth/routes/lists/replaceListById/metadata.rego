@@ -31,9 +31,9 @@ description := `This policy evaluates the user's role, email verification status
   - For validUntilDateTime, if the user is allowed to change the value:
     - The validUntilDateTime field of the original record must be empty.
     - It must be within the last 300 seconds.`
-        
+
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "originalRecord": "The record which the user is querying by its ID.",
-    "requestPayload": "Request body."
+	"encodedJwt": "Encoded JWT string.",
+	"originalRecord": "The record which the user is querying by its ID.",
+	"requestPayload": "Request body.",
 }

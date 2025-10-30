@@ -5,6 +5,4 @@ description := `This policy evaluates the user's role, email verification status
 - members and visitors are allowed to find lists if their email is validated. 
 - deciding what can a user see is handled with the query variables at the gateway`
 
-fields := {
-    "encodedJwt": "Encoded JWT string."
-}
+fields := {"encodedJwt": "Encoded JWT string."}

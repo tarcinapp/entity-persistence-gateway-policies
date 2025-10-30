@@ -16,7 +16,7 @@ Entity visibility rules are the same as in findEntityById: admins and editors ca
 The request payload will not include full list and entity details. Those are provided in the originalRecord as fromMetadata and toMetadata and should be used for ownership and visibility checks.`
 
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "requestPayload": "Request payload JSON object for the new relation.",
-    "originalRecord": "The original relation query result including `fromMetadata` (list metadata) and `toMetadata` (entity metadata) used for authorization checks."
+	"encodedJwt": "Encoded JWT string.",
+	"requestPayload": "Request payload JSON object for the new relation.",
+	"originalRecord": "The original relation query result including `fromMetadata` (list metadata) and `toMetadata` (entity metadata) used for authorization checks.",
 }

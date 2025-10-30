@@ -12,7 +12,7 @@ Behavior summary:
 If required inputs (such as 'originalRecord') are missing, the policy will deny since ownership/visibility cannot be established.`
 
 fields := {
-    "encodedJwt": "Encoded JWT string (required by token helpers).",
-    "requestPayload": "The entity creation payload (fields the caller is attempting to set).",
-    "originalRecord": "The list record returned by the database (used to evaluate visibility/ownership/time)."
+	"encodedJwt": "Encoded JWT string (required by token helpers).",
+	"requestPayload": "The entity creation payload (fields the caller is attempting to set).",
+	"originalRecord": "The list record returned by the database (used to evaluate visibility/ownership/time).",
 }

@@ -7,6 +7,4 @@ Members and visitors can find relations if their email is verified.
 
 The gateway is expected to narrow queries by owner/groups/visibility before calling the backend.`
 
-fields := {
-    "encodedJwt": "Encoded JWT string."
-}
+fields := {"encodedJwt": "Encoded JWT string."}

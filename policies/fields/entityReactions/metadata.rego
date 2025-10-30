@@ -20,6 +20,4 @@ description := `
     any forbidden field, then this field is dropped from the forbidden fields list for that user. In addition to that, if user is assigned with 'find' role 
     for a specific field, we are removing that field from the list of forbbidden fields.`
 
-fields := {
-    "encodedJwt": "Encoded JWT string."
-}
+fields := {"encodedJwt": "Encoded JWT string."}

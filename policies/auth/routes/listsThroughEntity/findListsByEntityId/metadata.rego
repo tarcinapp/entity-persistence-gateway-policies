@@ -18,7 +18,7 @@ description := `This policy evaluates the caller's role, email verification stat
 Missing 'originalRecord' should be treated as denial because visibility cannot be established.`
 
 fields := {
-    "encodedJwt": "Encoded JWT string.",
-    "appShortcode": "Application shortcode used by the role-matching helpers (e.g. used in role regex patterns).",
-    "originalRecord": "The entity record being queried (its metadata is used for visibility checks)."
+	"encodedJwt": "Encoded JWT string.",
+	"appShortcode": "Application shortcode used by the role-matching helpers (e.g. used in role regex patterns).",
+	"originalRecord": "The entity record being queried (its metadata is used for visibility checks).",
 }

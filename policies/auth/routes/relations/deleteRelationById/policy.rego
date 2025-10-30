@@ -5,7 +5,7 @@ import data.policies.util.common.verification as verification
 import data.policies.util.relations.roles as role_utils
 
 # By default, deny requests.
-default allow = false
+default allow := false
 
 #-----------------------------------------------
 
@@ -15,6 +15,5 @@ allow if {
 	role_utils.is_user_admin("delete")
 	verification.is_email_verified
 }
-
 
 #-----------------------------------------------

@@ -5,7 +5,7 @@ import data.policies.util.common.verification as verification
 import data.policies.util.entities.roles as role_utils
 
 # By default, deny requests.
-default allow = false
+default allow := false
 
 #-----------------------------------------------
 

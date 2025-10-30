@@ -14,7 +14,7 @@ member_validFrom_range_in_seconds := 300
 member_validUntil_range_for_inactivation_in_seconds := 300
 
 # By default, deny requests.
-default allow = false
+default allow := false
 
 #-----------------------------------------------
 # Decide allow if any of the following section is true
@@ -30,7 +30,6 @@ allow if {
 
 	# forbidden-for-update fields must not be changed
 	forbidden_fields_has_same_value_with_original_record
-
 	# relation target ids cannot be retargeted
 	# Allow admins to retarget relations
 	#is_relation_ids_unchanged
@@ -47,7 +46,6 @@ allow if {
 
 	# forbidden-for-update fields must not be changed
 	forbidden_fields_has_same_value_with_original_record
-
 	# relation target ids cannot be retargeted
 	# Allow editors to retarget relations for merge scenarios
 	# is_relation_ids_unchanged
@@ -286,4 +284,3 @@ is_validUntil_in_correct_range_for_inactivation if {
 	validUntilSec <= nowSec
 	validUntilSec > nowSec - member_validUntil_range_for_inactivation_in_seconds
 }
-
