@@ -1,0 +1,42 @@
+#!/bin/sh
+# Pre-commit hook: format staged .rego files using opa fmt
+# Place this file under .githooks/ and run: git config core.hooksPath .githooks
+
+set -e
+
+# Get staged files that are added/modified/copied
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$STAGED_FILES" ]; then
+  exit 0
+fi
+
+# Filter for .rego files
+REGO_FILES=$(printf "%s" "$STAGED_FILES" | grep '\.rego$' || true)
+
+if [ -z "$REGO_FILES" ]; then
+  exit 0
+fi
+
+# Ensure opa is available
+if ! command -v opa >/dev/null 2>&1; then
+  echo "error: opa not found in PATH. Please install OPA (https://www.openpolicyagent.org/docs/latest/#running-opa)"
+  echo "Alternatively, install opa and add it to your PATH to allow this hook to auto-format .rego files."
+  exit 1
+fi
+
+echo "Formatting staged .rego files with opa fmt..."
+
+# Format each file and re-add to index
+printf "%s\n" "$REGO_FILES" | while IFS= read -r file; do
+  if [ -f "$file" ]; then
+    opa fmt -w -- "$file" || {
+      echo "warning: opa fmt failed for $file"
+      continue
+    }
+    git add -- "$file"
+    echo "  formatted: $file"
+  fi
+done
+
+exit 0
