@@ -1,3 +1,353 @@
 package policies.auth.routes.entityReactions.updateEntityReactionById.policy
 
-allow := true
+import data.policies.fields.entityReactions.policy as forbidden_fields
+import data.policies.util.common.array as array
+import data.policies.util.common.originalRecord as original_record
+import data.policies.util.common.token as token
+import data.policies.util.common.verification as verification
+import data.policies.util.entities.roles as entity_role_utils
+import data.policies.util.entityReactions.roles as role_utils
+
+# By default, deny requests.
+default allow := false
+
+# Admins
+allow if {
+	role_utils.is_user_admin("update")
+	verification.is_email_verified
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	forbidden_fields_has_same_value_with_original_record
+	can_see_related_entity
+}
+
+# Editors
+allow if {
+	role_utils.is_user_editor("update")
+	verification.is_email_verified
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	forbidden_fields_has_same_value_with_original_record
+	can_see_related_entity
+}
+
+# Members
+allow if {
+	role_utils.is_user_member("update")
+	verification.is_email_verified
+	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	forbidden_fields_has_same_value_with_original_record
+	is_record_belongs_to_this_user
+
+	# Deny updates to expired records; pending (no _validFromDateTime) is allowed
+	not original_record.is_passive
+	not member_has_problem_with_validFrom
+	not member_has_problem_with_validUntil
+	can_see_related_entity
+}
+
+# --- Managed fields logic for update (partial payload) ---
+is_record_belongs_to_this_user if {
+	is_record_belongs_to_this_user_through_user_id
+}
+
+is_record_belongs_to_this_user if {
+	is_record_belongs_to_this_user_through_groups
+}
+
+is_record_belongs_to_this_user_through_user_id if {
+	original_record.is_belong_to_user
+	user_id_in_ownerUsers
+	all_new_groups_from_user_groups
+}
+
+is_record_belongs_to_this_user_through_groups if {
+	original_record.is_belong_to_users_groups
+	not original_record.is_private
+	not has_visibility_change_to_private
+	all_new_groups_from_user_groups
+	no_original_groups_removed
+	ownerUsers_unchanged
+}
+
+has_visibility_change_to_private if {
+	payload_contains_any_field(["_visibility"])
+	input.requestPayload._visibility == "private"
+}
+
+user_id_in_ownerUsers if {
+	# Pass if ownerUsers is not in payload (no change)
+	not payload_contains_any_field(["_ownerUsers"])
+}
+
+user_id_in_ownerUsers if {
+	# For user-owned records, user ID must be in payload's ownerUsers
+	original_record.is_belong_to_user
+	not original_record.is_belong_to_users_groups
+	input.requestPayload._ownerUsers[_] == token.payload.sub
+}
+
+user_id_in_ownerUsers if {
+	# Pass if owned through groups only
+	not original_record.is_belong_to_user
+	original_record.is_belong_to_users_groups
+}
+
+all_new_groups_from_user_groups if {
+	# Pass if no ownerGroups in payload (no change)
+	not payload_contains_any_field(["_ownerGroups"])
+}
+
+all_new_groups_from_user_groups if {
+	# All groups in payload must be user's groups
+	payload_contains_any_field(["_ownerGroups"])
+	every group in input.requestPayload._ownerGroups {
+		group in token.payload.groups
+	}
+}
+
+no_original_groups_removed if {
+	# Pass if no ownerGroups in payload (no change)
+	not payload_contains_any_field(["_ownerGroups"])
+}
+
+no_original_groups_removed if {
+	# All original groups must be in payload
+	payload_contains_any_field(["_ownerGroups"])
+	every group in input.originalRecord._ownerGroups {
+		group in input.requestPayload._ownerGroups
+	}
+}
+
+ownerUsers_unchanged if {
+	not has_removed_users
+	not has_added_users
+}
+
+has_removed_users if {
+	some original_user
+	original_user = input.originalRecord._ownerUsers[_]
+	not user_in_request_payload(original_user)
+}
+
+has_added_users if {
+	some request_user
+	request_user = input.requestPayload._ownerUsers[_]
+	not user_in_original_record(request_user)
+}
+
+user_in_request_payload(user) if {
+	some i
+	input.requestPayload._ownerUsers[i] == user
+}
+
+user_in_original_record(user) if {
+	some i
+	input.originalRecord._ownerUsers[i] == user
+}
+
+member_has_problem_with_validFrom if {
+	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.requestPayload._validFromDateTime != null
+	input.originalRecord._validFromDateTime != null
+	input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
+}
+
+member_has_problem_with_validFrom if {
+	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	input.originalRecord._validFromDateTime == null
+	input.requestPayload._validFromDateTime != null
+	not is_validFrom_in_correct_range
+}
+
+# Helper: true if _validUntilDateTime is forbidden for update for this user
+validUntil_forbidden if {
+	forbidden_fields.which_fields_forbidden_for_update[_] == "_validUntilDateTime"
+}
+
+# Case 1: If the original value is not null, members cannot update or clear it
+member_has_problem_with_validUntil if {
+	payload_contains_any_field(["_validUntilDateTime"])
+	original_record.has_value("_validUntilDateTime")
+	input.originalRecord._validUntilDateTime != null
+	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
+}
+
+# Case 2a: Original does not have the field at all and field is forbidden for update
+member_has_problem_with_validUntil if {
+	payload_contains_any_field(["_validUntilDateTime"])
+	not original_record.has_value("_validUntilDateTime")
+	validUntil_forbidden
+	input.requestPayload._validUntilDateTime != null
+}
+
+# Case 2b: Original has the field and it is null, field is forbidden for update
+member_has_problem_with_validUntil if {
+	payload_contains_any_field(["_validUntilDateTime"])
+	input.originalRecord._validUntilDateTime == null
+	validUntil_forbidden
+	input.requestPayload._validUntilDateTime != null
+}
+
+# Case 3a: Original does not have the field at all, user has update permission
+member_has_problem_with_validUntil if {
+	payload_contains_any_field(["_validUntilDateTime"])
+	not original_record.has_value("_validUntilDateTime")
+	not validUntil_forbidden
+	input.requestPayload._validUntilDateTime != null
+	not is_validUntil_in_correct_range_for_inactivation
+}
+
+# Case 3b: Original has the field and it is null, user has update permission
+member_has_problem_with_validUntil if {
+	payload_contains_any_field(["_validUntilDateTime"])
+	input.originalRecord._validUntilDateTime == null
+	not validUntil_forbidden
+	input.requestPayload._validUntilDateTime != null
+	not is_validUntil_in_correct_range_for_inactivation
+}
+
+is_validFrom_in_correct_range if {
+	payload_contains_any_field(["_validFromDateTime"])
+	input.requestPayload._validFromDateTime != null
+	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
+	validFromSec := time.parse_rfc3339_ns(input.requestPayload._validFromDateTime) / ((1000 * 1000) * 1000)
+	validFromSec <= nowSec
+	validFromSec > nowSec - 300
+}
+
+is_validUntil_in_correct_range_for_inactivation if {
+	nowSec := time.now_ns() / ((1000 * 1000) * 1000)
+	validUntilSec := time.parse_rfc3339_ns(input.requestPayload._validUntilDateTime) / ((1000 * 1000) * 1000)
+	validUntilSec <= nowSec
+	validUntilSec > nowSec - 300
+}
+
+# Returns true if there exists a forbidden field for update in the payload with a different value
+forbidden_update_field_changed if {
+	field := forbidden_fields.which_fields_forbidden_for_update[_]
+	input.requestPayload[field]
+	input.requestPayload[field] != input.originalRecord[field]
+}
+
+# All forbidden-for-update fields present in the payload must have the same value as in the original record
+forbidden_fields_has_same_value_with_original_record if {
+	not forbidden_update_field_changed
+}
+
+payload_contains_any_field(fields) if {
+	some field
+	field = fields[_]
+	input.requestPayload[field]
+}
+
+# --- Related entity visibility check (using managed fields, like findEntityById) ---
+can_see_related_entity if {
+	related := input.originalRecord._relationMetadata
+
+	# Admin
+	entity_role_utils.is_user_admin("find")
+	verification.is_email_verified
+}
+
+can_see_related_entity if {
+	related := input.originalRecord._relationMetadata
+
+	# Editor
+	entity_role_utils.is_user_editor("find")
+	verification.is_email_verified
+}
+
+can_see_related_entity if {
+	related := input.originalRecord._relationMetadata
+
+	# Member
+	entity_role_utils.is_user_member("find")
+	verification.is_email_verified
+	can_user_see_this_related_entity
+}
+
+can_see_related_entity if {
+	related := input.originalRecord._relationMetadata
+
+	# Visitor
+	entity_role_utils.is_user_visitor("find")
+	verification.is_email_verified
+	is_related_entity_public_and_active
+}
+
+# --- Related entity visibility logic (mirroring findEntityById managed fields) ---
+can_user_see_this_related_entity if {
+	related := input.originalRecord._relationMetadata
+	is_related_entity_belong_to_user
+	not is_related_entity_passive
+}
+
+can_user_see_this_related_entity if {
+	related := input.originalRecord._relationMetadata
+	is_related_entity_belong_to_users_groups
+	not is_related_entity_passive
+	not is_related_entity_private
+}
+
+can_user_see_this_related_entity if {
+	related := input.originalRecord._relationMetadata
+	is_related_entity_public_and_active
+}
+
+can_user_see_this_related_entity if {
+	related := input.originalRecord._relationMetadata
+	is_related_entity_user_in_viewerUsers
+	is_related_entity_active
+}
+
+can_user_see_this_related_entity if {
+	related := input.originalRecord._relationMetadata
+	is_related_entity_user_in_viewerGroups
+	not is_related_entity_private
+	is_related_entity_active
+}
+
+# --- Managed field helpers for related entity ---
+is_related_entity_belong_to_user if {
+	some i
+	token.payload.sub == input.originalRecord._relationMetadata._ownerUsers[i]
+}
+
+is_related_entity_belong_to_users_groups if {
+	not is_related_entity_belong_to_user
+	some i
+	token.payload.groups[i] == input.originalRecord._relationMetadata._ownerGroups[_]
+}
+
+is_related_entity_private if {
+	input.originalRecord._relationMetadata._visibility == "private"
+}
+
+is_related_entity_public_and_active if {
+	is_related_entity_public
+	is_related_entity_active
+}
+
+is_related_entity_public if {
+	input.originalRecord._relationMetadata._visibility == "public"
+}
+
+is_related_entity_active if {
+	input.originalRecord._relationMetadata._validFromDateTime != null
+	time.parse_rfc3339_ns(input.originalRecord._relationMetadata._validFromDateTime) < time.now_ns()
+	not is_related_entity_passive
+}
+
+is_related_entity_passive if {
+	input.originalRecord._relationMetadata._validUntilDateTime != null
+	time.parse_rfc3339_ns(input.originalRecord._relationMetadata._validUntilDateTime) <= time.now_ns()
+}
+
+is_related_entity_user_in_viewerUsers if {
+	some i
+	token.payload.sub == input.originalRecord._relationMetadata._viewerUsers[i]
+}
+
+is_related_entity_user_in_viewerGroups if {
+	some i
+	token.payload.groups[i] == input.originalRecord._relationMetadata._viewerGroups[_]
+}
