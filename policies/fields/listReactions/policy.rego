@@ -1,6 +1,6 @@
 package policies.fields.listReactions.policy
 
-import data.policies.fields.listReactions.forbiddenFields as forbiddenFields
+import data.policies.fields.listReactions.policy.forbiddenFields as forbiddenFields
 import data.policies.util.common.array as array
 import data.policies.util.common.token as token
 import data.policies.util.listReactions.roles as role_utils
