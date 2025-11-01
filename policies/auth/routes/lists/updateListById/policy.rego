@@ -43,6 +43,9 @@ allow if {
 	is_record_belongs_to_this_user # This will check either through user_id or groups
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
+
+	# Deny updates to expired records; pending (no _validFromDateTime) is allowed
+	not original_record.is_passive
 	not member_has_problem_with_validFrom
 	not member_has_problem_with_validUntil
 }
