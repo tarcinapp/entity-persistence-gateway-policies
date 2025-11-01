@@ -10,6 +10,7 @@ is_user_admin(operationType) if {
 
 is_user_editor(operationType) if {
 	not is_user_admin(operationType)
+
 	role := token.payload.roles[_]
 	pattern := sprintf(`%s(((\.)|(\.(reactions|entityReactions))|(\.(reactions|entityReactions)(\.%s)))?)\.editor`, [input.appShortcode, operationType])
 	regex.match(pattern, role)
