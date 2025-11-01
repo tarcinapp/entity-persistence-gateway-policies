@@ -4,6 +4,7 @@ import data.policies.fields.entityReactions.policy as forbidden_fields
 import data.policies.util.common.array as array
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
+import data.policies.util.entities.roles as entity_role_utils
 import data.policies.util.entityReactions.roles as role_utils
 
 # By default, deny requests.
@@ -14,34 +15,23 @@ default allow := false
 allow if {
 	role_utils.is_user_admin("create")
 	verification.is_email_verified
-
-	# payload cannot contain any invalid field
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	can_admin_see_source_record
 }
 
 allow if {
 	role_utils.is_user_editor("create")
 	verification.is_email_verified
-
-	# payload cannot contain any invalid field
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	can_editor_see_source_record
 }
 
 allow if {
 	role_utils.is_user_member("create")
-
-	# payload cannot contain any invalid field
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
-
-	# members must be email verified
 	verification.is_email_verified
-
-	# if user sent _ownerGroups, then all elements listed in the _ownerGroups array
-	# must exists in the 'groups' field in token
 	not member_has_problem_with_groups
-
-	# caller must be able to see the source entity
-	can_user_see_source_record
+	can_member_see_source_record
 }
 
 #-----------------------------------------------
@@ -118,34 +108,43 @@ source_is_user_in_viewerGroups if {
 	token.payload.groups[i] in input.source._viewerGroups
 }
 
-# user can see this source record, because it's his record
-can_user_see_source_record if {
-	source_is_belong_to_user
-	source_is_active
+# --- Per-role entity visibility checks ---
+can_admin_see_source_record if {
+	entity_role_utils.is_user_admin("find")
 }
 
-# user can see this source record, because record belongs to his groups and record is not private
-can_user_see_source_record if {
-	source_is_belong_to_users_groups
-	source_is_active
-	not source_is_private # record is either public or protected
+can_editor_see_source_record if {
+	entity_role_utils.is_user_editor("find")
 }
 
-# user can see this source record, because it is public and active record
-can_user_see_source_record if {
+can_member_see_source_record if {
+	entity_role_utils.is_user_member("find")
 	source_is_public
 	source_is_active
 }
 
-# user can see this source record, because he is in viewerUsers, and record is active
-can_user_see_source_record if {
+can_member_see_source_record if {
+	entity_role_utils.is_user_member("find")
+	source_is_belong_to_user
+	source_is_active
+}
+
+can_member_see_source_record if {
+	entity_role_utils.is_user_member("find")
+	source_is_belong_to_users_groups
+	source_is_active
+	not source_is_private
+}
+
+can_member_see_source_record if {
+	entity_role_utils.is_user_member("find")
 	source_is_user_in_viewerUsers
 	source_is_active
 }
 
-# user can see this source record, because he is in viewerGroups, and record is active
-can_user_see_source_record if {
+can_member_see_source_record if {
+	entity_role_utils.is_user_member("find")
 	source_is_user_in_viewerGroups
-	not source_is_private # record is either public or protected
+	not source_is_private
 	source_is_active
 }
