@@ -60,52 +60,52 @@ member_has_problem_with_groups if {
 }
 
 #-----------------------------------------------
-# Visibility checks (based on findEntityById policy) applied to input.source
+# Visibility checks (based on findEntityById policy) applied to input.requestPayload._relationMetadata
 # These mirror the checks in policies.auth.routes.entities.findEntityById.policy
 
-source_is_active if {
-	input.source._validFromDateTime != null
-	time.parse_rfc3339_ns(input.source._validFromDateTime) < time.now_ns()
-	not source_is_passive
+related_entity_is_active if {
+	input.requestPayload._relationMetadata._validFromDateTime != null
+	time.parse_rfc3339_ns(input.requestPayload._relationMetadata._validFromDateTime) < time.now_ns()
+	not related_entity_is_passive
 }
 
-source_is_passive if {
-	input.source._validUntilDateTime != null
-	time.parse_rfc3339_ns(input.source._validUntilDateTime) <= time.now_ns()
+related_entity_is_passive if {
+	input.requestPayload._relationMetadata._validUntilDateTime != null
+	time.parse_rfc3339_ns(input.requestPayload._relationMetadata._validUntilDateTime) <= time.now_ns()
 }
 
-source_is_public if {
-	input.source._visibility == "public"
+related_entity_is_public if {
+	input.requestPayload._relationMetadata._visibility == "public"
 }
 
-source_is_protected if {
-	input.source._visibility == "protected"
+related_entity_is_protected if {
+	input.requestPayload._relationMetadata._visibility == "protected"
 }
 
-source_is_private if {
-	input.source._visibility == "private"
+related_entity_is_private if {
+	input.requestPayload._relationMetadata._visibility == "private"
 }
 
-source_is_belong_to_user if {
+related_entity_is_belong_to_user if {
 	some i
-	token.payload.sub = input.source._ownerUsers[i]
+	token.payload.sub = input.requestPayload._relationMetadata._ownerUsers[i]
 }
 
 # Only consider group ownership if the user is not a direct owner
-source_is_belong_to_users_groups if {
-	not source_is_belong_to_user
+related_entity_is_belong_to_users_groups if {
+	not related_entity_is_belong_to_user
 	some i
-	token.payload.groups[i] in input.source._ownerGroups
+	token.payload.groups[i] in input.requestPayload._relationMetadata._ownerGroups
 }
 
-source_is_user_in_viewerUsers if {
+related_entity_is_user_in_viewerUsers if {
 	some i
-	token.payload.sub = input.source._viewerUsers[i]
+	token.payload.sub = input.requestPayload._relationMetadata._viewerUsers[i]
 }
 
-source_is_user_in_viewerGroups if {
+related_entity_is_user_in_viewerGroups if {
 	some i
-	token.payload.groups[i] in input.source._viewerGroups
+	token.payload.groups[i] in input.requestPayload._relationMetadata._viewerGroups
 }
 
 # --- Per-role entity visibility checks ---
@@ -119,32 +119,32 @@ can_editor_see_source_record if {
 
 can_member_see_source_record if {
 	entity_role_utils.is_user_member("find")
-	source_is_public
-	source_is_active
+	related_entity_is_public
+	related_entity_is_active
 }
 
 can_member_see_source_record if {
 	entity_role_utils.is_user_member("find")
-	source_is_belong_to_user
-	source_is_active
+	related_entity_is_belong_to_user
+	related_entity_is_active
 }
 
 can_member_see_source_record if {
 	entity_role_utils.is_user_member("find")
-	source_is_belong_to_users_groups
-	source_is_active
-	not source_is_private
+	related_entity_is_belong_to_users_groups
+	related_entity_is_active
+	not related_entity_is_private
 }
 
 can_member_see_source_record if {
 	entity_role_utils.is_user_member("find")
-	source_is_user_in_viewerUsers
-	source_is_active
+	related_entity_is_user_in_viewerUsers
+	related_entity_is_active
 }
 
 can_member_see_source_record if {
 	entity_role_utils.is_user_member("find")
-	source_is_user_in_viewerGroups
-	not source_is_private
-	source_is_active
+	related_entity_is_user_in_viewerGroups
+	not related_entity_is_private
+	related_entity_is_active
 }

@@ -61,15 +61,14 @@ produce_input_doc_by_role_and_source(roles, is_email_verified, requestPayload, v
 			"groups": ["group-1", "group-3"],
 			"roles": [roles],
 		}),
-		"requestPayload": requestPayload,
-		"source": {
+		"requestPayload": object.union(requestPayload, {"_relationMetadata": {
 			"name": "some-entity",
 			"_ownerUsers": ["any-owner-user"],
 			"_ownerGroups": ["any-owner-group-1"],
 			"_visibility": visibility,
 			"_validFromDateTime": validFrom,
 			"_validUntilDateTime": validUntil,
-		},
+		}}),
 	}
 }
 
@@ -88,15 +87,14 @@ produce_input_doc_by_role_and_source_with_owner(roles, is_email_verified, reques
 			"groups": ["users-group-1"],
 			"roles": [roles],
 		}),
-		"requestPayload": requestPayload,
-		"source": {
+		"requestPayload": object.union(requestPayload, {"_relationMetadata": {
 			"name": "some-entity",
 			"_ownerUsers": ownerUsers,
 			"_ownerGroups": ownerGroups,
 			"_visibility": visibility,
 			"_validFromDateTime": validFrom,
 			"_validUntilDateTime": validUntil,
-		},
+		}}),
 	}
 }
 
@@ -115,14 +113,13 @@ produce_input_doc_by_role_and_source_with_payload_groups(roles, is_email_verifie
 			"groups": ["group-1", "group-3"],
 			"roles": [roles],
 		}),
-		"requestPayload": requestPayload,
-		"source": {
+		"requestPayload": object.union(requestPayload, {"_relationMetadata": {
 			"name": "some-entity",
 			"_ownerUsers": ["any-owner-user"],
 			"_ownerGroups": ["any-owner-group-1"],
 			"_visibility": visibility,
 			"_validFromDateTime": validFrom,
 			"_validUntilDateTime": validUntil,
-		},
+		}}),
 	}
 }
