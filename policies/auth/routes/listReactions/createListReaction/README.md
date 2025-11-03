@@ -23,5 +23,5 @@ This policy evaluates the user's role, email verification status, request payloa
 ## Fields
 
 - `encodedJwt`: Encoded JWT string representing the caller.
-- `requestPayload`: Request payload JSON object. Must not contain forbidden fields and may include `_ownerGroups`.
-- `source`: The parent list metadata (used to evaluate list visibility). Expected fields: `_id`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, `_ownerUsers`, `_ownerGroups`, `_viewerUsers`, `_viewerGroups`, etc.
+- `requestPayload`: Request payload JSON object. Must not contain forbidden fields and may include `_ownerGroups` and `_relationMetadata`.
+- `requestPayload._relationMetadata`: The parent list metadata (used to evaluate list visibility). Expected fields: `_id`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, `_ownerUsers`, `_ownerGroups`, `_viewerUsers`, `_viewerGroups`, etc.
