@@ -25,7 +25,7 @@ allow if {
 
 #-----------------------------------------------
 
-# Members can see list reactions if they can see both the parent list (input.source)
+# Members can see list reactions if they can see both the parent list (input.originalRecord._relationMetadata)
 # and the reaction itself (input.originalRecord)
 allow if {
 	reaction_roles.is_user_member("find")
@@ -49,51 +49,51 @@ allow if {
 
 #-----------------------------------------------
 
-# Evaluate visibility of the parent list provided in input.source
+# Evaluate visibility of the parent list provided in input.originalRecord._relationMetadata
 
 list_is_active if {
-	input.source._validFromDateTime != null
-	time.parse_rfc3339_ns(input.source._validFromDateTime) < time.now_ns()
+	input.originalRecord._relationMetadata._validFromDateTime != null
+	time.parse_rfc3339_ns(input.originalRecord._relationMetadata._validFromDateTime) < time.now_ns()
 	not list_is_passive
 }
 
 list_is_passive if {
-	input.source._validUntilDateTime != null
-	time.parse_rfc3339_ns(input.source._validUntilDateTime) <= time.now_ns()
+	input.originalRecord._relationMetadata._validUntilDateTime != null
+	time.parse_rfc3339_ns(input.originalRecord._relationMetadata._validUntilDateTime) <= time.now_ns()
 }
 
 list_is_public if {
-	input.source._visibility == "public"
+	input.originalRecord._relationMetadata._visibility == "public"
 }
 
 list_is_protected if {
-	input.source._visibility == "protected"
+	input.originalRecord._relationMetadata._visibility == "protected"
 }
 
 list_is_private if {
-	input.source._visibility == "private"
+	input.originalRecord._relationMetadata._visibility == "private"
 }
 
 list_is_belong_to_user if {
 	some i
-	token.payload.sub = input.source._ownerUsers[i]
+	token.payload.sub = input.originalRecord._relationMetadata._ownerUsers[i]
 }
 
 # Only consider group ownership if the user is not a direct owner
 list_is_belong_to_users_groups if {
 	not list_is_belong_to_user
 	some i
-	token.payload.groups[i] in input.source._ownerGroups
+	token.payload.groups[i] in input.originalRecord._relationMetadata._ownerGroups
 }
 
 list_is_user_in_viewerUsers if {
 	some i
-	token.payload.sub = input.source._viewerUsers[i]
+	token.payload.sub = input.originalRecord._relationMetadata._viewerUsers[i]
 }
 
 list_is_user_in_viewerGroups if {
 	some i
-	token.payload.groups[i] in input.source._viewerGroups
+	token.payload.groups[i] in input.originalRecord._relationMetadata._viewerGroups
 }
 
 ## Reuse the same visibility/ownership/viewer rules applied for lists

@@ -162,8 +162,7 @@ produce_input_doc_by_role(role, is_email_verified, source, originalRecord) := te
 			"groups": ["group-1"],
 			"roles": [role],
 		}),
-		"source": source,
-		"originalRecord": originalRecord,
+		"originalRecord": object.union(originalRecord, {"_relationMetadata": source}),
 	}
 }
 
@@ -182,6 +181,7 @@ produce_input_missing_source(role, is_email_verified, originalRecord) := test_bo
 			"groups": ["group-1"],
 			"roles": [role],
 		}),
+		# Missing _relationMetadata under originalRecord
 		"originalRecord": originalRecord,
 	}
 }
@@ -201,6 +201,6 @@ produce_input_missing_original(role, is_email_verified, source) := test_body if 
 			"groups": ["group-1"],
 			"roles": [role],
 		}),
-		"source": source,
+		# Missing originalRecord entirely
 	}
 }

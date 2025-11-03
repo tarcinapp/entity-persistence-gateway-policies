@@ -6,7 +6,7 @@ This policy decides whether a caller may retrieve a single reaction attached to 
 
 The decision composes two checks which both must pass (for non-admin/editor roles):
 
-- The caller must be permitted to view the parent list provided in `input.source` (mirrors `lists/findListById` visibility/ownership/viewer rules).
+- The caller must be permitted to view the parent list provided in `input.originalRecord._relationMetadata` (mirrors `lists/findListById` visibility/ownership/viewer rules).
 - The caller must be permitted to view the reaction provided in `input.originalRecord` (uses the shared `originalRecord` helpers).
 
 Summary:
@@ -18,5 +18,4 @@ Summary:
 ## Fields
 
 - `encodedJwt`: Encoded JWT string representing the caller.
-- `source`: The parent list metadata (used to evaluate list visibility). Expected fields: `_id`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, `_ownerUsers`, `_ownerGroups`, `_viewerUsers`, `_viewerGroups`, etc.
-- `originalRecord`: The reaction record being queried by its ID. Expected shape follows the `originalRecord` helpers.
+- `originalRecord`: The reaction record being queried by its ID. The parent list metadata must be provided under `originalRecord._relationMetadata`. Expected fields under `_relationMetadata`: `_id`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, `_ownerUsers`, `_ownerGroups`, `_viewerUsers`, `_viewerGroups`, etc.
