@@ -1,3 +1,14 @@
 package policies.auth.routes.reactionsThroughList.deleteReactionsByListId.policy
 
-allow := true
+import data.policies.util.common.verification as verification
+import data.policies.util.listReactions.roles as role_utils
+
+# By default, deny requests.
+default allow := false
+
+# Decide allow if any of the following section is true
+# ----------------------------------------------
+allow if {
+	role_utils.is_user_admin("delete")
+	verification.is_email_verified
+}
