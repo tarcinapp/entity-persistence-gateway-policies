@@ -2,7 +2,7 @@ package policies.auth.routes.entitiesThroughList.updateEntitiesByListId.policy
 
 import data.policies.util.common.test as test
 
-# Tests for updateEntitiesByListId — only admins should be permitted.
+# Tests for updateEntitiesByListId — admins and editors should be permitted.
 
 produce_input_doc_by_role(roles, is_email_verified) := test_body if {
 	test_body = {
@@ -64,18 +64,23 @@ test_not_allow_admin_unverified if {
 	not allow with input as produce_input_doc_by_role(["tarcinapp.records.admin"], false)
 }
 
-test_not_allow_editor if {
-	not allow with input as produce_input_doc_by_role(["tarcinapp.editor"], true)
-	not allow with input as produce_input_doc_by_role(["tarcinapp.records.editor"], true)
-	not allow with input as produce_input_doc_by_role(["tarcinapp.entities.editor"], true)
+test_allow_to_editor if {
+	allow with input as produce_input_doc_by_role(["tarcinapp.editor"], true)
+	allow with input as produce_input_doc_by_role(["tarcinapp.records.editor"], true)
+	allow with input as produce_input_doc_by_role(["tarcinapp.entities.editor"], true)
+}
+
+test_not_allow_editor_unverified if {
+	not allow with input as produce_input_doc_by_role(["tarcinapp.editor"], false)
+	not allow with input as produce_input_doc_by_role(["tarcinapp.records.editor"], false)
 }
 
 test_not_allow_member if {
 	not allow with input as produce_input_doc_by_role(["tarcinapp.member"], true)
 }
 
-# Forbidden field should block non-admins (editor) even if list scope matches
+# Forbidden field should block editors
 test_not_allow_editor_with_forbidden_field if {
 	forbidden_payload := object.union(base_payload, {"_createdDateTime": "2020-01-01T00:00:00Z"})
-	not allow with input as produce_input_doc_by_role_with_payload(["tarcinapp.editor", "tarcinapp.lists.editor"], true, forbidden_payload)
+	not allow with input as produce_input_doc_by_role_with_payload(["tarcinapp.editor"], true, forbidden_payload)
 }

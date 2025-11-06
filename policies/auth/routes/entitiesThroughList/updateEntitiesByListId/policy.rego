@@ -8,8 +8,7 @@ import data.policies.util.entities.roles as role_utils
 # By default, deny requests.
 default allow := false
 
-# Only global/list admins are allowed to update entities by list id. This
-# operation updates multiple entities, so editors are not permitted.
+# Admins and editors are allowed to update entities by list id.
 allow if {
 	role_utils.is_user_admin("update")
 	verification.is_email_verified
@@ -22,21 +21,26 @@ allow if {
 	not exists_forbidden_field_in_payload
 }
 
+allow if {
+	role_utils.is_user_editor("update")
+	verification.is_email_verified
+
+	# payload cannot contain any field that requestor cannot see or update
+	not exists_forbidden_field_in_payload
+}
+
 #-----------------------------------------------
 
 # Positive predicate: true if there exists a forbidden field (from either
 # find or update forbidden lists) present in the request payload.
 exists_forbidden_field_in_payload if {
 	some field
-	field = forbidden_fields.which_fields_for_finding[_]
+	field = forbidden_fields.which_fields_forbidden_for_finding[_]
 	input.requestPayload[field]
 }
 
 exists_forbidden_field_in_payload if {
 	some field
-	field = forbidden_fields.which_fields_for_update[_]
+	field = forbidden_fields.which_fields_forbidden_for_update[_]
 	input.requestPayload[field]
 }
-
-which_fields_for_finding := forbidden_fields.which_fields_for_finding
-which_fields_for_update := forbidden_fields.which_fields_for_update

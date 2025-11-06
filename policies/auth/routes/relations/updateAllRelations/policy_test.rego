@@ -14,9 +14,19 @@ test_allow_to_admin if {
 	allow with input as produce_input_doc_by_role(["tarcinapp.relations.update.admin"])
 }
 
-test_not_allow_to_any_other_roles if {
-	not allow with input as produce_input_doc_by_role(["tarcinapp.editor"])
+test_allow_to_editor if {
+	allow with input as produce_input_doc_by_role(["tarcinapp.editor"])
 
+	allow with input as produce_input_doc_by_role(["tarcinapp.records.editor"])
+
+	allow with input as produce_input_doc_by_role(["tarcinapp.relations.editor"])
+
+	allow with input as produce_input_doc_by_role(["tarcinapp.records.update.editor"])
+
+	allow with input as produce_input_doc_by_role(["tarcinapp.relations.update.editor"])
+}
+
+test_not_allow_to_any_other_roles if {
 	not allow with input as produce_input_doc_by_role(["tarcinapp.member"])
 
 	not allow with input as produce_input_doc_by_role(["tarcinapp.visitor"])
