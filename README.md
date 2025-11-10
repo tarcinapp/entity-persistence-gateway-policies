@@ -47,8 +47,8 @@ Roles can be assigned at multiple scopes to provide flexible access control:
    
 2. **Resource-Type Level**: Applies to all operations on a specific resource type
    * Example: `tarcinapp.entities.editor` grants editor access to all entity operations
-   * Supported resource types: `entities`, `lists`, `relations`, `entity-reactions`, `list-reactions`
-   * Alias: `records` (applies to both entities and lists)
+   * Supported resource types: `entities`, `lists`, `relations`, `entityReactions`, `listReactions`
+   * Aliases: `records` (applies to both entities and lists), `reactions` (applies to both entityReactions and listReactions)
 
 3. **Operation-Level**: Applies to specific operations on a resource type
    * Example: `tarcinapp.entities.create.member` allows members to create entities only
@@ -65,8 +65,7 @@ Beyond operation access, field-level roles control access to individual fields:
 Resources use two types of ownership to determine who has privileged access:
 
 **Direct Ownership (`_ownerUsers`):**
-* An array of user identifiers (matching JWT token `sub` claim)
-* Direct owners have the highest level of access to their resources
+* An array of user identifiers. A user is considered a direct owner if their unique identifier (the JWT `sub` claim) is **contained** within this array. Direct owners have the highest level of access to their resources.
 * Direct ownership takes precedence over all other access mechanisms
 * Direct owners can access their resources even in `pending` or `private` states
 
@@ -142,7 +141,10 @@ Resources have temporal validity controlled by two timestamp fields:
 **Impact on Authorization:**
 * Public visibility requires an `active` state for non-owners
 * Viewer access (via `_viewerUsers` / `_viewerGroups`) requires an `active` state
-* Owners can typically access their resources in any state (pending, active, expired)
+* **Owner access to expired resources:**
+  * **Admin and Editor owners** can access their resources in any state (pending, active, expired)
+  * **Member owners** are generally **denied** access to their own resources that have passed their `_validUntilDateTime` (expired state)
+  * This distinction ensures that only elevated roles can manage or retrieve expired content, while standard members cannot access expired resources even if they own them
 
 ---
 
@@ -168,9 +170,9 @@ The policy system is divided into two complementary layers that work together to
 * Apply time-based validity rules
 
 **Examples:**
-* `policies/auth/routes/entities/createEntity/policy.rego`: Authorizes entity creation
-* `policies/auth/routes/lists/findListById/policy.rego`: Authorizes viewing a specific list
-* `policies/auth/routes/relations/deleteRelationById/policy.rego`: Authorizes relation deletion
+* [createEntity](./policies/auth/routes/entities/createEntity/README.md): Authorizes entity creation
+* [findListById](./policies/auth/routes/lists/findListById/README.md): Authorizes viewing a specific list
+* [deleteRelationById](./policies/auth/routes/relations/deleteRelationById/README.md): Authorizes relation deletion
 
 #### 2. Field-Level Policies
 
@@ -189,6 +191,61 @@ The policy system is divided into two complementary layers that work together to
 * Check for field-level role exceptions (e.g., `tarcinapp.entities.fields._createdBy.create`)
 * Return the effective forbidden fields after applying exceptions
 
+**Core Field-Level Principles:**
+
+Based on analysis of all field-level policies in the codebase, the following patterns consistently govern field access across all resource types:
+
+**Admin Rule:**
+* **No forbidden fields** across any operation (`find`, `create`, `update`)
+* Admins have unrestricted access to all fields including system metadata, audit trails, and ownership information
+* This enables full administrative control and troubleshooting capabilities
+
+**Editor Pattern:**
+* **No restrictions on viewing** (can see all fields)
+* **Cannot create or update audit and identity fields:**
+  * `_createdDateTime` - Record creation timestamp (system-managed)
+  * `_createdBy` - Record creator identifier (system-managed)
+  * `_lastUpdatedDateTime` - Last modification timestamp (system-managed)
+  * `_lastUpdatedBy` - Last modifier identifier (system-managed)
+  * `_idempotencyKey` - Deduplication key (client-managed at creation only)
+* **Rationale:** Editors can fully manage content but cannot tamper with audit trails or impersonate other users
+* **Consistency:** This pattern is **identical** across entities, lists, relations, entityReactions, and listReactions
+
+**Member Pattern:**
+* **View restrictions** (cannot see internal system fields):
+  * `_version` - Internal versioning metadata
+  * `_idempotencyKey` - Deduplication keys
+  * `_application` - Internal application identifiers
+* **Cannot create:**
+  * All audit fields (`_createdDateTime`, `_lastUpdatedDateTime`, `_lastUpdatedBy`, `_createdBy`)
+  * Temporal validity fields (`_validFromDateTime`, `_validUntilDateTime`)
+  * Ownership assignment (`_ownerUsers`) - prevents privilege escalation
+  * Resource-specific immutable fields (`_slug`, `_kind` where applicable)
+* **Cannot update:**
+  * All audit fields (same as create restrictions)
+  * Temporal validity fields (requires special roles to expire/schedule content)
+  * Immutable resource identifiers (`_kind`, `_slug`, `_listId`, `_entityId` depending on resource type)
+* **Rationale:** Members have standard user privileges with protections against:
+  * Privilege escalation (cannot assign themselves as owners)
+  * Audit trail manipulation (cannot modify creation/update metadata)
+  * Temporal control bypass (cannot schedule or expire content without additional permissions)
+  * Resource identity tampering (cannot change fundamental resource properties)
+
+**Visitor Pattern:**
+* **Most restrictive view permissions** (can only see basic public information)
+* **Hidden fields include:**
+  * All temporal validity metadata (`_validFromDateTime`, `_validUntilDateTime`)
+  * All visibility and access control fields (`_visibility`, `_viewerUsers`, `_viewerGroups`)
+  * All audit metadata (`_lastUpdatedBy`, `_lastUpdatedDateTime`)
+  * All internal system fields (`_version`, `_idempotencyKey`, `_application`)
+* **Rationale:** Visitors should only see public-facing content without exposure to system internals or privacy-sensitive metadata
+
+**Field-Level Role Exceptions:**
+Any of the above restrictions can be bypassed by granting explicit field-level roles:
+* Format: `tarcinapp.<scope>.fields.<fieldName>.<operation>`
+* Example: `tarcinapp.entities.fields._validFromDateTime.create` allows a Member to set validity start time
+* Use cases: Scheduled publishing, advanced ownership management, custom audit requirements
+
 **Usage Pattern:**
 Operation authorization policies import field policies and enforce them:
 ```rego
@@ -206,6 +263,14 @@ allow {
 * `_createdBy`, `_creationDateTime`: Maintain audit integrity
 * `_idempotencyKey`: Prevent duplicate request manipulation
 * `_validFromDateTime`, `_validUntilDateTime`: Control temporal validity
+
+**Field-Level Policy References:**
+
+1. [Entities Field Policy](./policies/fields/entities/policy.rego) | [Forbidden Fields Definition](./policies/fields/entities/forbidden_fields.rego)
+2. [Lists Field Policy](./policies/fields/lists/policy.rego) | [Forbidden Fields Definition](./policies/fields/lists/forbidden_fields.rego)
+3. [Relations Field Policy](./policies/fields/relations/policy.rego) | [Forbidden Fields Definition](./policies/fields/relations/forbidden_fields.rego)
+4. [Entity Reactions Field Policy](./policies/fields/entityReactions/policy.rego) | [Forbidden Fields Definition](./policies/fields/entityReactions/forbidden_fields.rego)
+5. [List Reactions Field Policy](./policies/fields/listReactions/policy.rego) | [Forbidden Fields Definition](./policies/fields/listReactions/forbidden_fields.rego)
 
 ---
 
@@ -450,14 +515,6 @@ Shared utility modules provide reusable logic:
 * `entityReactions/` - Entity reaction-specific role matching helpers
 * `listReactions/` - List reaction-specific role matching helpers
 
-### Design Benefits
-
-* **Modularity:** Each policy is self-contained and independently testable
-* **Discoverability:** Clear folder structure mirrors API endpoint organization
-* **Reusability:** Common logic is centralized in utility modules
-* **Maintainability:** Policy changes are localized and don't require modifying multiple files
-* **Documentation:** Every policy includes comprehensive documentation and test coverage
-
 ---
 
 ## What is Tarcinapp Suite?
@@ -576,9 +633,12 @@ This project uses a clear, deterministic ownership and viewership model to decid
 
 #### Time/State Semantics
 
-* **Pending:** `_validFromDateTime` is null (record is not active yet). Direct owners may still see pending records.
+* **Pending:** `_validFromDateTime` is null (record is not active yet). Direct owners (regardless of role) may still see pending records.
 * **Active:** `_validFromDateTime` is set and in the past, and `_validUntilDateTime` is null or in the future.
-* **Passive (inactive):** `_validUntilDateTime` is set and in the past. Passive records are treated as non-viewable for most non-admin operations.
+* **Passive (expired):** `_validUntilDateTime` is set and in the past. Expired records are generally inaccessible:
+  * **Member owners** cannot access their own expired records
+  * **Admin and Editor owners** can access expired records they own
+  * Non-owners cannot access expired records
 
 #### Visibility Values
 
@@ -593,12 +653,18 @@ This project uses a clear, deterministic ownership and viewership model to decid
 
 #### Decision Precedence (Applied in Order)
 
-1. If requester's id is in `_ownerUsers` and record is not passive => allowed.
+**For Admin and Editor roles:**
+* Admin and Editor users with appropriate operation-level permissions can access resources regardless of ownership, visibility, or temporal state (including expired resources)
+
+**For Member role (standard users):**
+1. If requester's id is in `_ownerUsers` and record is not passive (expired) => allowed.
 2. Else if requester's groups intersect `_ownerGroups` and record is not passive and not `private` => allowed.
 3. Else if record is `public` and active => allowed.
 4. Else if requester's id is in `_viewerUsers` and record is active => allowed.
 5. Else if requester's groups intersect `_viewerGroups` and record is active and not `private` => allowed.
 6. Otherwise => denied.
+
+**Key distinction:** Member owners cannot access their own expired resources, while Admin and Editor owners can.
 
 #### Relation Endpoints
 
@@ -630,38 +696,163 @@ For list find endpoints (e.g., `findRelations`) the gateway is expected to provi
 
 ### Policy Execution Input (Relations-Aware)
 
-Policies receive JSON input describing the request and context. Common fields:
+All OPA policies in this repository receive a standardized JSON input document that describes the HTTP request, authentication context, and resource state. This input structure is **critical** for writing and testing policies effectively.
 
-* `policyName`: path to the policy being executed (e.g., `/policies/auth/routes/replaceRelationById/policy`).
-* `appShortcode`: application shortcode (e.g., `tarcinapp`).
-* `httpMethod`: HTTP verb (`GET`, `POST`, `PUT`, `PATCH`, etc.).
-* `requestPath`: resource path (may contain ids for single-record operations).
-* `queryParams`: query parameters for list/find requests.
-* `encodedJwt`: caller's encoded JWT.
-* `requestPayload`: request body (create/replace/update payloads).
-* `originalRecord`: for single-record operations this holds the existing record. For relation-specific operations `originalRecord` contains both `_fromMetadata` and `_toMetadata` (so policies can evaluate source/target ownership and visibility).
+#### Complete Input Structure
 
-**Example:** A replace relation payload includes nested metadata:
+The following JSON structure represents the complete input passed to the OPA policy engine:
 
 ```json
 {
-  "policyName": "/policies/auth/routes/replaceRelationById/policy",
+  "policyName": "/policies/auth/routes/<resource>/<operation>/policy",
   "appShortcode": "tarcinapp",
-  "httpMethod": "PUT",
-  "requestPath": "/relations/RELATION_ID",
-  "encodedJwt": "...",
-  "requestPayload": { "_listId": "LIST_ID", "_entityId": "ENTITY_ID" },
+  "httpMethod": "GET|POST|PUT|PATCH|DELETE",
+  "requestPath": "/<resource>/{id}",
+  "queryParams": {
+    "filter": {},
+    "sort": {},
+    "limit": 100,
+    "offset": 0
+  },
+  "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "requestPayload": {
+    "name": "Example Resource",
+    "_ownerUsers": ["user-id-1"],
+    "_ownerGroups": ["group-id-1"],
+    "_visibility": "protected",
+    "_validFromDateTime": "2025-01-01T00:00:00.000Z",
+    "_validUntilDateTime": null
+  },
   "originalRecord": {
-    "id": "RELATION_ID",
-    "_listId": "LIST_ID",
-    "_entityId": "ENTITY_ID",
-    "_fromMetadata": { /* list metadata */ },
-    "_toMetadata": { /* entity metadata */ }
+    "id": "resource-id",
+    "name": "Existing Resource",
+    "_ownerUsers": ["user-id-1"],
+    "_ownerGroups": ["group-id-1"],
+    "_visibility": "protected",
+    "_validFromDateTime": "2025-01-01T00:00:00.000Z",
+    "_validUntilDateTime": null,
+    "_creationDateTime": "2025-01-01T00:00:00.000Z",
+    "_lastUpdateDateTime": "2025-01-05T12:00:00.000Z",
+    "_createdBy": "user-id-1"
   }
 }
 ```
 
-**Note:** `findRelations` is a list operation — the gateway should shape queries in such a way that returned items already match visibility/ownership constraints; per-item `originalRecord` entries are not passed to the list-level policy.
+#### Field Descriptions
+
+**Top-Level Fields (Always Present):**
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `policyName` | String | Yes | Fully qualified path to the policy being evaluated (e.g., `/policies/auth/routes/entities/createEntity/policy`) |
+| `appShortcode` | String | Yes | Application identifier used for role matching (e.g., `tarcinapp`) |
+| `httpMethod` | String | Yes | HTTP verb of the request: `GET`, `POST`, `PUT`, `PATCH`, `DELETE` |
+| `requestPath` | String | Yes | URL path of the API request, may include resource IDs (e.g., `/entities/123` or `/lists/456/entities`) |
+| `queryParams` | Object | No | Query parameters for list/find operations (e.g., `filter`, `sort`, `limit`, `offset`). Empty object `{}` for non-list operations |
+| `encodedJwt` | String | Yes | **Base64-encoded JWT token** containing user authentication and authorization claims (roles, sub, groups, etc.) |
+| `requestPayload` | Object | No | Request body for create/update/replace operations. `null` or absent for read/delete operations |
+| `originalRecord` | Object | No | **Existing resource state** for single-record operations (find-by-id, update, replace, delete). Absent for list operations and creation |
+
+#### Special Case: Relation Operations with Metadata Enrichment
+
+**IMPORTANT:** For relation-based operations, the `originalRecord` field is **enriched by the gateway** with metadata from both connected resources. This is essential for implementing derived authorization.
+
+**Relation Input Structure:**
+
+```json
+{
+  "policyName": "/policies/auth/routes/relations/replaceRelationById/policy",
+  "appShortcode": "tarcinapp",
+  "httpMethod": "PUT",
+  "requestPath": "/relations/rel-123",
+  "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "requestPayload": {
+    "_listId": "list-456",
+    "_entityId": "entity-789"
+  },
+  "originalRecord": {
+    "id": "rel-123",
+    "_listId": "list-456",
+    "_entityId": "entity-789",
+    "_creationDateTime": "2025-01-01T00:00:00.000Z",
+    "_lastUpdateDateTime": "2025-01-05T12:00:00.000Z",
+    "_fromMetadata": {
+      "id": "list-456",
+      "name": "My Favorite Books",
+      "_ownerUsers": ["user-alice"],
+      "_ownerGroups": ["editors-group"],
+      "_visibility": "protected",
+      "_validFromDateTime": "2025-01-01T00:00:00.000Z",
+      "_validUntilDateTime": null
+    },
+    "_toMetadata": {
+      "id": "entity-789",
+      "name": "The Great Gatsby",
+      "_ownerUsers": ["user-bob"],
+      "_ownerGroups": ["authors-group"],
+      "_visibility": "public",
+      "_validFromDateTime": "2025-01-01T00:00:00.000Z",
+      "_validUntilDateTime": null
+    }
+  }
+}
+```
+
+**Key Points for Relation Metadata:**
+
+* **`_fromMetadata`**: Contains the **complete ownership and visibility metadata** of the source list (the "from" side of the relation)
+* **`_toMetadata`**: Contains the **complete ownership and visibility metadata** of the target entity (the "to" side of the relation)
+* Policies **MUST** evaluate both metadata objects to implement proper derived authorization
+* Both metadata objects include all fields necessary for ownership checks (`_ownerUsers`, `_ownerGroups`), visibility checks (`_visibility`, `_viewerUsers`, `_viewerGroups`), and temporal validity checks (`_validFromDateTime`, `_validUntilDateTime`)
+
+#### Usage in Policy Tests
+
+When writing policy tests (`policy_test.rego`), construct input documents following this exact structure:
+
+```rego
+# Example: Test relation creation with proper metadata
+test_create_relation_allowed_when_user_owns_list_and_can_view_entity {
+    allow with input as {
+        "policyName": "/policies/auth/routes/relations/createRelation/policy",
+        "appShortcode": "tarcinapp",
+        "httpMethod": "POST",
+        "requestPath": "/relations",
+        "encodedJwt": base64.encode(json.marshal(test_token)),
+        "requestPayload": {
+            "_listId": "list-123",
+            "_entityId": "entity-456"
+        },
+        "originalRecord": {
+            "_fromMetadata": {
+                "_ownerUsers": ["test-user-id"],
+                "_visibility": "protected",
+                "_validFromDateTime": "2025-01-01T00:00:00.000Z",
+                "_validUntilDateTime": null
+            },
+            "_toMetadata": {
+                "_ownerUsers": ["other-user-id"],
+                "_visibility": "public",
+                "_validFromDateTime": "2025-01-01T00:00:00.000Z",
+                "_validUntilDateTime": null
+            }
+        }
+    }
+}
+```
+
+#### List Operations vs. Single-Record Operations
+
+**List Operations** (e.g., `findEntities`, `findRelations`, `countLists`):
+* **Do NOT receive** `originalRecord` field
+* Gateway is responsible for shaping queries based on ownership/visibility constraints
+* Policies primarily validate that the user has the appropriate role for the operation
+
+**Single-Record Operations** (e.g., `findEntityById`, `updateListById`, `deleteRelationById`):
+* **Always receive** `originalRecord` with complete resource state
+* Policies evaluate ownership, visibility, and validity against `originalRecord`
+* For relations, `originalRecord` includes enriched `_fromMetadata` and `_toMetadata`
+
+**Note:** Understanding this input structure is essential for both policy development and integration with the gateway. The gateway is responsible for constructing this input correctly before invoking the OPA policy engine.
 
 ### How to Read Individual Policy READMEs
 
