@@ -4,11 +4,11 @@
 
 This repository serves as the central policy repository for the **Tarcinapp Entity Persistence Gateway**, containing all **Open Policy Agent (OPA)** policies written in Rego that enforce fine-grained access control across the Tarcinapp API ecosystem.
 
-**Purpose:**
-📌 Define authorization rules for all API operations exposed through the `entity-persistence-gateway`
-📌 Enforce field-level access control to protect sensitive data and maintain data integrity
-📌 Provide consistent, declarative security policies across multiple resource types (entities, lists, relations, reactions)
-📌 Integrate seamlessly with the `entity-persistence-service` managed fields architecture (`_ownerUsers`, `_ownerGroups`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, etc.)
+**Purpose:**  
+📌 Define authorization rules for all API operations exposed through the `entity-persistence-gateway`  
+📌 Enforce field-level access control to protect sensitive data and maintain data integrity  
+📌 Provide consistent, declarative security policies across multiple resource types (entities, lists, relations, reactions)  
+📌 Integrate seamlessly with the `entity-persistence-service` managed fields architecture (`_ownerUsers`, `_ownerGroups`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, etc.)  
 
 **Key Capabilities:**
 📌 **Operation Authorization:** Determines whether a user is permitted to execute specific operations (create, read, update, delete) on resources
