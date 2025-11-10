@@ -10,12 +10,12 @@ This repository serves as the central policy repository for the **Tarcinapp Enti
 📌 Provide consistent, declarative security policies across multiple resource types (entities, lists, relations, reactions)  
 📌 Integrate seamlessly with the `entity-persistence-service` managed fields architecture (`_ownerUsers`, `_ownerGroups`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, etc.)  
 
-**Key Capabilities:**
-📌 **Operation Authorization:** Determines whether a user is permitted to execute specific operations (create, read, update, delete) on resources
-📌 **Field-Level Control:** Restricts which fields users can view, create, or modify based on their roles and permissions
-📌 **Ownership & Visibility Management:** Enforces complex access rules based on direct ownership, group ownership, and visibility settings
-📌 **Temporal Access Control:** Implements time-based access using validity periods (pending, active, expired states)
-📌 **Relational Authorization:** Derives permissions for relational objects from the authorization context of connected resources
+**Key Capabilities:**  
+📌 **Operation Authorization:** Determines whether a user is permitted to execute specific operations (create, read, update, delete) on resources  
+📌 **Field-Level Control:** Restricts which fields users can view, create, or modify based on their roles and permissions  
+📌 **Ownership & Visibility Management:** Enforces complex access rules based on direct ownership, group ownership, and visibility settings  
+📌 **Temporal Access Control:** Implements time-based access using validity periods (pending, active, expired states)  
+📌 **Relational Authorization:** Derives permissions for relational objects from the authorization context of connected resources  
 
 **Integration:**
 These policies are evaluated by the API Gateway at request time, ensuring that only authorized operations proceed to the backend service. The policies work in concert with JWT token claims (roles, user ID, groups) and resource metadata to make authorization decisions.
