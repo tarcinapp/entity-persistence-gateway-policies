@@ -5,22 +5,20 @@
 This repository serves as the central policy repository for the **Tarcinapp Entity Persistence Gateway**, containing all **Open Policy Agent (OPA)** policies written in Rego that enforce fine-grained access control across the Tarcinapp API ecosystem.
 
 **Purpose:**
-* Define authorization rules for all API operations exposed through the `entity-persistence-gateway`
-* Enforce field-level access control to protect sensitive data and maintain data integrity
-* Provide consistent, declarative security policies across multiple resource types (entities, lists, relations, reactions)
-* Integrate seamlessly with the `entity-persistence-service` managed fields architecture (`_ownerUsers`, `_ownerGroups`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, etc.)
+📌 Define authorization rules for all API operations exposed through the `entity-persistence-gateway`
+📌 Enforce field-level access control to protect sensitive data and maintain data integrity
+📌 Provide consistent, declarative security policies across multiple resource types (entities, lists, relations, reactions)
+📌 Integrate seamlessly with the `entity-persistence-service` managed fields architecture (`_ownerUsers`, `_ownerGroups`, `_visibility`, `_validFromDateTime`, `_validUntilDateTime`, etc.)
 
 **Key Capabilities:**
-* **Operation Authorization:** Determines whether a user is permitted to execute specific operations (create, read, update, delete) on resources
-* **Field-Level Control:** Restricts which fields users can view, create, or modify based on their roles and permissions
-* **Ownership & Visibility Management:** Enforces complex access rules based on direct ownership, group ownership, and visibility settings
-* **Temporal Access Control:** Implements time-based access using validity periods (pending, active, expired states)
-* **Relational Authorization:** Derives permissions for relational objects from the authorization context of connected resources
+📌 **Operation Authorization:** Determines whether a user is permitted to execute specific operations (create, read, update, delete) on resources
+📌 **Field-Level Control:** Restricts which fields users can view, create, or modify based on their roles and permissions
+📌 **Ownership & Visibility Management:** Enforces complex access rules based on direct ownership, group ownership, and visibility settings
+📌 **Temporal Access Control:** Implements time-based access using validity periods (pending, active, expired states)
+📌 **Relational Authorization:** Derives permissions for relational objects from the authorization context of connected resources
 
 **Integration:**
 These policies are evaluated by the API Gateway at request time, ensuring that only authorized operations proceed to the backend service. The policies work in concert with JWT token claims (roles, user ID, groups) and resource metadata to make authorization decisions.
-
----
 
 ## Core Authorization Concepts
 
@@ -36,7 +34,7 @@ The authorization model is built on four primary mechanisms that work together t
 The system recognizes four hierarchical access levels:
 * **`Admin`**: Full administrative access; can perform all operations including sensitive modifications
 * **`Editor`**: Elevated privileges for content management; can create and modify resources
-* **`Member`**: Standard user access; can interact with resources based on ownership and visibility rules
+* **`Member`**: Standard user access; can interact with resources based on [ownership](#2-ownership) and [visibility rules](#3-visibility)
 * **`Visitor`**: Limited read-only access; can view public resources with restrictions
 
 **Three-Tier Granularity:**
@@ -78,7 +76,7 @@ Resources use two types of ownership to determine who has privileged access:
 * Group owners can access resources in `protected` and `public` visibility modes
 
 **Ownership Precedence:**
-Direct ownership is always checked first. Group-based permissions are only considered when direct ownership does not apply and visibility rules permit it.
+Direct ownership is always checked first. Group-based permissions are only considered when direct ownership does not apply and [visibility rules](#3-visibility) permit it.
 
 #### 3. Visibility
 
@@ -103,7 +101,7 @@ The `_visibility` field controls who can view and interact with a resource. Thre
 **`public`:**
 * Most permissive visibility mode
 * Accessible to all authenticated users when the resource is in an `active` state
-* Still respects temporal validity (see Activeness below)
+* Still respects temporal validity ([see Activeness](#4-activeness-validity))
 * Owners maintain full control (edit, delete, etc.)
 
 **Viewer Lists:**
@@ -129,7 +127,7 @@ Resources have temporal validity controlled by two timestamp fields:
 **`Active`:**
 * `_validFromDateTime` is set and in the past
 * `_validUntilDateTime` is `null` or in the future
-* Resource is currently valid and accessible according to visibility rules
+* Resource is currently valid and accessible according to [visibility rules](#3-visibility)
 * Standard state for operational resources
 
 **`Expired`:**
@@ -139,14 +137,12 @@ Resources have temporal validity controlled by two timestamp fields:
 * Useful for time-limited content (promotions, temporary access, etc.)
 
 **Impact on Authorization:**
-* Public visibility requires an `active` state for non-owners
-* Viewer access (via `_viewerUsers` / `_viewerGroups`) requires an `active` state
+* Public visibility requires an [`active` state](#4-activeness-validity) for non-owners
+* Viewer access (via `_viewerUsers` / `_viewerGroups`) requires an [`active` state](#4-activeness-validity)
 * **Owner access to expired resources:**
   * **Admin and Editor owners** can access their resources in any state (pending, active, expired)
   * **Member owners** are generally **denied** access to their own resources that have passed their `_validUntilDateTime` (expired state)
   * This distinction ensures that only elevated roles can manage or retrieve expired content, while standard members cannot access expired resources even if they own them
-
----
 
 ### 2.2. The Two Types of Policies
 
@@ -193,14 +189,14 @@ The policy system is divided into two complementary layers that work together to
 
 **Core Field-Level Principles:**
 
-Based on analysis of all field-level policies in the codebase, the following patterns consistently govern field access across all resource types:
+The following patterns consistently govern field access across all resource types:
 
-**Admin Rule:**
+**Admins:**
 * **No forbidden fields** across any operation (`find`, `create`, `update`)
 * Admins have unrestricted access to all fields including system metadata, audit trails, and ownership information
 * This enables full administrative control and troubleshooting capabilities
 
-**Editor Pattern:**
+**Editors:**
 * **No restrictions on viewing** (can see all fields)
 * **Cannot create or update audit and identity fields:**
   * `_createdDateTime` - Record creation timestamp (system-managed)
@@ -209,9 +205,8 @@ Based on analysis of all field-level policies in the codebase, the following pat
   * `_lastUpdatedBy` - Last modifier identifier (system-managed)
   * `_idempotencyKey` - Deduplication key (client-managed at creation only)
 * **Rationale:** Editors can fully manage content but cannot tamper with audit trails or impersonate other users
-* **Consistency:** This pattern is **identical** across entities, lists, relations, entityReactions, and listReactions
 
-**Member Pattern:**
+**Members:**
 * **View restrictions** (cannot see internal system fields):
   * `_version` - Internal versioning metadata
   * `_idempotencyKey` - Deduplication keys
@@ -231,7 +226,7 @@ Based on analysis of all field-level policies in the codebase, the following pat
   * Temporal control bypass (cannot schedule or expire content without additional permissions)
   * Resource identity tampering (cannot change fundamental resource properties)
 
-**Visitor Pattern:**
+**Visitors:**
 * **Most restrictive view permissions** (can only see basic public information)
 * **Hidden fields include:**
   * All temporal validity metadata (`_validFromDateTime`, `_validUntilDateTime`)
@@ -246,17 +241,6 @@ Any of the above restrictions can be bypassed by granting explicit field-level r
 * Example: `tarcinapp.entities.fields._validFromDateTime.create` allows a Member to set validity start time
 * Use cases: Scheduled publishing, advanced ownership management, custom audit requirements
 
-**Usage Pattern:**
-Operation authorization policies import field policies and enforce them:
-```rego
-import data.policies.fields.entities.policy as forbidden_fields
-
-# Deny if request payload contains forbidden fields for creation
-allow {
-    not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
-    # ... other authorization checks
-}
-```
 
 **Protected Fields Examples:**
 * `_ownerUsers`, `_ownerGroups`: Prevent privilege escalation
@@ -271,8 +255,6 @@ allow {
 3. [Relations Field Policy](./policies/fields/relations/policy.rego) | [Forbidden Fields Definition](./policies/fields/relations/forbidden_fields.rego)
 4. [Entity Reactions Field Policy](./policies/fields/entityReactions/policy.rego) | [Forbidden Fields Definition](./policies/fields/entityReactions/forbidden_fields.rego)
 5. [List Reactions Field Policy](./policies/fields/listReactions/policy.rego) | [Forbidden Fields Definition](./policies/fields/listReactions/forbidden_fields.rego)
-
----
 
 ### 2.3. Principles for Relational and Contextual Data
 
@@ -355,8 +337,6 @@ Operations that create or navigate parent-child relationships within the same re
 * User has `tarcinapp.entities.find.member` but not `tarcinapp.lists.find.member`
 * User **cannot** execute `GET /entities/{entityId}/lists` even if they own the entity
 * Both the entity viewability check and the list find authorization must pass
-
----
 
 ## Policy Reference by Controller
 
@@ -453,8 +433,6 @@ Operations that create or navigate parent-child relationships within the same re
 * [findReactionsByListId](./policies/auth/routes/reactionsThroughList/findReactionsByListId/README.md)
 * [updateReactionsByListId](./policies/auth/routes/reactionsThroughList/updateReactionsByListId/README.md)
 
----
-
 ## Repository Structure
 
 The repository follows a semantic folder structure that organizes policies by type and resource context:
@@ -515,8 +493,6 @@ Shared utility modules provide reusable logic:
 * `entityReactions/` - Entity reaction-specific role matching helpers
 * `listReactions/` - List reaction-specific role matching helpers
 
----
-
 ## What is Tarcinapp Suite?
 
 The Tarcinapp suite is a comprehensive and flexible application framework, harmoniously blending a suite of interconnected components designed to deliver a seamless and secure microservices architecture. It also provides the flexibility for users to leverage it as an upstream project for their own REST API-based backend implementations, allowing for easy adaptation to their specific requirements and use cases.
@@ -538,10 +514,6 @@ Here is an example request and response to one of the most basic endpoints: `/en
 **Note:** The client's authorization to create an entity, the fields that user can specify, and the fields returned in the response body may vary based on the user's role. The values of managed fields such as `visibility`, `idempotencyKey`, `validFromDateTime`, and `validUntilDateTime` can also be adjusted according to the user's role and the system's configuration.
 
 **Note:** Endpoints can be configured with arbitrary values within the gateway component. For example, `/books` can be used for records with `kind: book`, and the field `kind` can be completely omitted from the API interaction.
-
----
-
----
 
 ## Development Guide
 
@@ -635,7 +607,7 @@ This project uses a clear, deterministic ownership and viewership model to decid
 
 * **Pending:** `_validFromDateTime` is null (record is not active yet). Direct owners (regardless of role) may still see pending records.
 * **Active:** `_validFromDateTime` is set and in the past, and `_validUntilDateTime` is null or in the future.
-* **Passive (expired):** `_validUntilDateTime` is set and in the past. Expired records are generally inaccessible:
+* **Passive (expired):** `_validUntilDateTime` is set and in the past. Expired records are inaccessible:
   * **Member owners** cannot access their own expired records
   * **Admin and Editor owners** can access expired records they own
   * Non-owners cannot access expired records
@@ -858,8 +830,6 @@ test_create_relation_allowed_when_user_owns_list_and_can_view_entity {
 
 Each route has its own README at `policies/auth/routes/<route>/README.md` explaining the semantic differences and specific checks applied (for example how `createRelation` validates the referenced list and target entity via `_fromMetadata`/`_toMetadata`).
 
----
-
 ## Setting Up the Development Environment
 
 Get the OPA extension for Visual Studio Code (VSCode). This extension simplifies local OPA policy testing by automatically downloading and installing the OPA binary. It's a handy tool to ensure your policies work smoothly within your development environment, enhancing security and compliance for your applications.
@@ -875,28 +845,26 @@ Policy input is a JSON file in the following structure:
     "queryParams": {},
     "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ1ZGtwaElQVFB1X0tpb28zWWlxYnFESS1IYlpVVWZieHVpMFRuWjRmanVnIn0.eyJleHAiOjE2OTEzMzA2OTYsImlhdCI6MTY5MTMzMDM5NiwianRpIjoiYWY4ZmMyZDctMjczOS00ZGYzLThhMTItMzkwMzVmZTY2YzM1IiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAtaWRtLWtleWNsb2FrLnRvdjNxbS5lYXN5cGFuZWwuaG9zdC9yZWFsbXMvdGFyY2luYXBwIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjczMGVjODg2LThhN2YtNGZlNS04OTZkLWJjNWY0YzgyODE2MyIsInR5cCI6IkJlYXJlciIsImF6cCI6InBvc3RtYW4iLCJzZXNzaW9uX3N0YXRlIjoiMGQwYTUxY2UtMDkzMC00MGU5LWFkMjgtMWRlMWU0ZWNkZTdhIiwiYWNyIjoiMSIsImFsbG93ZWQtb3JpZ2lucyI6WyJodHRwczovL3d3dy5nZXRwb3N0bWFuLmNvbSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwidGFyY2luYXBwLm1lbWJlciJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZW1haWwiLCJzaWQiOiIwZDBhNTFjZS0wOTMwLTQwZTktYWQyOC0xZGUxZTRlY2RlN2EiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwibmFtZSI6Ikt1cnNhdCBUb2twdW5hciIsInByZWZlcnJlZF91c2VybmFtZSI6Imt1cnNhdHRva3BpbmFyIiwiZ2l2ZW5fbmFtZSI6Ikt1cnNhdCIsImZhbWlseV9uYW1lIjoiVG9rcHVuYXIiLCJlbWFpbCI6Imt1cnNhdHRva3BpbmFyQGdtYWlsLmNvbSJ9.nHBtP1-dLpjHWeCCB8FBaVNA4htYH0_BKBm6vB_rNS_a2e8xC_qQ2OtBogQsY42gd1S9d763a84OBWr3iF_pzJElMRuvdexXwQpu8eQ5YzvZyLrVeVGovM-Ep-EeeHRao0zj_92_E6SvlwBwqhNhXBdZ5Q6qLJuIuAxRfz_QMG4F67usuP4Fmmjw6fHddaJXJaLI8yKR5gOP1sPDpoS-acf1SRJipeuZzdbuEHvr5n9dP5YN8uD4_7DWa7A9zcM-2Z1jW3ij7USIugn7xxX4uschUFQQ6B48IxG145gq8N1MuVddQIvb5jOkRYuvjw_s3kXxfA1s3CI7JrEoCUffrA",
     "requestPayload": {
-        "name": "Believe Yourself!",
+        "_name": "Believe Yourself!",
         "author": "J. Martin Doe",
-        "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
-        "ownerGroups":["group-1"],
-        "validFromDateTime": "2019-10-12T07:20:50.52Z",
-        "validUntilDateTime": null
+      "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+      "_ownerGroups":["group-1"],
+      "_validFromDateTime": "2019-10-12T07:20:50.52Z",
+      "_validUntilDateTime": null
     },
     "originalRecord": {
-        "id": "0331c4d7-1408-4078-8e92-5169a55a12c5",
-        "kind": "book",
-        "name": "Believe Yourself!",
+        "_id": "0331c4d7-1408-4078-8e92-5169a55a12c5",
+        "_kind": "book",
+        "_name": "Believe Yourself!",
         "author": "J. Doe",
-        "visibility": "private",
-        "ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
-        "ownerGroups":["group-1"],
-        "validFromDateTime": "2019-10-12T07:20:50.52Z",
-        "validUntilDateTime": null
+        "_visibility": "private",
+        "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
+        "_ownerGroups":["group-1"],
+        "_validFromDateTime": "2019-10-12T07:20:50.52Z",
+        "_validUntilDateTime": null
     }
 }
 ```
-
----
 
 ## Role Structure in Tarcinapp
 
@@ -965,8 +933,6 @@ These roles allow precise control over access to individual fields within record
 * **Flexibility:** Field-level and operation-level access can be independently controlled
 * **Multi-Tenant Ready:** Role prefix allows isolation across Tarcinapp instances
 
----
-
 ## Structuring the JWT Token (Keycloak Guide)
 
 Policies within entity-persistence-policies search for the `roles` field within the JWT token, specifically under the `payload` section. However, in the default configuration of Keycloak, the roles are nested under `realm_access.roles`. To align them with the `payload` section, you must create a custom 'Role Mapper' in Keycloak. This mapper allows you to restructure the JWT token during the token issuance process. Here's how to do it:
@@ -987,24 +953,3 @@ Policies within entity-persistence-policies search for the `roles` field within 
 9. Click 'Save' to save the mapper.
 
 Now, when a user logs in and requests an access token, the custom mapper will come into effect, moving the roles directly under the `payload` section with the key `roles`.
-
----
-
-## License
-
-This project is part of the Tarcinapp Suite. Please refer to the main Tarcinapp repository for license information.
-
----
-
-## Contributing
-
-Contributions are welcome! Please ensure all policies include:
-* Comprehensive unit tests in `policy_test.rego`
-* Clear documentation in the policy's `README.md`
-* Consistent use of utility modules from `policies/util/`
-
----
-
-## Support
-
-For issues, questions, or contributions, please visit the [Tarcinapp GitHub organization](https://github.com/tarcinapp).
