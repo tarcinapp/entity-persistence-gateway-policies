@@ -23,7 +23,7 @@ default forbiddenFields := [
 		"operations": {
 			"find": ["_version", "_idempotencyKey", "_application"],
 			"create": ["_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime"],
-			"update": ["_kind", "_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime"], # valid until is added as it requires additional role to inactivate the record for members
+			"update": ["_kind", "_createdDateTime", "_lastUpdatedDateTime", "_lastUpdatedBy", "_createdBy", "_validFromDateTime", "_validUntilDateTime", "_entityId", "_listId"], # valid until is added as it requires additional role to inactivate the record for members; entityId and listId are immutable for members on update
 		},
 	},
 	{
