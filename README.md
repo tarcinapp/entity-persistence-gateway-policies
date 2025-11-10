@@ -37,25 +37,31 @@ These policies are evaluated by the API Gateway at request time, ensuring that o
 
 ## What is Tarcinapp?
 
-The **Tarcinapp** suite is a comprehensive and flexible application framework, harmoniously blending a suite of interconnected components designed to deliver a seamless and secure microservices architecture. It also provides the flexibility for users to leverage it as an upstream project for their own REST API-based backend implementations, allowing for easy adaptation to their specific requirements and use cases.
+**Tarcinapp** is a modular backend microservices suite designed to streamline common challenges in REST-based backend development, helping teams reduce **Time-to-Value** from concept to deployment.
 
-<p align="center">
-  <img src="./doc/img/tarcinapp.png" alt="Tarcinapp Suite Overview">
-</p>
+While many tools exist to generate REST APIs from JSON schemas, they often stop at basic CRUD operations. These solutions typically lack support for more advanced concerns—such as managing **relationships between records**, handling **ownership and access control**, or modeling **user interactions in post-login scenarios**.
 
-At its core is the **Entity Persistence Service**, an easily adaptable REST-based backend application built on the [Loopback 4](https://loopback.io) framework. This service utilizes a schemaless MongoDB database to provide a scalable and highly adaptable data persistence layer. Offering a generic data model with predefined fields such as `id`, `name`, `kind`, `lastUpdateDateTime`, `creationDateTime`, `ownerUsers` and more, it effortlessly adapts to diverse use cases.
+Tarcinapp addresses these gaps with **opinionated models**, built-in metadata, and a gateway architecture that enables secure, configurable behaviors out of the box.
 
-The integration with the **Entity Persistence Gateway** empowers users to implement enhanced validation, authentication, authorization, and rate-limiting functionalities, ensuring a secure and efficient environment. Leveraging the power of **Redis**, the application seamlessly manages distributed locks, enabling robust data synchronization and rate limiting. Furthermore, the ecosystem includes the **Open Policy Agent (OPA)** to enforce policies, safeguarding your application against unauthorized access and ensuring compliance with your security and operational requirements. These policies, combined with the entire suite of components, form a cohesive and powerful ecosystem, paving the way for efficient and secure microservice development.
+The suite is composed of purpose-specific services for different layers of a modern backend system, including:
 
-Here is an example request and response to one of the most basic endpoints: `/entities`:
+- `entity-persistence-dos`
+- `entity-persistence-gateway`
+- `entity-persistence-gateway-policies`  _(you are here)_
+- `entity-persistence-orchestration`
+- `entity-persistence-bff`
+- `entity-persistence-service`
 
 <p align="left">
-  <img src="./doc/img/request-response.png" alt="Sample request and response">
+  <img src="./doc/img/high-level-arch.png" alt="Tarcinapp Data Model">
 </p>
 
-**Note:** The client's authorization to create an entity, the fields that user can specify, and the fields returned in the response body may vary based on the user's role. The values of managed fields such as `visibility`, `idempotencyKey`, `validFromDateTime`, and `validUntilDateTime` can also be adjusted according to the user's role and the system's configuration.
+📘 For a full overview and integration guidance, refer to the [Tarcinapp Suite Documentation](#).
 
-**Note:** Endpoints can be configured with arbitrary values within the gateway component. For example, `/books` can be used for records with `kind: book`, and the field `kind` can be completely omitted from the API interaction.
+Documentation for each Tarcinapp component is available in their respective repositories:
+
+📄 [entity-persistence-gateway](#)
+📄 [entity-persistence-gateway-policies](#)
 
 ## Core Authorization Concepts
 
