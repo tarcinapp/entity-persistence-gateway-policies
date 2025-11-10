@@ -663,6 +663,8 @@ This project uses a clear, deterministic ownership and viewership model to decid
 
 Relations themselves do not carry ownership/viewer fields. For single-relation endpoints (create/replace/find-by-id) policies rely on `originalRecord` containing `_fromMetadata` and `_toMetadata` and require the caller to be able to see both the source and the target. For list queries (`findRelations`) the gateway must shape the query so that returned relations already match caller visibility constraints.
 
+Important (Members): When creating or updating a relation as a Member, both the referenced list (`_fromMetadata`) and the target entity (`_toMetadata`) must be active (i.e., `_validFromDateTime` is in the past and `_validUntilDateTime` is not in the past). Pending or expired endpoints are not permitted for relation create/update operations by members.
+
 #### Implementation Note
 
 Rego helpers are provided under `policies/util/common/originalRecord.rego` and can be reused via `with input as {"originalRecord": meta}` to avoid duplicating time/visibility logic.

@@ -277,7 +277,7 @@ test_allow_member_set_validFrom_with_field_role if {
 			"_listId": "7ef64686-976f-4737-aebd-e4aea445202d",
 			"_entityId": "entity-1",
 			"_validFromDateTime": null,
-			"_fromMetadata": {"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": []},
+			"_fromMetadata": {"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_visibility": "protected", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null},
 			"_toMetadata": {"_ownerUsers": [], "_ownerGroups": [], "_visibility": "public", "_validFromDateTime": "2020-01-01T00:00:00Z"},
 		},
 	)
@@ -304,7 +304,7 @@ test_allow_member_set_validUntil_with_field_role if {
 			"_listId": "7ef64686-976f-4737-aebd-e4aea445202d",
 			"_entityId": "entity-1",
 			"_validUntilDateTime": null,
-			"_fromMetadata": {"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": []},
+			"_fromMetadata": {"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_visibility": "protected", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null},
 			"_toMetadata": {"_ownerUsers": [], "_ownerGroups": [], "_visibility": "public", "_validFromDateTime": "2020-01-01T00:00:00Z"},
 		},
 	)
@@ -357,6 +357,42 @@ test_not_allow_member_cannot_see_target_entity if {
 			"_entityId": "entity-private",
 			"_fromMetadata": {"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": []},
 			"_toMetadata": {"_ownerUsers": [], "_ownerGroups": [], "_visibility": "private", "_viewerUsers": [], "_validFromDateTime": "2020-01-01T00:00:00Z"},
+		},
+	)
+}
+
+# New: deny when referenced list is pending even if caller is direct owner
+test_not_allow_member_when_from_list_pending_even_if_owner if {
+	not allow with input as produce_input_replace(
+		["tarcinapp.member"], true, {
+			"_kind": "contains",
+			"_listId": "list-pending",
+			"_entityId": "entity-ok",
+		},
+		{
+			"_kind": "contains",
+			"_listId": "list-pending",
+			"_entityId": "entity-ok",
+			"_fromMetadata": {"_id": "list-pending", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_visibility": "protected", "_validFromDateTime": null, "_validUntilDateTime": null},
+			"_toMetadata": {"_id": "entity-ok", "_ownerUsers": [], "_ownerGroups": [], "_visibility": "public", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null},
+		},
+	)
+}
+
+# New: deny when target entity is pending even if caller is viewer user
+test_not_allow_member_when_to_entity_pending_even_if_viewer_user if {
+	not allow with input as produce_input_replace(
+		["tarcinapp.member"], true, {
+			"_kind": "contains",
+			"_listId": "list-ok",
+			"_entityId": "entity-pending",
+		},
+		{
+			"_kind": "contains",
+			"_listId": "list-ok",
+			"_entityId": "entity-pending",
+			"_fromMetadata": {"_id": "list-ok", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_visibility": "public", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null},
+			"_toMetadata": {"_id": "entity-pending", "_ownerUsers": [], "_ownerGroups": [], "_visibility": "private", "_viewerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_validFromDateTime": null, "_validUntilDateTime": null},
 		},
 	)
 }

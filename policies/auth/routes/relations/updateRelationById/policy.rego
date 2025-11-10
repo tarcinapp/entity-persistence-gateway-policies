@@ -197,13 +197,13 @@ meta_has_viewer_group(meta) if {
 
 can_user_see_meta(meta) if {
 	meta_has_owner_user(meta)
-	not meta_is_passive(meta)
+	meta_is_active(meta)
 }
 
 can_user_see_meta(meta) if {
 	not meta_has_owner_user(meta)
 	meta_has_owner_group(meta)
-	not meta_is_passive(meta)
+	meta_is_active(meta)
 	meta._visibility != "private"
 }
 

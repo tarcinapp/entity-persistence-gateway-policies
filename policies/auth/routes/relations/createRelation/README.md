@@ -27,6 +27,7 @@ This policy evaluates the user's role, email verification status, the `originalR
             - The entity's `_viewerUsers` contains the user's ID and the entity is active.
             - The entity's `_viewerGroups` contains one of the user's groups, the entity is active, and the entity is not private.
         - Visitors can only retrieve active and public entities; but visitors cannot create relations.
+    - Important: For member relation creation, both the referenced list and the target entity must be active (their `_validFromDateTime` in the past and either no `_validUntilDateTime` or one set in the future). Pending or expired endpoints are denied.
 
 Notes:
 - Relations only have `_validFromDateTime` and `_validUntilDateTime`; they do not include `_ownerUsers`, `_ownerGroups`, `_viewerUsers`, or `_viewerGroups`.

@@ -567,6 +567,36 @@ test_not_allow_member_when_referenced_list_is_passive if {
 	)
 }
 
+# Entity must be active even if caller owns it directly
+test_not_allow_member_when_entity_pending_even_if_owner_user if {
+	not allow with input as produce_input_doc_by_role(
+		"tarcinapp.member", true, {
+			"_kind": "contains",
+			"_listId": "list-a1",
+			"_entityId": "entity-a1",
+		},
+		{
+			"_fromMetadata": {"_id": "list-a1", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
+			"_toMetadata": {"_id": "entity-a1", "_validFromDateTime": null, "_validUntilDateTime": null, "_visibility": "protected", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
+		},
+	)
+}
+
+# Entity must be active even if caller owns via group (non-private)
+test_not_allow_member_when_entity_pending_even_if_owner_group if {
+	not allow with input as produce_input_doc_by_role(
+		"tarcinapp.member", true, {
+			"_kind": "contains",
+			"_listId": "list-a2",
+			"_entityId": "entity-a2",
+		},
+		{
+			"_fromMetadata": {"_id": "list-a2", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "protected", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
+			"_toMetadata": {"_id": "entity-a2", "_validFromDateTime": null, "_validUntilDateTime": null, "_visibility": "protected", "_ownerUsers": [], "_ownerGroups": ["group-1"], "_viewerUsers": [], "_viewerGroups": []},
+		},
+	)
+}
+
 # Cited entity must be active and visible to caller
 test_allow_member_if_entity_public_and_active if {
 	allow with input as produce_input_doc_by_role(

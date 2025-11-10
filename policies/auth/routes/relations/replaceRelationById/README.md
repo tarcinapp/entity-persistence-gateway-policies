@@ -21,6 +21,7 @@ High-level semantics:
   - Cannot change the relation's referenced ids (`_listId` or `_entityId`) in a replace-by-id operation.
   - Members cannot update passive relations.
   - Field-level updates for `_validFromDateTime` (approvals) and `_validUntilDateTime` (inactivations) are strictly controlled: members may only set these within configured ranges or if they possess the corresponding field-level role.
+   - Important: For member operations, both the referenced list (`_fromMetadata`) and the target entity (`_toMetadata`) must be in the active state (validFrom in the past and not expired). Pending or expired endpoints are not permitted for relation updates by members.
 - Visitors
   - Visitors cannot replace relations.
 

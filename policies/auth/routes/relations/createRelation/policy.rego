@@ -96,12 +96,12 @@ referenced_list_valid_for_creation if {
 # are allowed via their own rules above.
 caller_can_see_target_entity if {
 	cited_entity_belong_to_user
-	not cited_entity_is_passive
+	cited_entity_is_active
 }
 
 caller_can_see_target_entity if {
 	cited_entity_belong_to_users_groups
-	not cited_entity_is_passive
+	cited_entity_is_active
 	not cited_entity_is_private
 }
 
