@@ -1,5 +1,20 @@
 # Entity Persistence Gateway Policies
 
+## Table of Contents
+* [Overview](#overview)
+* [What is Tarcinapp?](#what-is-tarcinapp)
+* [Core Authorization Concepts](#core-authorization-concepts)
+  * [2.1. The Core Philosophy](#21-the-core-philosophy)
+  * [2.2. The Two Types of Policies](#22-the-two-types-of-policies)
+  * [2.3. Principles for Relational and Contextual Data](#23-principles-for-relational-and-contextual-data)
+* [Policy Reference by Controller](#policy-reference-by-controller)
+* [Repository Structure](#repository-structure)
+* [Development Guide](#development-guide)
+* [Setting Up the Development Environment](#setting-up-the-development-environment)
+* [Role Structure in Tarcinapp](#role-structure-in-tarcinapp)
+* [Structuring the JWT Token (Keycloak Guide)](#structuring-the-jwt-token-keycloak-guide)
+
+
 ## Overview
 
 This repository serves as the central policy repository for the **Tarcinapp Entity Persistence Gateway**, containing all **Open Policy Agent (OPA)** policies written in Rego that enforce fine-grained access control across the Tarcinapp API ecosystem.
@@ -19,6 +34,28 @@ This repository serves as the central policy repository for the **Tarcinapp Enti
 
 **Integration:**
 These policies are evaluated by the API Gateway at request time, ensuring that only authorized operations proceed to the backend service. The policies work in concert with JWT token claims (roles, user ID, groups) and resource metadata to make authorization decisions.
+
+## What is Tarcinapp?
+
+The **Tarcinapp** suite is a comprehensive and flexible application framework, harmoniously blending a suite of interconnected components designed to deliver a seamless and secure microservices architecture. It also provides the flexibility for users to leverage it as an upstream project for their own REST API-based backend implementations, allowing for easy adaptation to their specific requirements and use cases.
+
+<p align="center">
+  <img src="./doc/img/tarcinapp.png" alt="Tarcinapp Suite Overview">
+</p>
+
+At its core is the **Entity Persistence Service**, an easily adaptable REST-based backend application built on the [Loopback 4](https://loopback.io) framework. This service utilizes a schemaless MongoDB database to provide a scalable and highly adaptable data persistence layer. Offering a generic data model with predefined fields such as `id`, `name`, `kind`, `lastUpdateDateTime`, `creationDateTime`, `ownerUsers` and more, it effortlessly adapts to diverse use cases.
+
+The integration with the **Entity Persistence Gateway** empowers users to implement enhanced validation, authentication, authorization, and rate-limiting functionalities, ensuring a secure and efficient environment. Leveraging the power of **Redis**, the application seamlessly manages distributed locks, enabling robust data synchronization and rate limiting. Furthermore, the ecosystem includes the **Open Policy Agent (OPA)** to enforce policies, safeguarding your application against unauthorized access and ensuring compliance with your security and operational requirements. These policies, combined with the entire suite of components, form a cohesive and powerful ecosystem, paving the way for efficient and secure microservice development.
+
+Here is an example request and response to one of the most basic endpoints: `/entities`:
+
+<p align="left">
+  <img src="./doc/img/request-response.png" alt="Sample request and response">
+</p>
+
+**Note:** The client's authorization to create an entity, the fields that user can specify, and the fields returned in the response body may vary based on the user's role. The values of managed fields such as `visibility`, `idempotencyKey`, `validFromDateTime`, and `validUntilDateTime` can also be adjusted according to the user's role and the system's configuration.
+
+**Note:** Endpoints can be configured with arbitrary values within the gateway component. For example, `/books` can be used for records with `kind: book`, and the field `kind` can be completely omitted from the API interaction.
 
 ## Core Authorization Concepts
 
@@ -492,28 +529,6 @@ Shared utility modules provide reusable logic:
 * `relations/` - Relation-specific role matching helpers
 * `entityReactions/` - Entity reaction-specific role matching helpers
 * `listReactions/` - List reaction-specific role matching helpers
-
-## What is Tarcinapp Suite?
-
-The Tarcinapp suite is a comprehensive and flexible application framework, harmoniously blending a suite of interconnected components designed to deliver a seamless and secure microservices architecture. It also provides the flexibility for users to leverage it as an upstream project for their own REST API-based backend implementations, allowing for easy adaptation to their specific requirements and use cases.
-
-<p align="center">
-  <img src="./doc/img/tarcinapp.png" alt="Tarcinapp Suite Overview">
-</p>
-
-At its core is the **Entity Persistence Service**, an easily adaptable REST-based backend application built on the [Loopback 4](https://loopback.io) framework. This service utilizes a schemaless MongoDB database to provide a scalable and highly adaptable data persistence layer. Offering a generic data model with predefined fields such as `id`, `name`, `kind`, `lastUpdateDateTime`, `creationDateTime`, `ownerUsers` and more, it effortlessly adapts to diverse use cases.
-
-The integration with the **Entity Persistence Gateway** empowers users to implement enhanced validation, authentication, authorization, and rate-limiting functionalities, ensuring a secure and efficient environment. Leveraging the power of **Redis**, the application seamlessly manages distributed locks, enabling robust data synchronization and rate limiting. Furthermore, the ecosystem includes the **Open Policy Agent (OPA)** to enforce policies, safeguarding your application against unauthorized access and ensuring compliance with your security and operational requirements. These policies, combined with the entire suite of components, form a cohesive and powerful ecosystem, paving the way for efficient and secure microservice development.
-
-Here is an example request and response to one of the most basic endpoints: `/entities`:
-
-<p align="left">
-  <img src="./doc/img/request-response.png" alt="Sample request and response">
-</p>
-
-**Note:** The client's authorization to create an entity, the fields that user can specify, and the fields returned in the response body may vary based on the user's role. The values of managed fields such as `visibility`, `idempotencyKey`, `validFromDateTime`, and `validUntilDateTime` can also be adjusted according to the user's role and the system's configuration.
-
-**Note:** Endpoints can be configured with arbitrary values within the gateway component. For example, `/books` can be used for records with `kind: book`, and the field `kind` can be completely omitted from the API interaction.
 
 ## Development Guide
 
