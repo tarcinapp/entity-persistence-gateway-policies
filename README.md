@@ -503,7 +503,6 @@ Operation authorization policies are grouped by resource type and operational co
 
 Each policy folder contains:
 * `policy.rego` - The authorization decision logic
-* `metadata.rego` - Policy description and input/output contract
 * `policy_test.rego` - Comprehensive unit tests demonstrating expected behavior
 * `README.md` - Detailed documentation of the policy's rules and examples
 
@@ -673,7 +672,6 @@ Rego helpers are provided under `policies/util/common/originalRecord.rego` and c
 
 * **Routes:** Each route under `policies/auth/routes/<route>` contains:
   * `policy.rego`: the route's decision logic
-  * `metadata.rego`: a short description and the policy's input/field contract
   * `policy_test.rego`: unit tests showing expected behavior
 * **Common utilities:** Shared helpers are under `policies/util` (token, verification, time/parse helpers, originalRecord helpers, role matchers, arrays). Reuse these helpers across route policies.
 * **Field policies:** `policies/fields/<resource>/policy.rego` describe forbidden fields per role and operation and are consulted by route policies to enforce field-level constraints.
