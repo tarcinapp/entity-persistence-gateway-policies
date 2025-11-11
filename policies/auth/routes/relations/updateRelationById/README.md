@@ -6,9 +6,9 @@ This policy evaluates the caller's role, email verification status, the request 
 
 High-level semantics:
 
-- Relations do not carry ownership or viewer lists themselves — ownership and visibility are derived from the nested metadata supplied in `originalRecord`:
-  - `_fromMetadata` — the source list's metadata (used to check list ownership and list visibility/validity)
-  - `_toMetadata` — the target entity's metadata (used to check whether the caller can see the target entity)
+- Relations do not carry ownership or viewer lists themselves. Ownership and visibility are derived from the nested metadata supplied in `originalRecord`:
+  - `_fromMetadata`: the source list's metadata (used to check list ownership and list visibility/validity)
+  - `_toMetadata`: the target entity's metadata (used to check whether the caller can see the target entity)
 - Admins and Editors
   - Must have verified email.
   - Cannot include fields in the payload that they are not allowed to see.
@@ -27,7 +27,7 @@ High-level semantics:
   - Visitors cannot update relations.
 
 Notes:
-- Missing nested metadata in `originalRecord` should be treated as denial — ownership/visibility cannot be established.
+- Missing nested metadata in `originalRecord` should be treated as denial. Ownership/visibility cannot be established.
 - Relations themselves carry only validity fields at the top level; ownership/visibility is derived from the endpoints.
 - The policy enforces field-level visibility checks using the relations forbidden-fields table so callers cannot submit fields they cannot see.
 

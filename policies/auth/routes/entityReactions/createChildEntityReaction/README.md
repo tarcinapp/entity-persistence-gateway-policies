@@ -26,14 +26,14 @@ This policy evaluates the user's role, email verification status, request payloa
 
 - Visitors are not allowed to create child reactions.
 
-Parent Reaction Visibility (originalRecord) — at least one must hold (members require ACTIVE parent):
+Parent Reaction Visibility (originalRecord): at least one must hold (members require ACTIVE parent):
 - Caller owns the reaction and it is active.
 - Reaction belongs to one of the caller's groups, the reaction is not private, and it is active.
 - Reaction is public and active.
 - Caller is listed in `_viewerUsers` and the reaction is active.
 - Caller is in `_viewerGroups`, the reaction is active, and the reaction is not private.
 
-Related Entity Visibility (originalRecord._relationMetadata) — at least one must hold (members require ACTIVE entity):
+Related Entity Visibility (originalRecord._relationMetadata): at least one must hold (members require ACTIVE entity):
 - Caller owns the entity and it is active.
 - Entity belongs to one of the caller's groups, the entity is not private, and it is active.
 - Entity is public and active.

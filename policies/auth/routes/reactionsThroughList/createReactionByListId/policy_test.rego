@@ -36,7 +36,7 @@ test_not_allow_visitor_even_if_source_public_active if {
 	not allow with input as produce_input_doc_by_role_and_source("tarcinapp.visitor", true, {"type": "like"}, "public", "2020-01-01T00:00:00Z", null)
 }
 
-# Member _ownerGroups validations (payload-level) — group membership checked against token
+# Member _ownerGroups validations (payload-level): group membership checked against token
 test_allow_member_with_ownerGroups_valid if {
 	allow with input as produce_input_doc_by_role_and_source_with_payload_groups("tarcinapp.member", true, {"type": "wow", "_ownerGroups": ["group-1"]}, "public", "2020-01-01T00:00:00Z", null)
 }

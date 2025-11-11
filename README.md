@@ -39,7 +39,7 @@ These policies are evaluated by the API Gateway at request time, ensuring that o
 
 **Tarcinapp** is a modular backend microservices suite designed to streamline common challenges in REST-based backend development, helping teams reduce **Time-to-Value** from concept to deployment.
 
-While many tools exist to generate REST APIs from JSON schemas, they often stop at basic CRUD operations. These solutions typically lack support for more advanced concerns—such as managing **relationships between records**, handling **ownership and access control**, or modeling **user interactions in post-login scenarios**.
+While many tools exist to generate REST APIs from JSON schemas, they often stop at basic CRUD operations. These solutions typically lack support for more advanced concerns, such as managing **relationships between records**, handling **ownership and access control**, or modeling **user interactions in post-login scenarios**.
 
 Tarcinapp addresses these gaps with **opinionated models**, built-in metadata, and a gateway architecture that enables secure, configurable behaviors out of the box.
 
@@ -612,7 +612,7 @@ See `policies/auth/routes/entities/createEntity/policy.rego` and `policies/auth/
 #### Common Pitfalls and Troubleshooting
 
 * Wrong scope in role name (use `records|entities` for entity fields, `relations` for relation fields).
-* Missing or wrong `input.appShortcode` — the field predicates use `input.appShortcode` when constructing the expected role pattern.
+* Missing or wrong `input.appShortcode`: the field predicates use `input.appShortcode` when constructing the expected role pattern.
 * Token roles not present at `token.payload.roles` (ensure Keycloak role mappers are configured to place roles under `roles` in the token payload).
 
 ### Ownership & Viewership
@@ -637,7 +637,7 @@ This project uses a clear, deterministic ownership and viewership model to decid
 
 * **`public`:** Visible to public, subject to `active` state when applicable.
 * **`protected`:** Visible to owners and group/viewer-based controls when the record is not `private` and is active.
-* **`private`:** Restricted — only direct owners (and certain admin/editor roles) may see private records; group-based viewer/owner checks do not permit access.
+* **`private`:** Restricted. Only direct owners (and certain admin/editor roles) may see private records; group-based viewer/owner checks do not permit access.
 
 #### Viewer Semantics
 
@@ -672,9 +672,9 @@ Rego helpers are provided under `policies/util/common/originalRecord.rego` and c
 ### Implementation Patterns and Structure
 
 * **Routes:** Each route under `policies/auth/routes/<route>` contains:
-  * `policy.rego` — the route's decision logic
-  * `metadata.rego` — a short description and the policy's input/field contract
-  * `policy_test.rego` — unit tests showing expected behavior
+  * `policy.rego`: the route's decision logic
+  * `metadata.rego`: a short description and the policy's input/field contract
+  * `policy_test.rego`: unit tests showing expected behavior
 * **Common utilities:** Shared helpers are under `policies/util` (token, verification, time/parse helpers, originalRecord helpers, role matchers, arrays). Reuse these helpers across route policies.
 * **Field policies:** `policies/fields/<resource>/policy.rego` describe forbidden fields per role and operation and are consulted by route policies to enforce field-level constraints.
 * **Roles:** Role matching helpers implement multi-scope patterns (app-wide, records-wide, resource-scoped, and operation-specific variants) so a caller can be granted permissions at multiple levels.

@@ -20,7 +20,7 @@ This policy evaluates the user's role, email verification status, and the visibi
 	- Email is verified.
 	- The child reaction is public and active.
 
-Child Reaction Visibility (originalRecord) — at least one must hold:
+Child Reaction Visibility (originalRecord): at least one must hold:
 - Caller owns the reaction and it is not passive (expired).
 - Reaction belongs to one of the caller's groups, the reaction is not passive, and the reaction is not private.
 - Reaction is public and active.

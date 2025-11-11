@@ -212,7 +212,7 @@ test_allow_member_owner_and_viewer_private_entity if {
 }
 
 # Negative test: member tries to remove _validFromDateTime/_validUntilDateTime from request
-# while they are present in the original record — this must be denied
+# while they are present in the original record. This must be denied
 test_not_allow_member_remove_valid_times if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"],
