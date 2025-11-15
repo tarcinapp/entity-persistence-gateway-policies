@@ -733,8 +733,11 @@ test_not_allow_to_relations_update_admin if {
 	)
 }
 
-# Helper function to create test input with originalRecord
-produce_input_doc_by_role(roles, is_email_verified, requestPayload, originalRecord) := test_body if {
+# Helper function to create test input with metadata in requestPayload
+produce_input_doc_by_role(roles, is_email_verified, requestPayload, metadata) := test_body if {
+	# Merge the base requestPayload with metadata
+	merged_payload := object.union(requestPayload, metadata)
+
 	test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "POST",
@@ -749,13 +752,15 @@ produce_input_doc_by_role(roles, is_email_verified, requestPayload, originalReco
 			"groups": ["group-1", "group-3"],
 			"roles": [roles],
 		}),
-		"requestPayload": requestPayload,
-		"originalRecord": originalRecord,
+		"requestPayload": merged_payload,
 	}
 }
 
-# Helper function to create test input with field-level permission and originalRecord
-produce_input_doc_by_role_with_field_permission(roles, is_email_verified, requestPayload, fieldPermission, originalRecord) := test_body if {
+# Helper function to create test input with field-level permission and metadata in requestPayload
+produce_input_doc_by_role_with_field_permission(roles, is_email_verified, requestPayload, fieldPermission, metadata) := test_body if {
+	# Merge the base requestPayload with metadata
+	merged_payload := object.union(requestPayload, metadata)
+
 	test_body = {
 		"appShortcode": "tarcinapp",
 		"httpMethod": "POST",
@@ -770,7 +775,6 @@ produce_input_doc_by_role_with_field_permission(roles, is_email_verified, reques
 			"groups": ["group-1", "group-3"],
 			"roles": [roles, fieldPermission],
 		}),
-		"requestPayload": requestPayload,
-		"originalRecord": originalRecord,
+		"requestPayload": merged_payload,
 	}
 }

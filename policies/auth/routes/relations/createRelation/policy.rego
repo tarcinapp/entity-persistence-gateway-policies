@@ -65,29 +65,29 @@ caller_owns_referenced_list if {
 
 referenced_list_belong_to_user if {
 	some i
-	token.payload.sub == input.originalRecord._fromMetadata._ownerUsers[i]
+	token.payload.sub == input.requestPayload._fromMetadata._ownerUsers[i]
 }
 
 # Only consider group ownership if the user is not a direct owner
 referenced_list_belong_to_users_groups if {
 	not referenced_list_belong_to_user
 	some i
-	token.payload.groups[i] in input.originalRecord._fromMetadata._ownerGroups
+	token.payload.groups[i] in input.requestPayload._fromMetadata._ownerGroups
 }
 
 referenced_list_is_private if {
-	input.originalRecord._fromMetadata._visibility == "private"
+	input.requestPayload._fromMetadata._visibility == "private"
 }
 
 referenced_list_is_passive if {
-	input.originalRecord._fromMetadata._validUntilDateTime != null
-	time.parse_rfc3339_ns(input.originalRecord._fromMetadata._validUntilDateTime) <= time.now_ns()
+	input.requestPayload._fromMetadata._validUntilDateTime != null
+	time.parse_rfc3339_ns(input.requestPayload._fromMetadata._validUntilDateTime) <= time.now_ns()
 }
 
 # List must have validFrom set and in the past, and not be passive
 referenced_list_valid_for_creation if {
-	input.originalRecord._fromMetadata._validFromDateTime != null
-	time.parse_rfc3339_ns(input.originalRecord._fromMetadata._validFromDateTime) < time.now_ns()
+	input.requestPayload._fromMetadata._validFromDateTime != null
+	time.parse_rfc3339_ns(input.requestPayload._fromMetadata._validFromDateTime) < time.now_ns()
 	not referenced_list_is_passive
 }
 
@@ -122,42 +122,42 @@ caller_can_see_target_entity if {
 }
 
 cited_entity_is_active if {
-	input.originalRecord._toMetadata._validFromDateTime != null
-	time.parse_rfc3339_ns(input.originalRecord._toMetadata._validFromDateTime) < time.now_ns()
+	input.requestPayload._toMetadata._validFromDateTime != null
+	time.parse_rfc3339_ns(input.requestPayload._toMetadata._validFromDateTime) < time.now_ns()
 	not cited_entity_is_passive
 }
 
 cited_entity_is_passive if {
-	input.originalRecord._toMetadata._validUntilDateTime != null
-	time.parse_rfc3339_ns(input.originalRecord._toMetadata._validUntilDateTime) <= time.now_ns()
+	input.requestPayload._toMetadata._validUntilDateTime != null
+	time.parse_rfc3339_ns(input.requestPayload._toMetadata._validUntilDateTime) <= time.now_ns()
 }
 
 cited_entity_is_public if {
-	input.originalRecord._toMetadata._visibility == "public"
+	input.requestPayload._toMetadata._visibility == "public"
 }
 
 cited_entity_is_private if {
-	input.originalRecord._toMetadata._visibility == "private"
+	input.requestPayload._toMetadata._visibility == "private"
 }
 
 cited_entity_belong_to_user if {
 	some i
-	token.payload.sub == input.originalRecord._toMetadata._ownerUsers[i]
+	token.payload.sub == input.requestPayload._toMetadata._ownerUsers[i]
 }
 
 # Only consider group ownership if the user is not a direct owner
 cited_entity_belong_to_users_groups if {
 	not cited_entity_belong_to_user
 	some i
-	token.payload.groups[i] in input.originalRecord._toMetadata._ownerGroups
+	token.payload.groups[i] in input.requestPayload._toMetadata._ownerGroups
 }
 
 cited_entity_has_viewer_user if {
 	some i
-	token.payload.sub == input.originalRecord._toMetadata._viewerUsers[i]
+	token.payload.sub == input.requestPayload._toMetadata._viewerUsers[i]
 }
 
 cited_entity_has_viewer_group if {
 	some i
-	token.payload.groups[i] in input.originalRecord._toMetadata._viewerGroups
+	token.payload.groups[i] in input.requestPayload._toMetadata._viewerGroups
 }
