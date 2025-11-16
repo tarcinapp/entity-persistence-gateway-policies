@@ -37,6 +37,10 @@ test_not_allow_member_change_visibility_to_private_for_group_owned if {
 			"_ownerUsers": ["other-user"],
 			"_ownerGroups": ["group-1"],
 			"_validUntilDateTime": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 		{
 			"_name": "Original List",
@@ -45,17 +49,12 @@ test_not_allow_member_change_visibility_to_private_for_group_owned if {
 			"_ownerUsers": ["other-user"],
 			"_ownerGroups": ["group-1"],
 			"_validUntilDateTime": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 	)
-		with input.encodedJwt as test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "John Doe",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": true,
-			"groups": ["group-1"],
-			"roles": ["tarcinapp.member"],
-		})
 }
 
 # Member tries to remove a group from ownerGroups for a group-owned record (should be denied)
@@ -79,15 +78,6 @@ test_not_allow_member_remove_ownerGroup_for_group_owned if {
 			"_validUntilDateTime": null,
 		},
 	)
-		with input.encodedJwt as test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "John Doe",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": true,
-			"groups": ["group-1"],
-			"roles": ["tarcinapp.member"],
-		})
 }
 
 # Member tries to remove a group from ownerGroups that they do NOT belong to (should be denied)
@@ -111,15 +101,6 @@ test_not_allow_member_remove_other_group_they_do_not_belong_to if {
 			"_validUntilDateTime": null,
 		},
 	)
-		with input.encodedJwt as test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "John Doe",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": true,
-			"groups": ["group-1"],
-			"roles": ["tarcinapp.member"],
-		})
 }
 
 # Member tries to update an inactive record (should be denied)
@@ -145,15 +126,6 @@ test_not_allow_member_update_inactive_record if {
 			"_validUntilDateTime": "2021-01-01T00:00:00Z",
 		},
 	)
-		with input.encodedJwt as test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "John Doe",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": true,
-			"groups": ["group-1"],
-			"roles": ["tarcinapp.member"],
-		})
 }
 
 # Member tries to set validFromDateTime just inside the allowed window with field-level role (should be allowed)
@@ -171,6 +143,12 @@ test_allow_member_set_validFromDateTime_inside_window_with_role if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": validFromStr,
 			"_validUntilDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 		{
 			"_name": "Original List",
@@ -180,6 +158,12 @@ test_allow_member_set_validFromDateTime_inside_window_with_role if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 	)
 }
@@ -709,6 +693,10 @@ test_allow_editor_with_same_createdDateTime if {
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
+			"_idempotencyKey": null,
 		},
 		{
 			"_name": "Original List",
@@ -719,6 +707,10 @@ test_allow_editor_with_same_createdDateTime if {
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
+			"_idempotencyKey": null,
 		},
 	)
 }
@@ -734,6 +726,12 @@ test_allow_member_own_record if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 		{
 			"_name": "Test List",
@@ -743,6 +741,12 @@ test_allow_member_own_record if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 	)
 }
@@ -780,6 +784,12 @@ test_allow_member_records_role_own_record if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 		{
 			"_name": "Test List",
@@ -789,6 +799,12 @@ test_allow_member_records_role_own_record if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 	)
 }
@@ -928,6 +944,12 @@ test_allow_member_set_validUntilDateTime_with_field_role if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": "2020-01-01T00:00:00Z",
 			"_validUntilDateTime": now_time_str,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 		{
 			"_name": "Original List",
@@ -937,6 +959,12 @@ test_allow_member_set_validUntilDateTime_with_field_role if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": "2020-01-01T00:00:00Z",
 			"_validUntilDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 	)
 }
@@ -956,6 +984,12 @@ test_allow_member_own_by_group_protected if {
 			"_ownerGroups": ["group-1"],
 			"_validUntilDateTime": null,
 			"_validFromDateTime": "2020-01-01T00:00:00Z",
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 		{
 			"_name": "Original List",
@@ -965,6 +999,12 @@ test_allow_member_own_by_group_protected if {
 			"_ownerGroups": ["group-1"],
 			"_validUntilDateTime": null,
 			"_validFromDateTime": "2020-01-01T00:00:00Z",
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 	)
 }
@@ -983,6 +1023,13 @@ test_allow_member_add_ownerGroup_they_belong_to if {
 			"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
 			"_ownerGroups": ["group-1", "group-2"],
 			"_validUntilDateTime": null,
+			"_validFromDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 		{
 			"_name": "Original List",
@@ -991,17 +1038,15 @@ test_allow_member_add_ownerGroup_they_belong_to if {
 			"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
 			"_ownerGroups": ["group-1"],
 			"_validUntilDateTime": null,
+			"_validFromDateTime": null,
+			"_kind": null,
+			"_listId": null,
+			"_createdDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
+			"_lastUpdatedBy": "original-user",
+			"_createdBy": "original-user",
 		},
 	)
-		with input.encodedJwt as test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "John Doe",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": true,
-			"groups": ["group-1", "group-2"],
-			"roles": ["tarcinapp.member"],
-		})
 }
 
 # 4B. Additive ownerGroups: Deny if new group is not user's group
@@ -1027,13 +1072,4 @@ test_not_allow_member_add_ownerGroup_they_do_not_belong_to if {
 			"_validUntilDateTime": null,
 		},
 	)
-		with input.encodedJwt as test.produce_token({
-			"sub": "ebe92b0c-bda2-49d0-99d0-feb538aa7db6",
-			"name": "John Doe",
-			"admin": true,
-			"iat": 1516239022,
-			"email_verified": true,
-			"groups": ["group-1"],
-			"roles": ["tarcinapp.member"],
-		})
 }

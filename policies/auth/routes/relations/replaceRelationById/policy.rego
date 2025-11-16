@@ -95,30 +95,22 @@ forbidden_fields_has_same_value_with_original_record if {
 }
 
 forbidden_fields_has_same_value_with_original_record if {
-	not has_forbidden_field_changed
+	forbidden_fields.which_fields_forbidden_for_update[0]
+	not has_forbidden_field_with_different_value
 }
 
-# If any forbidden-for-update field had a value in the original record but
-# the request either omits it, sets it to null, or changes its value,
-# consider that a forbidden change.
-has_forbidden_field_changed if {
+has_forbidden_field_with_different_value if {
 	some forbidden_field_for_update
 	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
-	original_record.has_value(forbidden_field_for_update)
-	not input.requestPayload[forbidden_field_for_update]
+	not forbidden_field_for_update in forbidden_fields.which_fields_forbidden_for_finding
+	not has_field(input.requestPayload, forbidden_field_for_update)
 }
 
-has_forbidden_field_changed if {
+has_forbidden_field_with_different_value if {
 	some forbidden_field_for_update
 	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
-	original_record.has_value(forbidden_field_for_update)
-	input.requestPayload[forbidden_field_for_update] == null
-}
-
-has_forbidden_field_changed if {
-	some forbidden_field_for_update
-	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
-	original_record.has_value(forbidden_field_for_update)
+	not forbidden_field_for_update in forbidden_fields.which_fields_forbidden_for_finding
+	has_field(input.requestPayload, forbidden_field_for_update)
 	input.requestPayload[forbidden_field_for_update] != input.originalRecord[forbidden_field_for_update]
 }
 
@@ -221,6 +213,11 @@ can_user_see_meta(meta) if {
 	meta_has_viewer_group(meta)
 	meta_is_active(meta)
 	meta._visibility != "private"
+}
+
+# helper: check key existence even if value is null
+has_field(obj, field) if {
+	object.get(obj, field, "__missing__") != "__missing__"
 }
 
 # member checks for validFrom/validUntil - similar to entity/list replace policies

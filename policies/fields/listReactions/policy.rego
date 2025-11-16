@@ -126,6 +126,28 @@ which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
 	]
 }
 
+# If user is editor for update, they should also be treated as editor for find
+which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
+	role_utils.is_user_editor("update")
+	fields := get_effective_fields_for("editor", "find")
+	which_fields_forbidden_for_finding := [field |
+		some i
+		field := fields[i]
+		not can_user_find_field(field)
+	]
+}
+
+# If user is member for update, they should also be treated as member for find
+which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
+	role_utils.is_user_member("update")
+	fields := get_effective_fields_for("member", "find")
+	which_fields_forbidden_for_finding := [field |
+		some i
+		field := fields[i]
+		not can_user_find_field(field)
+	]
+}
+
 #-----------------------------------------------
 
 # this method only selects the field array for given role and operation

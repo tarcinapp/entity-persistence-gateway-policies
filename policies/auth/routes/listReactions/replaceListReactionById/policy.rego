@@ -235,15 +235,34 @@ forbidden_fields_has_same_value_with_original_record if {
 }
 
 forbidden_fields_has_same_value_with_original_record if {
+	forbidden_fields.which_fields_forbidden_for_update[0]
+	not has_forbidden_field_with_different_value
+}
+
+# check if there are any forbidden fields with different values
+has_forbidden_field_with_different_value if {
 	some forbidden_field_for_update
 	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
-	input.requestPayload[forbidden_field_for_update] == input.originalRecord[forbidden_field_for_update]
+	not forbidden_field_for_update in forbidden_fields.which_fields_forbidden_for_finding
+	not has_field(input.requestPayload, forbidden_field_for_update)
+}
+
+has_forbidden_field_with_different_value if {
+	some forbidden_field_for_update
+	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
+	not forbidden_field_for_update in forbidden_fields.which_fields_forbidden_for_finding
+	input.requestPayload[forbidden_field_for_update] != input.originalRecord[forbidden_field_for_update]
 }
 
 payload_contains_any_field(fields) if {
 	some field
 	field = fields[_]
 	input.requestPayload[field]
+}
+
+# helper: check key existence even if value is null
+has_field(obj, field) if {
+	object.get(obj, field, "__missing__") != "__missing__"
 }
 
 # --- Related list visibility check (using managed fields, like findListById) ---
