@@ -13,12 +13,12 @@ default allow := false
 # Decide allow if any of the following section is true
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_admin("create")
+	role_utils.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
 }
 
 allow if {
-	role_utils.is_user_editor("create")
+	role_utils.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field for the caller's role
@@ -26,7 +26,7 @@ allow if {
 }
 
 allow if {
-	role_utils.is_user_member("create")
+	role_utils.is_user_member("create", input.requestPayload)
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field for the caller's role

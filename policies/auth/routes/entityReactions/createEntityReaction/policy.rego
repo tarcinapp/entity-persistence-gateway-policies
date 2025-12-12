@@ -13,21 +13,21 @@ default allow := false
 # Decide allow if any of the following section is true
 # ----------------------------------------------
 allow if {
-	role_utils.is_user_admin("create")
+	role_utils.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 	can_admin_see_source_record
 }
 
 allow if {
-	role_utils.is_user_editor("create")
+	role_utils.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 	can_editor_see_source_record
 }
 
 allow if {
-	role_utils.is_user_member("create")
+	role_utils.is_user_member("create", input.requestPayload)
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 	verification.is_email_verified
 	not member_has_problem_with_groups
@@ -110,40 +110,40 @@ related_entity_is_user_in_viewerGroups if {
 
 # --- Per-role entity visibility checks ---
 can_admin_see_source_record if {
-	entity_role_utils.is_user_admin("find")
+	entity_role_utils.is_user_admin("find", input.requestPayload)
 }
 
 can_editor_see_source_record if {
-	entity_role_utils.is_user_editor("find")
+	entity_role_utils.is_user_editor("find", input.requestPayload)
 }
 
 can_member_see_source_record if {
-	entity_role_utils.is_user_member("find")
+	entity_role_utils.is_user_member("find", input.requestPayload)
 	related_entity_is_public
 	related_entity_is_active
 }
 
 can_member_see_source_record if {
-	entity_role_utils.is_user_member("find")
+	entity_role_utils.is_user_member("find", input.requestPayload)
 	related_entity_is_belong_to_user
 	related_entity_is_active
 }
 
 can_member_see_source_record if {
-	entity_role_utils.is_user_member("find")
+	entity_role_utils.is_user_member("find", input.requestPayload)
 	related_entity_is_belong_to_users_groups
 	related_entity_is_active
 	not related_entity_is_private
 }
 
 can_member_see_source_record if {
-	entity_role_utils.is_user_member("find")
+	entity_role_utils.is_user_member("find", input.requestPayload)
 	related_entity_is_user_in_viewerUsers
 	related_entity_is_active
 }
 
 can_member_see_source_record if {
-	entity_role_utils.is_user_member("find")
+	entity_role_utils.is_user_member("find", input.requestPayload)
 	related_entity_is_user_in_viewerGroups
 	not related_entity_is_private
 	related_entity_is_active

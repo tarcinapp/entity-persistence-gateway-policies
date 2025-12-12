@@ -13,7 +13,7 @@ default allow := false
 # Decide allow if any of the following section is true
 # ----------------------------------------------
 allow if {
-	role_utils.is_user_admin("create")
+	role_utils.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field
@@ -24,7 +24,7 @@ allow if {
 }
 
 allow if {
-	role_utils.is_user_editor("create")
+	role_utils.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field
@@ -35,7 +35,7 @@ allow if {
 }
 
 allow if {
-	role_utils.is_user_member("create")
+	role_utils.is_user_member("create", input.requestPayload)
 
 	# payload cannot contain any invalid field
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
@@ -127,23 +127,23 @@ related_list_is_user_in_viewerGroups if {
 
 # --- Per-role list visibility checks ---
 can_admin_see_source_record if {
-	list_role_utils.is_user_admin("find")
+	list_role_utils.is_user_admin("find", input.requestPayload)
 }
 
 can_editor_see_source_record if {
-	list_role_utils.is_user_editor("find")
+	list_role_utils.is_user_editor("find", input.requestPayload)
 }
 
 # user can see this source record, because it's his record
 can_member_see_source_record if {
-	list_role_utils.is_user_member("find")
+	list_role_utils.is_user_member("find", input.requestPayload)
 	related_list_is_belong_to_user
 	related_list_is_active
 }
 
 # user can see this source record, because record belongs to his groups and record is not private
 can_member_see_source_record if {
-	list_role_utils.is_user_member("find")
+	list_role_utils.is_user_member("find", input.requestPayload)
 	related_list_is_belong_to_users_groups
 	related_list_is_active
 	not related_list_is_private # record is either public or protected
@@ -151,21 +151,21 @@ can_member_see_source_record if {
 
 # user can see this source record, because it is public and active record
 can_member_see_source_record if {
-	list_role_utils.is_user_member("find")
+	list_role_utils.is_user_member("find", input.requestPayload)
 	related_list_is_public
 	related_list_is_active
 }
 
 # user can see this source record, because he is in viewerUsers, and record is active
 can_member_see_source_record if {
-	list_role_utils.is_user_member("find")
+	list_role_utils.is_user_member("find", input.requestPayload)
 	related_list_is_user_in_viewerUsers
 	related_list_is_active
 }
 
 # user can see this source record, because he is in viewerGroups, and record is active
 can_member_see_source_record if {
-	list_role_utils.is_user_member("find")
+	list_role_utils.is_user_member("find", input.requestPayload)
 	related_list_is_user_in_viewerGroups
 	not related_list_is_private # record is either public or protected
 	related_list_is_active

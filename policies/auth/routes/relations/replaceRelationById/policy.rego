@@ -20,7 +20,7 @@ default allow := false
 # Decide allow if any of the following section is true
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_admin("update")
+	role_utils.is_user_admin("update", input.requestPayload)
 
 	# user must be email verified
 	verification.is_email_verified
@@ -36,7 +36,7 @@ allow if {
 }
 
 allow if {
-	role_utils.is_user_editor("update")
+	role_utils.is_user_editor("update", input.requestPayload)
 
 	# user must be email verified
 	verification.is_email_verified
@@ -52,7 +52,7 @@ allow if {
 }
 
 allow if {
-	role_utils.is_user_member("update")
+	role_utils.is_user_member("update", input.requestPayload)
 
 	# user must be email verified
 	verification.is_email_verified

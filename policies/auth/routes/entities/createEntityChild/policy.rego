@@ -15,7 +15,7 @@ default allow := false
 # Admin users can create entity children - they can see any parent entity
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_admin("create")
+	role_utils.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field
@@ -27,7 +27,7 @@ allow if {
 # Editor users can create entity children - they can see any parent entity
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_editor("create")
+	role_utils.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field
@@ -39,7 +39,7 @@ allow if {
 # Member users can create entity children if they can see the parent entity and meet creation requirements
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_member("create")
+	role_utils.is_user_member("create", input.requestPayload)
 	verification.is_email_verified
 	can_user_see_parent_record
 

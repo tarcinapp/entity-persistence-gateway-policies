@@ -14,12 +14,12 @@ default allow := false
 # Admin and editor users for listReactions are always allowed to retrieve the reaction
 #-----------------------------------------------
 allow if {
-	reaction_roles.is_user_admin("find")
+	reaction_roles.is_user_admin("find", input.originalRecord)
 	verification.is_email_verified
 }
 
 allow if {
-	reaction_roles.is_user_editor("find")
+	reaction_roles.is_user_editor("find", input.originalRecord)
 	verification.is_email_verified
 }
 
@@ -28,7 +28,7 @@ allow if {
 # Members can see list reactions if they can see both the parent list (input.originalRecord._relationMetadata)
 # and the reaction itself (input.originalRecord)
 allow if {
-	reaction_roles.is_user_member("find")
+	reaction_roles.is_user_member("find", input.originalRecord)
 	verification.is_email_verified
 	list_can_user_see_this_record
 	reaction_can_user_see_this_record
@@ -39,7 +39,7 @@ allow if {
 # Visitors are allowed to retrieve only active and public reactions when the list
 # is also public and active
 allow if {
-	reaction_roles.is_user_visitor("find")
+	reaction_roles.is_user_visitor("find", input.originalRecord)
 	verification.is_email_verified
 	list_is_public
 	list_is_active

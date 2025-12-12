@@ -21,7 +21,7 @@ default allow := false
 # Admins may PATCH across lists/entities but must be email verified,
 # must not include fields they cannot see and must preserve forbidden-for-update fields.
 allow if {
-	role_utils.is_user_admin("update")
+	role_utils.is_user_admin("update", input.requestPayload)
 	verification.is_email_verified
 	original_record_present
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
@@ -31,7 +31,7 @@ allow if {
 # Editors are similar to admins but are conservative about retargeting on PATCH:
 # they may not change the relation ids when performing a PATCH.
 allow if {
-	role_utils.is_user_editor("update")
+	role_utils.is_user_editor("update", input.requestPayload)
 	verification.is_email_verified
 	original_record_present
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
@@ -47,7 +47,7 @@ allow if {
 # referenced list, be able to see both endpoints, cannot operate on passive relations,
 # and must satisfy validFrom/validUntil member constraints. Members may not retarget ids.
 allow if {
-	role_utils.is_user_member("update")
+	role_utils.is_user_member("update", input.requestPayload)
 	verification.is_email_verified
 	original_record_present
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)

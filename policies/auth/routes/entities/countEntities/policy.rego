@@ -12,21 +12,21 @@ default allow := false
 # Decide allow if any of the following section is true
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_admin("count")
+	role_utils.is_user_admin("count", {})
 	verification.is_email_verified
 }
 
 allow if {
-	role_utils.is_user_editor("count")
+	role_utils.is_user_editor("count", {})
 	verification.is_email_verified
 }
 
 allow if {
-	role_utils.is_user_member("count")
+	role_utils.is_user_member("count", {})
 	verification.is_email_verified
 }
 
 allow if {
-	role_utils.is_user_visitor("count")
+	role_utils.is_user_visitor("count", {})
 	verification.is_email_verified
 }

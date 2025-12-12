@@ -13,7 +13,7 @@ default allow := false
 # Admin users can find children if they can see the parent reaction
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_admin("find")
+	role_utils.is_user_admin("find", input.originalRecord)
 	verification.is_email_verified
 	parent_reaction_can_user_see_this_record
 }
@@ -23,7 +23,7 @@ allow if {
 # Editor users can find children if they can see the parent reaction
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_editor("find")
+	role_utils.is_user_editor("find", input.originalRecord)
 	verification.is_email_verified
 	parent_reaction_can_user_see_this_record
 }
@@ -33,7 +33,7 @@ allow if {
 # Member users can find children if they can see the parent reaction
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_member("find")
+	role_utils.is_user_member("find", input.originalRecord)
 	verification.is_email_verified
 	parent_reaction_can_user_see_this_record
 }
@@ -43,7 +43,7 @@ allow if {
 # Visitors can find children if the parent reaction is public and active
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_visitor("find")
+	role_utils.is_user_visitor("find", input.originalRecord)
 	verification.is_email_verified
 	original_record.is_public
 	original_record.is_active

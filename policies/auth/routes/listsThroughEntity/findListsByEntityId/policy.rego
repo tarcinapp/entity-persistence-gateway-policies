@@ -16,44 +16,44 @@ allow if {
 }
 
 can_find_lists if {
-	lists_role_utils.is_user_admin("find")
+	lists_role_utils.is_user_admin("find", {})
 	verification.is_email_verified
 }
 
 can_find_lists if {
-	lists_role_utils.is_user_editor("find")
+	lists_role_utils.is_user_editor("find", {})
 	verification.is_email_verified
 }
 
 can_find_lists if {
-	lists_role_utils.is_user_member("find")
+	lists_role_utils.is_user_member("find", {})
 	verification.is_email_verified
 }
 
 can_find_lists if {
-	lists_role_utils.is_user_visitor("find")
+	lists_role_utils.is_user_visitor("find", {})
 	verification.is_email_verified
 }
 
 # entity visibility (same logic as findEntityById)
 can_see_entity if {
-	entities_role_utils.is_user_admin("find")
+	entities_role_utils.is_user_admin("find", {})
 	verification.is_email_verified
 }
 
 can_see_entity if {
-	entities_role_utils.is_user_editor("find")
+	entities_role_utils.is_user_editor("find", {})
 	verification.is_email_verified
 }
 
 can_see_entity if {
-	entities_role_utils.is_user_member("find")
+	entities_role_utils.is_user_member("find", {})
 	verification.is_email_verified
 	can_user_see_this_record
 }
 
 can_see_entity if {
-	entities_role_utils.is_user_visitor("find")
+	entities_role_utils.is_user_visitor("find", {})
 	verification.is_email_verified
 	original_record.is_public
 	original_record.is_active

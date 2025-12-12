@@ -13,7 +13,7 @@ default which_fields_forbidden_for_update := []
 
 # admin
 which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
-	role_utils.is_user_admin("find")
+	role_utils.is_user_admin("find", {})
 	fields := get_effective_fields_for("admin", "find")
 	which_fields_forbidden_for_finding := [field |
 		some i
@@ -24,7 +24,7 @@ which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
 
 # If user is admin for update, they should also be treated as admin for find
 which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
-	role_utils.is_user_admin("update")
+	role_utils.is_user_admin("update", {})
 	fields := get_effective_fields_for("admin", "find")
 	which_fields_forbidden_for_finding := [field |
 		some i
@@ -34,7 +34,7 @@ which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
 }
 
 which_fields_forbidden_for_create := which_fields_forbidden_for_create if {
-	role_utils.is_user_admin("create")
+	role_utils.is_user_admin("create", {})
 	fields := get_effective_fields_for("admin", "create")
 	which_fields_forbidden_for_create := [field |
 		some i
@@ -44,7 +44,7 @@ which_fields_forbidden_for_create := which_fields_forbidden_for_create if {
 }
 
 which_fields_forbidden_for_update := which_fields_forbidden_for_update if {
-	role_utils.is_user_admin("update")
+	role_utils.is_user_admin("update", {})
 	fields := get_effective_fields_for("admin", "update")
 	which_fields_forbidden_for_update := [field |
 		some i
@@ -55,7 +55,7 @@ which_fields_forbidden_for_update := which_fields_forbidden_for_update if {
 
 #editor
 which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
-	role_utils.is_user_editor("find")
+	role_utils.is_user_editor("find", {})
 	fields := get_effective_fields_for("editor", "find")
 	which_fields_forbidden_for_finding := [field |
 		some i
@@ -65,7 +65,7 @@ which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
 }
 
 which_fields_forbidden_for_create := which_fields_forbidden_for_create if {
-	role_utils.is_user_editor("create")
+	role_utils.is_user_editor("create", {})
 	fields := get_effective_fields_for("editor", "create")
 	which_fields_forbidden_for_create := [field |
 		some i
@@ -75,7 +75,7 @@ which_fields_forbidden_for_create := which_fields_forbidden_for_create if {
 }
 
 which_fields_forbidden_for_update := which_fields_forbidden_for_update if {
-	role_utils.is_user_editor("update")
+	role_utils.is_user_editor("update", {})
 	fields := get_effective_fields_for("editor", "update")
 	which_fields_forbidden_for_update := [field |
 		some i
@@ -86,7 +86,7 @@ which_fields_forbidden_for_update := which_fields_forbidden_for_update if {
 
 #member
 which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
-	role_utils.is_user_member("find")
+	role_utils.is_user_member("find", {})
 	fields := get_effective_fields_for("member", "find")
 	which_fields_forbidden_for_finding := [field |
 		some i
@@ -96,7 +96,7 @@ which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
 }
 
 which_fields_forbidden_for_create := which_fields_forbidden_for_create if {
-	role_utils.is_user_member("create")
+	role_utils.is_user_member("create", {})
 	fields := get_effective_fields_for("member", "create")
 	which_fields_forbidden_for_create := [field |
 		some i
@@ -106,7 +106,7 @@ which_fields_forbidden_for_create := which_fields_forbidden_for_create if {
 }
 
 which_fields_forbidden_for_update := which_fields_forbidden_for_update if {
-	role_utils.is_user_member("update")
+	role_utils.is_user_member("update", {})
 	fields := get_effective_fields_for("member", "update")
 	which_fields_forbidden_for_update := [field |
 		some i
@@ -117,7 +117,7 @@ which_fields_forbidden_for_update := which_fields_forbidden_for_update if {
 
 #visitor
 which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
-	role_utils.is_user_visitor("find")
+	role_utils.is_user_visitor("find", {})
 	fields := get_effective_fields_for("visitor", "find")
 	which_fields_forbidden_for_finding := [field |
 		some i
@@ -128,7 +128,7 @@ which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
 
 # If user is editor for update, they should also be treated as editor for find
 which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
-	role_utils.is_user_editor("update")
+	role_utils.is_user_editor("update", {})
 	fields := get_effective_fields_for("editor", "find")
 	which_fields_forbidden_for_finding := [field |
 		some i
@@ -139,7 +139,7 @@ which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
 
 # If user is member for update, they should also be treated as member for find
 which_fields_forbidden_for_finding := which_fields_forbidden_for_finding if {
-	role_utils.is_user_member("update")
+	role_utils.is_user_member("update", {})
 	fields := get_effective_fields_for("member", "find")
 	which_fields_forbidden_for_finding := [field |
 		some i

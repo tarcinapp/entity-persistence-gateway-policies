@@ -13,7 +13,7 @@ default allow := false
 
 # Admins
 allow if {
-	role_utils.is_user_admin("update")
+	role_utils.is_user_admin("update", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
@@ -22,7 +22,7 @@ allow if {
 
 # Editors
 allow if {
-	role_utils.is_user_editor("update")
+	role_utils.is_user_editor("update", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
@@ -31,7 +31,7 @@ allow if {
 
 # Members
 allow if {
-	role_utils.is_user_member("update")
+	role_utils.is_user_member("update", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
@@ -244,7 +244,7 @@ can_see_related_list if {
 	related := input.originalRecord._relationMetadata
 
 	# Admin
-	list_role_utils.is_user_admin("find")
+	list_role_utils.is_user_admin("find", input.requestPayload)
 	verification.is_email_verified
 }
 
@@ -252,7 +252,7 @@ can_see_related_list if {
 	related := input.originalRecord._relationMetadata
 
 	# Editor
-	list_role_utils.is_user_editor("find")
+	list_role_utils.is_user_editor("find", input.requestPayload)
 	verification.is_email_verified
 }
 
@@ -260,7 +260,7 @@ can_see_related_list if {
 	related := input.originalRecord._relationMetadata
 
 	# Member
-	list_role_utils.is_user_member("find")
+	list_role_utils.is_user_member("find", input.requestPayload)
 	verification.is_email_verified
 	can_user_see_this_related_list
 }
@@ -269,7 +269,7 @@ can_see_related_list if {
 	related := input.originalRecord._relationMetadata
 
 	# Visitor
-	list_role_utils.is_user_visitor("find")
+	list_role_utils.is_user_visitor("find", input.requestPayload)
 	verification.is_email_verified
 	is_related_list_public_and_active
 }

@@ -38,5 +38,6 @@ produce_input_doc_by_role(roles) := test_body if {
 			"roles": roles,
 		}),
 		"requestPayload": {"id": "123"},
+		"originalRecord": {"_id": "123", "_kind": "listKind"},
 	}
 }

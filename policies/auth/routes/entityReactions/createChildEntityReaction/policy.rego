@@ -15,7 +15,7 @@ default allow := false
 # Admin users can create child reactions if they can see the parent reaction
 #-----------------------------------------------
 allow if {
-	reaction_roles.is_user_admin("create")
+	reaction_roles.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 	can_user_see_parent_reaction
@@ -27,7 +27,7 @@ allow if {
 # Editor users can create child reactions if they can see the parent reaction
 #-----------------------------------------------
 allow if {
-	reaction_roles.is_user_editor("create")
+	reaction_roles.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 	can_user_see_parent_reaction
@@ -39,7 +39,7 @@ allow if {
 # Member users can create child reactions if they can see both the parent reaction and the related entity
 #-----------------------------------------------
 allow if {
-	reaction_roles.is_user_member("create")
+	reaction_roles.is_user_member("create", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 	not member_has_problem_with_groups
@@ -82,20 +82,20 @@ member_has_problem_with_groups if {
 #-----------------------------------------------
 
 can_user_see_parent_reaction if {
-	reaction_roles.is_user_admin("find")
+	reaction_roles.is_user_admin("find", input.originalRecord)
 }
 
 can_user_see_parent_reaction if {
-	reaction_roles.is_user_editor("find")
+	reaction_roles.is_user_editor("find", input.originalRecord)
 }
 
 can_user_see_parent_reaction if {
-	reaction_roles.is_user_member("find")
+	reaction_roles.is_user_member("find", input.originalRecord)
 	parent_reaction_is_active_and_visible_to_member
 }
 
 can_user_see_parent_reaction if {
-	reaction_roles.is_user_visitor("find")
+	reaction_roles.is_user_visitor("find", input.originalRecord)
 	original_record.is_public
 	original_record.is_active
 }
@@ -140,15 +140,15 @@ parent_reaction_is_active_and_visible_to_member if {
 #-----------------------------------------------
 
 can_user_see_related_entity if {
-	entity_roles.is_user_admin("find")
+	entity_roles.is_user_admin("find", input.originalRecord._relationMetadata)
 }
 
 can_user_see_related_entity if {
-	entity_roles.is_user_editor("find")
+	entity_roles.is_user_editor("find", input.originalRecord._relationMetadata)
 }
 
 can_user_see_related_entity if {
-	entity_roles.is_user_member("find")
+	entity_roles.is_user_member("find", input.originalRecord._relationMetadata)
 	entity_is_active_and_visible_to_member
 }
 

@@ -12,18 +12,18 @@ default allow := false
 #-----------------------------------------------
 # Admins and editors are allowed as long as the email is verified
 allow if {
-	role_utils.is_user_admin("find")
+	role_utils.is_user_admin("find", input.originalRecord)
 	verification.is_email_verified
 }
 
 allow if {
-	role_utils.is_user_editor("find")
+	role_utils.is_user_editor("find", input.originalRecord)
 	verification.is_email_verified
 }
 
 # Members can see a relation only if they can see both source and target
 allow if {
-	role_utils.is_user_member("find")
+	role_utils.is_user_member("find", input.originalRecord)
 	verification.is_email_verified
 	can_user_see_source
 	can_user_see_target
@@ -31,7 +31,7 @@ allow if {
 
 # Visitors can see a relation only when both source and target are public and active
 allow if {
-	role_utils.is_user_visitor("find")
+	role_utils.is_user_visitor("find", input.originalRecord)
 	verification.is_email_verified
 	from_is_public
 	from_is_active

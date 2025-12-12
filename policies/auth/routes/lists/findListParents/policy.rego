@@ -13,12 +13,12 @@ default allow := false
 # Admin and editor users are always allowed to retrieve the list parents
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_admin("find")
+	role_utils.is_user_admin("find", input.originalRecord)
 	verification.is_email_verified
 }
 
 allow if {
-	role_utils.is_user_editor("find")
+	role_utils.is_user_editor("find", input.originalRecord)
 	verification.is_email_verified
 }
 
@@ -27,7 +27,7 @@ allow if {
 # Members can see list parents if they can see the root list
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_member("find")
+	role_utils.is_user_member("find", input.originalRecord)
 	verification.is_email_verified
 	can_user_see_this_record
 }
@@ -37,7 +37,7 @@ allow if {
 # Visitors are allowed to retrieve parents only of active and public lists
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_visitor("find")
+	role_utils.is_user_visitor("find", input.originalRecord)
 	verification.is_email_verified
 	original_record.is_public
 	original_record.is_active

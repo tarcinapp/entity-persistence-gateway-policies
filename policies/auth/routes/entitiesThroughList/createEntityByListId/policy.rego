@@ -28,19 +28,19 @@ allow if {
 
 # Creation rules (aligned with createEntity)
 create_allowed if {
-	entity_roles.is_user_admin("create")
+	entity_roles.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 }
 
 create_allowed if {
-	entity_roles.is_user_editor("create")
+	entity_roles.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 }
 
 create_allowed if {
-	entity_roles.is_user_member("create")
+	entity_roles.is_user_member("create", input.requestPayload)
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
 	verification.is_email_verified
 	not member_has_problem_with_groups
@@ -73,23 +73,23 @@ member_has_problem_with_groups if {
 # List visibility rules (aligned with findListById)
 # ------------------------------
 list_allowed if {
-	list_roles.is_user_admin("find")
+	list_roles.is_user_admin("find", input.requestPayload)
 	verification.is_email_verified
 }
 
 list_allowed if {
-	list_roles.is_user_editor("find")
+	list_roles.is_user_editor("find", input.requestPayload)
 	verification.is_email_verified
 }
 
 list_allowed if {
-	list_roles.is_user_member("find")
+	list_roles.is_user_member("find", input.requestPayload)
 	verification.is_email_verified
 	can_user_see_this_record
 }
 
 list_allowed if {
-	list_roles.is_user_visitor("find")
+	list_roles.is_user_visitor("find", input.requestPayload)
 	verification.is_email_verified
 	original_record.is_public
 	original_record.is_active

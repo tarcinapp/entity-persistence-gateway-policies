@@ -13,7 +13,7 @@ default allow := false
 # Admin users can find reactions if they can find list reactions
 #-----------------------------------------------
 allow if {
-	reaction_role_utils.is_user_admin("find")
+	reaction_role_utils.is_user_admin("find", {})
 	verification.is_email_verified
 }
 
@@ -22,7 +22,7 @@ allow if {
 # Editor users can find reactions if they can find list reactions
 #-----------------------------------------------
 allow if {
-	reaction_role_utils.is_user_editor("find")
+	reaction_role_utils.is_user_editor("find", {})
 	verification.is_email_verified
 }
 
@@ -31,7 +31,7 @@ allow if {
 # Member users can find reactions if they can find list reactions
 #-----------------------------------------------
 allow if {
-	reaction_role_utils.is_user_member("find")
+	reaction_role_utils.is_user_member("find", {})
 	verification.is_email_verified
 }
 
@@ -40,7 +40,7 @@ allow if {
 # Visitor users can find reactions if they can find list reactions
 #-----------------------------------------------
 allow if {
-	reaction_role_utils.is_user_visitor("find")
+	reaction_role_utils.is_user_visitor("find", {})
 	verification.is_email_verified
 }
 

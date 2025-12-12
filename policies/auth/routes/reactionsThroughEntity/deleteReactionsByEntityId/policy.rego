@@ -9,6 +9,6 @@ default allow := false
 # Decide allow if any of the following section is true
 # ----------------------------------------------
 allow if {
-	role_utils.is_user_admin("delete")
+	role_utils.is_user_admin("delete", {})
 	verification.is_email_verified
 }

@@ -16,45 +16,45 @@ allow if {
 
 # Entity-find rules (mirror policies/auth/routes/entities/findEntities/policy.rego)
 entity_find_allowed if {
-	entity_roles.is_user_admin("find")
+	entity_roles.is_user_admin("find", {})
 	verification.is_email_verified
 }
 
 entity_find_allowed if {
-	entity_roles.is_user_editor("find")
+	entity_roles.is_user_editor("find", {})
 	verification.is_email_verified
 }
 
 entity_find_allowed if {
-	entity_roles.is_user_member("find")
+	entity_roles.is_user_member("find", {})
 	verification.is_email_verified
 }
 
 entity_find_allowed if {
-	entity_roles.is_user_visitor("find")
+	entity_roles.is_user_visitor("find", {})
 	verification.is_email_verified
 }
 
 # List visibility rules (mirror policies/auth/routes/lists/findListById/policy.rego)
 
 list_allowed if {
-	list_roles.is_user_admin("find")
+	list_roles.is_user_admin("find", {})
 	verification.is_email_verified
 }
 
 list_allowed if {
-	list_roles.is_user_editor("find")
+	list_roles.is_user_editor("find", {})
 	verification.is_email_verified
 }
 
 list_allowed if {
-	list_roles.is_user_member("find")
+	list_roles.is_user_member("find", {})
 	verification.is_email_verified
 	can_user_see_this_record
 }
 
 list_allowed if {
-	list_roles.is_user_visitor("find")
+	list_roles.is_user_visitor("find", {})
 	verification.is_email_verified
 	original_record.is_public
 	original_record.is_active

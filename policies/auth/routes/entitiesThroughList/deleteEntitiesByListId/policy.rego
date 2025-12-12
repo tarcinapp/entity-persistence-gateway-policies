@@ -8,6 +8,6 @@ default allow := false
 
 # Only global/list admins are allowed to delete entities by list id.
 allow if {
-	role_utils.is_user_admin("delete")
+	role_utils.is_user_admin("delete", {})
 	verification.is_email_verified
 }

@@ -12,7 +12,7 @@ default allow := false
 # Decide allow if any of the following section is true
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_admin("update")
+	role_utils.is_user_admin("update", input.requestPayload)
 	verification.is_email_verified
 
 	# payload cannot contain any field that requestor cannot see or update
@@ -21,7 +21,7 @@ allow if {
 }
 
 allow if {
-	role_utils.is_user_editor("update")
+	role_utils.is_user_editor("update", input.requestPayload)
 	verification.is_email_verified
 
 	# payload cannot contain any field that requestor cannot see or update
