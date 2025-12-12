@@ -79,8 +79,7 @@ get_forbidden_fields(recordType, operation, source_object) := forbidden_paths if
 #   (defaulting to the base kind logic) and specific kind objects.
 get_all_forbidden_fields(operation) := result if {
 	record_types := object.keys(fields_data.definitions)
-	result := {rt: 
-	build_gateway_map(rt, operation) |
+	result := {rt: build_gateway_map(rt, operation) |
 		rt := record_types[_]
 	}
 }
@@ -142,7 +141,7 @@ resolve_keys_to_paths(keys) := paths if {
 # Checks if the user has a specific role granting access to a forbidden field.
 #
 # Regex Format Supported:
-#   tarcinapp.<scope>.<kind?>.fields.<fieldKey>.<permission>
+#   tarcinapp.fields.<scope>.<kind?>.<fieldKey>.<permission>
 #
 #   <scope>:      (records|entities) for entities, (records|lists) for lists, etc.
 #   <kind?>:      Optional. If present, specific to that kind.
@@ -153,8 +152,9 @@ user_has_field_permission(recordType, kind, fieldKey, operation) if {
 	kind_pattern := get_kind_regex_part(kind)
 	op_pattern := get_operation_pattern(operation)
 
-	# Regex: ^tarcinapp\.(records|entities)(\.book)?\.fields\._slug\.(update|manage)$
-	pattern := sprintf(`^%s\.%s%s\.fields\.%s\.%s$`, [app, scope_pattern, kind_pattern, fieldKey, op_pattern])
+	# NEW Hierarchy: tarcinapp.fields.<scope>.<kind>.<field>.<op>
+	# Regex: ^tarcinapp\.fields\.(records|entities)(\.book)?\._slug\.(update|manage)$
+	pattern := sprintf(`^%s\.fields\.%s%s\.%s\.%s$`, [app, scope_pattern, kind_pattern, fieldKey, op_pattern])
 
 	some user_role in token.payload.roles
 	regex.match(pattern, user_role)
