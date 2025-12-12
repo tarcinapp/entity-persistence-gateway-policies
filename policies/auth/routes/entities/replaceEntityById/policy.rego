@@ -347,7 +347,10 @@ has_forbidden_field_with_different_value if {
 	some forbidden_field_for_update
 	forbidden_field_for_update = forbidden_update_list[_]
 	not forbidden_field_for_update in forbidden_find_list
+
+	# Absence is a violation only when the original had a non-empty value
 	not has_field(input.requestPayload, forbidden_field_for_update)
+	original_has_non_empty_value(forbidden_field_for_update)
 }
 
 has_forbidden_field_with_different_value if {
@@ -355,6 +358,12 @@ has_forbidden_field_with_different_value if {
 	forbidden_field_for_update = forbidden_update_list[_]
 	not forbidden_field_for_update in forbidden_find_list
 	input.requestPayload[forbidden_field_for_update] != input.originalRecord[forbidden_field_for_update]
+}
+
+# helper: original has a value that is not null/missing
+original_has_non_empty_value(field) if {
+	has_field(input.originalRecord, field)
+	input.originalRecord[field] != null
 }
 
 payload_contains_any_field(fields) if {

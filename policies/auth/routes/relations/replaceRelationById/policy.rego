@@ -127,7 +127,9 @@ has_forbidden_field_with_different_value if {
 	# Don't check if it is already forbidden to find (handled by other check)
 	not forbidden_field_for_update in forbidden_find_list
 
+	# Absence is a violation only when the original had a non-empty value
 	not has_field(input.requestPayload, forbidden_field_for_update)
+	original_has_non_empty_value(forbidden_field_for_update)
 }
 
 has_forbidden_field_with_different_value if {
@@ -138,6 +140,12 @@ has_forbidden_field_with_different_value if {
 
 	has_field(input.requestPayload, forbidden_field_for_update)
 	input.requestPayload[forbidden_field_for_update] != input.originalRecord[forbidden_field_for_update]
+}
+
+# helper: original has a value that is not null/missing
+original_has_non_empty_value(field) if {
+	has_field(input.originalRecord, field)
+	input.originalRecord[field] != null
 }
 
 # relation ids (_listId and _entityId) must not be changed in replace-by-id
