@@ -125,8 +125,9 @@ get_kind_keys(type_def, kind, role, operation) := keys if {
 } else := []
 
 # Helper: Extract _kind safely
+default safe_kind(_) := null
+
 safe_kind(obj) := object.get(obj, "_kind", null) if is_object(obj)
-safe_kind(_) := null
 
 # Helper: Map keys to dot-notation paths
 resolve_keys_to_paths(keys) := paths if {
@@ -134,7 +135,7 @@ resolve_keys_to_paths(keys) := paths if {
 }
 
 # -----------------------------------------------------------------------------
-# 4. FIELD-LEVEL PERMISSION CHECK ("Maymuncuk")
+# 4. FIELD-LEVEL PERMISSION CHECK
 # -----------------------------------------------------------------------------
 
 # user_has_field_permission(recordType, kind, fieldKey, operation)
@@ -175,12 +176,12 @@ get_resource_scope_pattern(rt) := pattern if {
 }
 
 # Build Kind Regex Part
+default get_kind_regex_part(_) := ""
+
 get_kind_regex_part(kind) := sprintf(`(\.%s)?`, [kind]) if {
 	kind != null
 	kind != ""
 }
-
-get_kind_regex_part(_) := ""
 
 # Map Operation to Permission Regex
 # Find: Can be viewed by find, create, update, or manage roles

@@ -288,7 +288,7 @@ test_allow_member_set_validFrom_with_field_role if {
 	allow with input as produce_input_replace(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validFromDateTime.update",
+			"tarcinapp.fields.relations._validFromDateTime.update",
 		],
 		true, {
 			"_kind": "contains",
@@ -325,7 +325,7 @@ test_allow_member_set_validUntil_with_field_role if {
 	allow with input as produce_input_replace(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validUntilDateTime.update",
+			"tarcinapp.fields.relations._validUntilDateTime.update",
 		],
 		true, {
 			"_kind": "contains",
@@ -506,7 +506,7 @@ test_not_allow_member_set_validUntil_wrong_range_with_field_role if {
 	not allow with input as produce_input_replace(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validUntilDateTime.update",
+			"tarcinapp.fields.relations._validUntilDateTime.update",
 		],
 		true, {
 			"_kind": "contains",
@@ -533,7 +533,7 @@ test_not_allow_visitor_even_with_field_roles if {
 	not allow with input as produce_input_replace(
 		[
 			"tarcinapp.visitor",
-			"tarcinapp.relations.fields._validUntilDateTime.update",
+			"tarcinapp.fields.relations._validUntilDateTime.update",
 		],
 		true, {
 			"_kind": "contains",
