@@ -1,161 +1,192 @@
 package policies.fields.policy
 
-# data.policies.fields.data alias'ı olmadan tam yol kullanılıyor
+import data.policies.fields.data as fields_data
 import data.policies.fields.mapping
+import data.policies.util.common.array
+import data.policies.util.common.roleDispatcher as dispatcher
 import data.policies.util.common.token
-
-# import data.policies.util.common.array  <-- KALDIRILDI: Yerleşik array.concat kullanılacak
-
 import future.keywords.if
 import future.keywords.in
 
 # -----------------------------------------------------------------------------
-# MAIN ACCESS POINT
+# 1. MAIN ACCESS POINT (Internal Auth Policies)
 # -----------------------------------------------------------------------------
 
-get_forbidden_fields(recordType, operation, kind) := forbidden_paths if {
-	# 1. Identify roles possessed by the user that are defined in our system
+# Default to empty list if no role is found or other conditions fail.
+default get_forbidden_fields(_, _, _) := []
 
-	# Collect global roles
-	global_roles := {role_name | some def in data.policies.fields.data.global_defaults; role_name := def.role}
+# get_forbidden_fields(recordType, operation, source_object)
+#
+# Returns the list of forbidden field paths (dot-notation) for a specific context.
+#
+# Inputs:
+#   - recordType: "entities", "lists", etc.
+#   - operation: "find", "create", "update"
+#   - source_object: The payload or original record (used to determine kind and effective role)
+#
+# Logic Flow:
+#   1. Determine Effective Role via Dispatcher (Admin > Editor > Member > Visitor)
+#   2. Merge Forbidden Lists (Global + RecordType + Kind) based on that role.
+#   3. Prune fields where the user has specific "Field-Level Permission" (The "Skeleton Key").
+#   4. Map internal keys to actual JSON paths.
+get_forbidden_fields(recordType, operation, source_object) := forbidden_paths if {
+	# Step 1: Determine Effective Role
+	# We ask the dispatcher: "What is this user's role for this specific object?"
+	role := dispatcher.get_effective_role(recordType, operation, source_object)
+	role != null
 
-	# Collect type-specific roles (safe access)
-	record_def := object.get(data.policies.fields.data.definitions, recordType, {})
-	type_defaults := object.get(record_def, "default", [])
-	type_roles := {role_name | some def in type_defaults; role_name := def.role}
+	# Step 2: Merge Forbidden Lists (Layered Inheritance)
 
-	# Union of potential roles
-	all_potential_roles := global_roles | type_roles
+	# Layer A: Global Defaults
+	global_keys := get_keys_from_def(fields_data.global_defaults, role, operation)
 
-	# Filter by what the user actually has
-	matching_roles := {role_name |
-		some role_name in all_potential_roles
-		user_has_role(role_name)
-	}
+	# Layer B: Record Type Defaults
+	type_def := object.get(fields_data.definitions, recordType, {})
+	type_defaults := object.get(type_def, "default", [])
+	type_keys := get_keys_from_def(type_defaults, role, operation)
 
-	# Ensure we have at least one matching role
-	count(matching_roles) > 0
+	# Layer C: Kind Specifics
+	# Extract kind safely from source object
+	kind := safe_kind(source_object)
+	kind_keys := get_kind_keys(type_def, kind, role, operation)
 
-	# 2. Calculate forbidden "Key" sets for each matching role
-	forbidden_sets := {keys |
-		some role_name in matching_roles
-		keys := calculate_keys_for_role(role_name, recordType, operation, kind)
-	}
+	# Union of all layers
+	all_keys := array.concat(array.concat(global_keys, type_keys), kind_keys)
 
-	# 3. Calculate Intersection
-	merged_keys_set := intersection(forbidden_sets)
-
-	# 4. Field-Level Permission Check
+	# Step 3: Field-Level Permission Check (Pruning)
+	# If the user has a specific permission for a field (e.g., ...fields._slug.update),
+	# remove it from the forbidden list.
 	effective_keys := [key |
-		some key in merged_keys_set
-		not user_has_field_permission(key, operation)
+		some key in all_keys
+		not user_has_field_permission(recordType, kind, key, operation)
 	]
 
-	# 5. Path Resolution
+	# Step 4: Resolve to Paths
 	forbidden_paths := resolve_keys_to_paths(effective_keys)
 }
 
-# Fallback: Return empty list
-get_forbidden_fields(_, _, _) := []
-
 # -----------------------------------------------------------------------------
-# GATEWAY ACCESS POINT
+# 2. GATEWAY ACCESS POINT (Global Map)
 # -----------------------------------------------------------------------------
 
+# get_all_forbidden_fields(operation)
+#
+# Returns a complete map of forbidden fields for ALL record types and kinds.
+# Used by the API Gateway to filter responses globally.
+#
+# Logic:
+#   Iterates through all definitions and simulates the check with a null source object
+#   (defaulting to the base kind logic) and specific kind objects.
 get_all_forbidden_fields(operation) := result if {
-	record_types := object.keys(data.policies.fields.data.definitions)
+	record_types := object.keys(fields_data.definitions)
 	result := {rt: 
-	build_record_type_forbidden_map(rt, operation) |
+	build_gateway_map(rt, operation) |
 		rt := record_types[_]
 	}
 }
 
-build_record_type_forbidden_map(recordType, operation) := {
+build_gateway_map(recordType, operation) := {
 	"default": get_forbidden_fields(recordType, operation, null),
 	"kinds": kinds_map,
 } if {
-	record_def := data.policies.fields.data.definitions[recordType]
+	type_def := fields_data.definitions[recordType]
 
-	# Safe access to kinds
-	kinds_obj := object.get(record_def, "kinds", {})
-	kinds_map := {kind: get_forbidden_fields(recordType, operation, kind) |
-		some kind in object.keys(kinds_obj)
+	# Iterate over defined kinds to pre-calculate their specific forbidden lists
+	kinds_map := {kind: get_forbidden_fields(recordType, operation, {"_kind": kind}) |
+		some kind in object.keys(object.get(type_def, "kinds", {}))
 	}
 }
 
 # -----------------------------------------------------------------------------
-# LOGIC HELPERS (Private)
+# 3. DATA HELPERS
 # -----------------------------------------------------------------------------
 
-calculate_keys_for_role(role_name, recordType, operation, kind) := key_set if {
-	# Layer 1: Global
-	global_keys := get_keys_from_role_operation(data.policies.fields.data.global_defaults, role_name, operation)
+# Helper: Extract keys for a specific role/op from a definition list
+get_keys_from_def(definition_list, role, operation) := keys if {
+	definition_list != null
 
-	# Layer 2: Type
-	record_def := object.get(data.policies.fields.data.definitions, recordType, {})
-	type_defaults := object.get(record_def, "default", [])
-	type_keys := get_keys_from_role_operation(type_defaults, role_name, operation)
-
-	# Layer 3: Kind
-	kind_keys := get_kind_keys(record_def, kind, role_name, operation)
-
-	# Merge using built-in array.concat
-	all_list := array.concat(array.concat(global_keys, type_keys), kind_keys)
-	key_set := {k | k := all_list[_]}
-}
-
-get_kind_keys(record_def, kind, role_name, operation) := keys if {
-	kind != null
-
-	# FIX: Safe access to 'kinds' dictionary
-	kinds_dict := object.get(record_def, "kinds", {})
-	kind_defs := object.get(kinds_dict, kind, null)
-	keys := get_keys_from_role_operation(kind_defs, role_name, operation)
-}
-
-get_kind_keys(_, kind, _, _) := [] if {
-	kind == null
-}
-
-get_keys_from_role_operation(definitions, target_role, operation) := keys if {
-	definitions != null
+	# Find the entry matching the role
 	found := [k |
-		def := definitions[_]
-		def.role == target_role
+		def := definition_list[_]
+		def.role == role
 		k := object.get(def.operations, operation, [])
 	]
+
+	# Take the first match (flattening)
 	count(found) > 0
 	keys := found[0]
 } else := []
 
+# Helper: Get keys for a specific kind
+get_kind_keys(type_def, kind, role, operation) := keys if {
+	kind != null
+	kinds_def := object.get(type_def, "kinds", {})
+	specific_kind_def := object.get(kinds_def, kind, null)
+	keys := get_keys_from_def(specific_kind_def, role, operation)
+} else := []
+
+# Helper: Extract _kind safely
+safe_kind(obj) := object.get(obj, "_kind", null) if is_object(obj)
+safe_kind(_) := null
+
+# Helper: Map keys to dot-notation paths
 resolve_keys_to_paths(keys) := paths if {
-	paths := [
-	mapping.keys[key] |
-		key := keys[_]
-		mapping.keys[key] != null
-	]
+	paths := [mapping.keys[k] | k := keys[_]; mapping.keys[k]]
 }
 
 # -----------------------------------------------------------------------------
-# PERMISSION HELPERS
+# 4. FIELD-LEVEL PERMISSION CHECK ("Maymuncuk")
 # -----------------------------------------------------------------------------
 
-user_has_role(config_role_name) if {
-	some token_role in token.payload.roles
-	endswith(token_role, config_role_name)
-}
+# user_has_field_permission(recordType, kind, fieldKey, operation)
+# Checks if the user has a specific role granting access to a forbidden field.
+#
+# Regex Format Supported:
+#   tarcinapp.<scope>.<kind?>.fields.<fieldKey>.<permission>
+#
+#   <scope>:      (records|entities) for entities, (records|lists) for lists, etc.
+#   <kind?>:      Optional. If present, specific to that kind.
+#   <permission>: Depends on operation (see below).
+user_has_field_permission(recordType, kind, fieldKey, operation) if {
+	app := input.appShortcode
+	scope_pattern := get_resource_scope_pattern(recordType)
+	kind_pattern := get_kind_regex_part(kind)
+	op_pattern := get_operation_pattern(operation)
 
-user_has_field_permission(field_key, "find") if {
-	app_shortcode := input.appShortcode
+	# Regex: ^tarcinapp\.(records|entities)(\.book)?\.fields\._slug\.(update|manage)$
+	pattern := sprintf(`^%s\.%s%s\.fields\.%s\.%s$`, [app, scope_pattern, kind_pattern, fieldKey, op_pattern])
+
 	some user_role in token.payload.roles
-	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(find|create|update|manage)`, [app_shortcode, field_key])
 	regex.match(pattern, user_role)
 }
 
-user_has_field_permission(field_key, operation) if {
-	operation != "find"
-	app_shortcode := input.appShortcode
-	some user_role in token.payload.roles
-	pattern := sprintf(`%s\.(records|entities)\.fields\.%s\.(%s|manage)`, [app_shortcode, field_key, operation])
-	regex.match(pattern, user_role)
+# Map recordType to Regex Scope using a Lookup Object (Prevents eval_conflict_error)
+get_resource_scope_pattern(rt) := pattern if {
+	scope_map := {
+		"entities": "(records|entities)",
+		"lists": "(records|lists)",
+		"relations": "relations",
+		"entityReactions": "(reactions|entityReactions)",
+		"listReactions": "(reactions|listReactions)",
+	}
+
+	# Default to match anything/wildcard if not found, or handle as needed
+	pattern := object.get(scope_map, rt, ".*")
+}
+
+# Build Kind Regex Part
+get_kind_regex_part(kind) := sprintf(`(\.%s)?`, [kind]) if {
+	kind != null
+	kind != ""
+}
+
+get_kind_regex_part(_) := ""
+
+# Map Operation to Permission Regex
+# Find: Can be viewed by find, create, update, or manage roles
+get_operation_pattern("find") := "(find|create|update|manage)"
+
+# Create/Update: Can be modified by specific op or manage
+get_operation_pattern(op) := sprintf(`(%s|manage)`, [op]) if {
+	op != "find"
 }
