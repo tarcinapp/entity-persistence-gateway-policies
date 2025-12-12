@@ -35,8 +35,14 @@ get_forbidden_fields(recordType, operation, source_object) := forbidden_paths if
 	role := dispatcher.get_effective_role(recordType, operation, source_object)
 	role != null
 
-	# Step 2: Merge Forbidden Lists (Layered Inheritance)
+	# Step 2: Delegate to explicit-role calculator
+	forbidden_paths := get_forbidden_fields_for_role(recordType, operation, source_object, role)
+}
 
+# EXPLICIT ROLE LOOKUP
+# Allows passing a specific role (e.g., derived from 'update' permission)
+# to calculate forbidden fields, bypassing the internal role resolution.
+get_forbidden_fields_for_role(recordType, operation, source_object, role) := forbidden_paths if {
 	# Layer A: Global Defaults
 	global_keys := get_keys_from_def(fields_data.global_defaults, role, operation)
 
@@ -46,22 +52,19 @@ get_forbidden_fields(recordType, operation, source_object) := forbidden_paths if
 	type_keys := get_keys_from_def(type_defaults, role, operation)
 
 	# Layer C: Kind Specifics
-	# Extract kind safely from source object
 	kind := safe_kind(source_object)
 	kind_keys := get_kind_keys(type_def, kind, role, operation)
 
 	# Union of all layers
 	all_keys := array.concat(array.concat(global_keys, type_keys), kind_keys)
 
-	# Step 3: Field-Level Permission Check (Pruning)
-	# If the user has a specific permission for a field (e.g., ...fields._slug.update),
-	# remove it from the forbidden list.
+	# Field-Level Permission Check (Pruning)
 	effective_keys := [key |
 		some key in all_keys
 		not user_has_field_permission(recordType, kind, key, operation)
 	]
 
-	# Step 4: Resolve to Paths
+	# Resolve to Paths
 	forbidden_paths := resolve_keys_to_paths(effective_keys)
 }
 

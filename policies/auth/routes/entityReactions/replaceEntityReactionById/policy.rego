@@ -3,6 +3,7 @@ package policies.auth.routes.entityReactions.replaceEntityReactionById.policy
 import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.originalRecord as original_record
+import data.policies.util.common.roleDispatcher as dispatcher
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
 import data.policies.util.entities.roles as entity_role_utils
@@ -12,18 +13,29 @@ import data.policies.util.entityReactions.roles as role_utils
 default allow := false
 
 # -----------------------------------------------------------------------------
-# DYNAMIC FORBIDDEN LISTS
+# DYNAMIC FORBIDDEN LISTS (Context-Aware)
 # -----------------------------------------------------------------------------
+# 1. Determine the effective role based on the UPDATE operation.
+#    (We use the update role to calculate visibility restrictions for this operation)
+default effective_role := null
+
+effective_role := role if {
+	role := dispatcher.get_effective_role("entityReactions", "update", input.originalRecord)
+}
+
+# 2. Calculate Forbidden Lists using the Explicit Role
 default forbidden_find_list := []
 
 forbidden_find_list := res if {
-	res := central_policy.get_forbidden_fields("entityReactions", "find", input.originalRecord)
+	effective_role != null
+	res := central_policy.get_forbidden_fields_for_role("entityReactions", "find", input.originalRecord, effective_role)
 }
 
 default forbidden_update_list := []
 
 forbidden_update_list := res if {
-	res := central_policy.get_forbidden_fields("entityReactions", "update", input.originalRecord)
+	effective_role != null
+	res := central_policy.get_forbidden_fields_for_role("entityReactions", "update", input.originalRecord, effective_role)
 }
 
 # Admins
