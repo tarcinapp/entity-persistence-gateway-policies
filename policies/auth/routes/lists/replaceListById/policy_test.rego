@@ -144,7 +144,7 @@ test_allow_member_set_validFromDateTime_inside_window_with_role if {
 	validFrom := now - 80 # 1 second inside the 300s window
 	validFromStr := time.format([validFrom * 1000000000, "UTC", "RFC3339"])
 	allow with input as produce_input_replace(
-		["tarcinapp.member", "tarcinapp.lists.fields._validFromDateTime.update"], true,
+		["tarcinapp.member", "tarcinapp.fields.lists._validFromDateTime.update"], true,
 		{
 			"_kind": "sample-kind",
 			"_name": "Test List",
@@ -995,7 +995,7 @@ test_allow_member_set_validUntilDateTime_with_field_role if {
 	now_time_str := time.format([now_time, "UTC", "RFC3339"])
 
 	allow with input as produce_input_replace(
-		["tarcinapp.member", "tarcinapp.lists.fields._validUntilDateTime.update"], true,
+		["tarcinapp.member", "tarcinapp.fields.lists._validUntilDateTime.update"], true,
 		{
 			"_kind": "sample-kind",
 			"_name": "Test List",
