@@ -1,6 +1,6 @@
 package policies.auth.routes.entities.createEntityChild.policy
 
-import data.policies.fields.entities.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
@@ -9,6 +9,15 @@ import data.policies.util.entities.roles as role_utils
 
 # By default, deny requests.
 default allow := false
+
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_create_list := []
+
+forbidden_create_list := res if {
+	res := central_policy.get_forbidden_fields("entities", "create", input.requestPayload)
+}
 
 #-----------------------------------------------
 
@@ -19,7 +28,7 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 }
 
 #-----------------------------------------------
@@ -31,7 +40,7 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 }
 
 #-----------------------------------------------
@@ -44,7 +53,7 @@ allow if {
 	can_user_see_parent_record
 
 	# payload cannot contain any invalid field
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 
 	# if user sent _ownerGroups, then all elements listed in the _ownerGroups array
 	# must exists in the 'groups' field in token

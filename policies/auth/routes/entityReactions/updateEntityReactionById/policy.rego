@@ -1,6 +1,6 @@
 package policies.auth.routes.entityReactions.updateEntityReactionById.policy
 
-import data.policies.fields.entityReactions.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
@@ -11,11 +11,26 @@ import data.policies.util.entityReactions.roles as role_utils
 # By default, deny requests.
 default allow := false
 
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_find_list := []
+
+forbidden_find_list := res if {
+	res := central_policy.get_forbidden_fields("entityReactions", "find", input.originalRecord)
+}
+
+default forbidden_update_list := []
+
+forbidden_update_list := res if {
+	res := central_policy.get_forbidden_fields("entityReactions", "update", input.originalRecord)
+}
+
 # Admins
 allow if {
 	role_utils.is_user_admin("update", input.originalRecord)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_fields_has_same_value_with_original_record
 	can_see_related_entity
 }
@@ -24,7 +39,7 @@ allow if {
 allow if {
 	role_utils.is_user_editor("update", input.originalRecord)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_fields_has_same_value_with_original_record
 	can_see_related_entity
 }
@@ -33,7 +48,7 @@ allow if {
 allow if {
 	role_utils.is_user_member("update", input.originalRecord)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_fields_has_same_value_with_original_record
 	is_record_belongs_to_this_user
 
@@ -145,14 +160,14 @@ user_in_original_record(user) if {
 }
 
 member_has_problem_with_validFrom if {
-	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validFromDateTime" in forbidden_update_list
 	input.requestPayload._validFromDateTime != null
 	input.originalRecord._validFromDateTime != null
 	input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
 }
 
 member_has_problem_with_validFrom if {
-	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validFromDateTime" in forbidden_update_list
 	input.originalRecord._validFromDateTime == null
 	input.requestPayload._validFromDateTime != null
 	not is_validFrom_in_correct_range
@@ -160,7 +175,7 @@ member_has_problem_with_validFrom if {
 
 # Helper: true if _validUntilDateTime is forbidden for update for this user
 validUntil_forbidden if {
-	forbidden_fields.which_fields_forbidden_for_update[_] == "_validUntilDateTime"
+	forbidden_update_list[_] == "_validUntilDateTime"
 }
 
 # Case 1: If the original value is not null, members cannot update or clear it
@@ -223,7 +238,7 @@ is_validUntil_in_correct_range_for_inactivation if {
 
 # Returns true if there exists a forbidden field for update in the payload with a different value
 forbidden_update_field_changed if {
-	field := forbidden_fields.which_fields_forbidden_for_update[_]
+	field := forbidden_update_list[_]
 	input.requestPayload[field]
 	input.requestPayload[field] != input.originalRecord[field]
 }

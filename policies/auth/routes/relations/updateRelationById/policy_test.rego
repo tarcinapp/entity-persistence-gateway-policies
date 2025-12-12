@@ -377,7 +377,7 @@ test_allow_member_introduce_forbidden_update_field_with_field_role_validFrom if 
 	allow with input as produce_input_update(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validFromDateTime.update",
+			"tarcinapp.fields.relations._validFromDateTime.update",
 		],
 		true, [], {
 			"_listId": "m-list-8",
@@ -401,7 +401,7 @@ test_not_allow_member_set_validFrom_out_of_range_with_field_role if {
 	not allow with input as produce_input_update(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validFromDateTime.update",
+			"tarcinapp.fields.relations._validFromDateTime.update",
 		],
 		true, [], {
 			"_listId": "m-list-9",
@@ -427,7 +427,7 @@ test_not_allow_member_set_validFrom_out_of_range_with_field_role_when_original_h
 	not allow with input as produce_input_update(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validFromDateTime.update",
+			"tarcinapp.fields.relations._validFromDateTime.update",
 		],
 		true, [], {
 			"_listId": "m-list-9b",
@@ -456,7 +456,7 @@ test_allow_member_set_validUntil_with_field_role if {
 	allow with input as produce_input_update(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validUntilDateTime.update",
+			"tarcinapp.fields.relations._validUntilDateTime.update",
 		],
 		true, [], {
 			"_listId": "m-list-10",
@@ -481,7 +481,7 @@ test_not_allow_member_set_validUntil_out_of_range_with_field_role if {
 	not allow with input as produce_input_update(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validUntilDateTime.update",
+			"tarcinapp.fields.relations._validUntilDateTime.update",
 		],
 		true, [], {
 			"_listId": "m-list-11",
@@ -507,7 +507,7 @@ test_not_allow_member_set_validUntil_out_of_range_with_field_role_when_original_
 	not allow with input as produce_input_update(
 		[
 			"tarcinapp.member",
-			"tarcinapp.relations.fields._validUntilDateTime.update",
+			"tarcinapp.fields.relations._validUntilDateTime.update",
 		],
 		true, [], {
 			"_listId": "m-list-11b",
@@ -689,7 +689,7 @@ test_not_allow_visitor_even_with_field_roles if {
 	not allow with input as produce_input_update(
 		[
 			"tarcinapp.visitor",
-			"tarcinapp.relations.fields._validFromDateTime.update",
+			"tarcinapp.fields.relations._validFromDateTime.update",
 		],
 		true, [], {
 			"_listId": "m-list-18",

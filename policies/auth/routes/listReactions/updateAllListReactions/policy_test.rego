@@ -146,7 +146,7 @@ test_allow_to_editor_with_field_level_permission_for_createdDateTime if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.listReactions.fields._createdDateTime.update",
+		"tarcinapp.fields.listReactions._createdDateTime.update",
 	]
 
 	allow with input as {
@@ -176,8 +176,8 @@ test_allow_to_editor_with_multiple_field_permissions if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.listReactions.fields._createdDateTime.update",
-		"tarcinapp.listReactions.fields._lastUpdatedDateTime.update",
+		"tarcinapp.fields.listReactions._createdDateTime.update",
+		"tarcinapp.fields.listReactions._lastUpdatedDateTime.update",
 	]
 
 	allow with input as {
@@ -207,7 +207,7 @@ test_not_allow_to_editor_with_partial_field_permissions if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.listReactions.fields._createdDateTime.update",
+		"tarcinapp.fields.listReactions._createdDateTime.update",
 		# Missing permission for _lastUpdatedDateTime
 	]
 

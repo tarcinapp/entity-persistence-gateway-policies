@@ -1,6 +1,6 @@
 package policies.auth.routes.relations.updateRelationById.policy
 
-import data.policies.fields.relations.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
@@ -14,6 +14,21 @@ member_validUntil_range_for_inactivation_in_seconds := 300
 # By default, deny requests.
 default allow := false
 
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_find_list := []
+
+forbidden_find_list := res if {
+	res := central_policy.get_forbidden_fields("relations", "find", input.originalRecord)
+}
+
+default forbidden_update_list := []
+
+forbidden_update_list := res if {
+	res := central_policy.get_forbidden_fields("relations", "update", input.originalRecord)
+}
+
 #-----------------------------------------------
 # Allow rules (PATCH semantics — partial updates)
 #-----------------------------------------------
@@ -24,7 +39,7 @@ allow if {
 	role_utils.is_user_admin("update", input.originalRecord)
 	verification.is_email_verified
 	original_record_present
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_update_fields_preserved_patch
 }
 
@@ -34,7 +49,7 @@ allow if {
 	role_utils.is_user_editor("update", input.originalRecord)
 	verification.is_email_verified
 	original_record_present
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_update_fields_preserved_patch
 	# Intentional decision: allow editors to retarget relation ids on PATCH for
 	# merging/repair workflows. Keep the immutability check commented out so
@@ -50,7 +65,7 @@ allow if {
 	role_utils.is_user_member("update", input.originalRecord)
 	verification.is_email_verified
 	original_record_present
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_update_fields_preserved_patch
 	is_relation_ids_unchanged
 	caller_owns_referenced_list
@@ -88,7 +103,7 @@ original_record_present if {
 # - If the payload includes a forbidden update field and the original did NOT
 #   contain that field, adding it is treated as a forbidden change and denied.
 forbidden_update_fields_preserved_patch if {
-	not forbidden_fields.which_fields_forbidden_for_update[0]
+	not forbidden_update_list[0]
 }
 
 forbidden_update_fields_preserved_patch if {
@@ -97,7 +112,7 @@ forbidden_update_fields_preserved_patch if {
 
 has_forbidden_update_field_violation if {
 	some f
-	f = forbidden_fields.which_fields_forbidden_for_update[_]
+	f = forbidden_update_list[_]
 
 	# field is present in the request payload (PATCH semantics: presence matters)
 	input.requestPayload[f]
@@ -109,7 +124,7 @@ has_forbidden_update_field_violation if {
 
 has_forbidden_update_field_violation if {
 	some f
-	f = forbidden_fields.which_fields_forbidden_for_update[_]
+	f = forbidden_update_list[_]
 
 	# field is present in the request payload and original did not have it — new introduction
 	input.requestPayload[f]
@@ -226,41 +241,41 @@ can_user_see_meta(meta) if {
 # Member-specific validFrom/validUntil checks (same intent as replace policies,
 # but tailored for PATCH semantics where omission is permitted)
 member_has_problem_with_validFrom if {
-	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validFromDateTime" in forbidden_update_list
 	input.requestPayload._validFromDateTime != null
 	not original_record.is_empty("_validFromDateTime")
 	input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
 }
 
 member_has_problem_with_validFrom if {
-	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validFromDateTime" in forbidden_update_list
 	original_record.is_empty("_validFromDateTime")
 	input.requestPayload._validFromDateTime != null
 	not is_validFrom_in_correct_range
 }
 
 member_has_problem_with_validUntil if {
-	"_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
+	"_validUntilDateTime" in forbidden_find_list
 	payload_contains_any_field(["_validUntilDateTime"])
 }
 
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	"_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	"_validUntilDateTime" in forbidden_update_list
 	original_record.is_empty("_validUntilDateTime")
 	input.requestPayload._validUntilDateTime != null
 }
 
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	not "_validUntilDateTime" in forbidden_update_list
 	not original_record.is_empty("_validUntilDateTime")
 	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
 }
 
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	not "_validUntilDateTime" in forbidden_update_list
 	original_record.is_empty("_validUntilDateTime")
 	input.requestPayload._validUntilDateTime != null
 	not is_validUntil_in_correct_range_for_inactivation

@@ -6,6 +6,7 @@ import data.policies.util.common.test as test
 test_allow_admin_global_role if {
 	allow with input as produce_input_replace(
 		["tarcinapp.admin"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -15,6 +16,7 @@ test_allow_admin_global_role if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -31,6 +33,7 @@ test_not_allow_member_change_visibility_to_private_for_group_owned if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "private",
@@ -43,6 +46,7 @@ test_not_allow_member_change_visibility_to_private_for_group_owned if {
 			"_createdBy": "original-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "protected",
@@ -62,6 +66,7 @@ test_not_allow_member_remove_ownerGroup_for_group_owned if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "protected",
@@ -70,6 +75,7 @@ test_not_allow_member_remove_ownerGroup_for_group_owned if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "protected",
@@ -85,6 +91,7 @@ test_not_allow_member_remove_other_group_they_do_not_belong_to if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "protected",
@@ -93,6 +100,7 @@ test_not_allow_member_remove_other_group_they_do_not_belong_to if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "protected",
@@ -108,6 +116,7 @@ test_not_allow_member_update_inactive_record if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -117,6 +126,7 @@ test_not_allow_member_update_inactive_record if {
 			"_validUntilDateTime": "2021-01-01T00:00:00Z",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -136,6 +146,7 @@ test_allow_member_set_validFromDateTime_inside_window_with_role if {
 	allow with input as produce_input_replace(
 		["tarcinapp.member", "tarcinapp.lists.fields._validFromDateTime.update"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -143,7 +154,6 @@ test_allow_member_set_validFromDateTime_inside_window_with_role if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": validFromStr,
 			"_validUntilDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -151,6 +161,7 @@ test_allow_member_set_validFromDateTime_inside_window_with_role if {
 			"_createdBy": "original-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -158,7 +169,6 @@ test_allow_member_set_validFromDateTime_inside_window_with_role if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -176,6 +186,7 @@ test_not_allow_member_set_validUntilDateTime_outside_window if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member", "tarcinapp.lists.fields._validUntilDateTime.update"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -184,6 +195,7 @@ test_not_allow_member_set_validUntilDateTime_outside_window if {
 			"_validUntilDateTime": validUntilStr,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -197,6 +209,7 @@ test_not_allow_member_set_validUntilDateTime_outside_window if {
 test_allow_admin_records_role if {
 	allow with input as produce_input_replace(
 		["tarcinapp.records.admin"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "protected",
@@ -206,6 +219,7 @@ test_allow_admin_records_role if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "protected",
@@ -221,6 +235,7 @@ test_allow_admin_records_role if {
 test_allow_admin_global_role_other_owner if {
 	allow with input as produce_input_replace(
 		["tarcinapp.admin"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -230,6 +245,7 @@ test_allow_admin_global_role_other_owner if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -244,6 +260,7 @@ test_allow_admin_global_role_other_owner if {
 test_allow_admin_global_role_private_record if {
 	allow with input as produce_input_replace(
 		["tarcinapp.admin"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "private",
@@ -253,6 +270,7 @@ test_allow_admin_global_role_private_record if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "private",
@@ -267,6 +285,7 @@ test_allow_admin_global_role_private_record if {
 test_allow_admin_global_role_inactive_record if {
 	allow with input as produce_input_replace(
 		["tarcinapp.admin"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -276,6 +295,7 @@ test_allow_admin_global_role_inactive_record if {
 			"_validUntilDateTime": "2021-01-01T00:00:00Z",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -290,6 +310,7 @@ test_allow_admin_global_role_inactive_record if {
 test_allow_admin_lists_role_other_owner if {
 	allow with input as produce_input_replace(
 		["tarcinapp.lists.admin"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "private",
@@ -299,6 +320,7 @@ test_allow_admin_lists_role_other_owner if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "private",
@@ -313,6 +335,7 @@ test_allow_admin_lists_role_other_owner if {
 test_allow_admin_lists_update_role_other_owner if {
 	allow with input as produce_input_replace(
 		["tarcinapp.lists.update.admin"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -322,6 +345,7 @@ test_allow_admin_lists_update_role_other_owner if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -336,6 +360,7 @@ test_allow_admin_lists_update_role_other_owner if {
 test_allow_admin_records_update_role_other_owner if {
 	allow with input as produce_input_replace(
 		["tarcinapp.records.update.admin"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "protected",
@@ -345,6 +370,7 @@ test_allow_admin_records_update_role_other_owner if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "protected",
@@ -360,6 +386,7 @@ test_allow_admin_records_update_role_other_owner if {
 test_allow_editor_global_role_own_record if {
 	allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -374,6 +401,7 @@ test_allow_editor_global_role_own_record if {
 			"_idempotencyKey": "original-key",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],
@@ -393,6 +421,7 @@ test_allow_editor_global_role_own_record if {
 test_allow_editor_global_role_other_owner if {
 	allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -407,6 +436,7 @@ test_allow_editor_global_role_other_owner if {
 			"_idempotencyKey": "original-key",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -426,6 +456,7 @@ test_allow_editor_global_role_other_owner if {
 test_allow_editor_global_role_private_record if {
 	allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "private",
@@ -440,6 +471,7 @@ test_allow_editor_global_role_private_record if {
 			"_idempotencyKey": "original-key",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "private",
@@ -459,6 +491,7 @@ test_allow_editor_global_role_private_record if {
 test_allow_editor_global_role_inactive_record if {
 	allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -473,6 +506,7 @@ test_allow_editor_global_role_inactive_record if {
 			"_idempotencyKey": "original-key",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -492,6 +526,7 @@ test_allow_editor_global_role_inactive_record if {
 test_allow_editor_records_role_other_owner if {
 	allow with input as produce_input_replace(
 		["tarcinapp.records.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "protected",
@@ -506,6 +541,7 @@ test_allow_editor_records_role_other_owner if {
 			"_idempotencyKey": "original-key",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "protected",
@@ -525,6 +561,7 @@ test_allow_editor_records_role_other_owner if {
 test_allow_editor_lists_role_other_owner if {
 	allow with input as produce_input_replace(
 		["tarcinapp.lists.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "private",
@@ -539,6 +576,7 @@ test_allow_editor_lists_role_other_owner if {
 			"_idempotencyKey": "original-key",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "private",
@@ -559,6 +597,7 @@ test_allow_editor_lists_role_other_owner if {
 test_not_allow_editor_with_different_createdDateTime if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -569,6 +608,7 @@ test_not_allow_editor_with_different_createdDateTime if {
 			"_createdDateTime": "2023-01-01T00:00:00Z",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -584,6 +624,7 @@ test_not_allow_editor_with_different_createdDateTime if {
 test_not_allow_editor_with_different_lastUpdatedDateTime if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -594,6 +635,7 @@ test_not_allow_editor_with_different_lastUpdatedDateTime if {
 			"_lastUpdatedDateTime": "2023-01-01T00:00:00Z",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -609,6 +651,7 @@ test_not_allow_editor_with_different_lastUpdatedDateTime if {
 test_not_allow_editor_with_different_lastUpdatedBy if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -619,6 +662,7 @@ test_not_allow_editor_with_different_lastUpdatedBy if {
 			"_lastUpdatedBy": "new-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -634,6 +678,7 @@ test_not_allow_editor_with_different_lastUpdatedBy if {
 test_not_allow_editor_with_different_createdBy if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -644,6 +689,7 @@ test_not_allow_editor_with_different_createdBy if {
 			"_createdBy": "new-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -659,6 +705,7 @@ test_not_allow_editor_with_different_createdBy if {
 test_not_allow_editor_with_different_idempotencyKey if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -669,6 +716,7 @@ test_not_allow_editor_with_different_idempotencyKey if {
 			"_idempotencyKey": "new-key",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -685,6 +733,7 @@ test_not_allow_editor_with_different_idempotencyKey if {
 test_allow_editor_with_same_createdDateTime if {
 	allow with input as produce_input_replace(
 		["tarcinapp.editor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -699,6 +748,7 @@ test_allow_editor_with_same_createdDateTime if {
 			"_idempotencyKey": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -719,6 +769,7 @@ test_allow_editor_with_same_createdDateTime if {
 test_allow_member_own_record if {
 	allow with input as produce_input_replace(
 		["tarcinapp.member"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -726,7 +777,6 @@ test_allow_member_own_record if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -734,6 +784,7 @@ test_allow_member_own_record if {
 			"_createdBy": "original-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -741,7 +792,6 @@ test_allow_member_own_record if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -754,6 +804,7 @@ test_allow_member_own_record if {
 test_not_allow_member_modify_ownerUsers_if_record_belongs_to_his_group if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -763,6 +814,7 @@ test_not_allow_member_modify_ownerUsers_if_record_belongs_to_his_group if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -777,6 +829,7 @@ test_not_allow_member_modify_ownerUsers_if_record_belongs_to_his_group if {
 test_allow_member_records_role_own_record if {
 	allow with input as produce_input_replace(
 		["tarcinapp.records.member"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "protected",
@@ -784,7 +837,6 @@ test_allow_member_records_role_own_record if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -792,6 +844,7 @@ test_allow_member_records_role_own_record if {
 			"_createdBy": "original-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "protected",
@@ -799,7 +852,6 @@ test_allow_member_records_role_own_record if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": null,
 			"_validUntilDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -813,6 +865,7 @@ test_allow_member_records_role_own_record if {
 test_not_allow_member_other_user_record if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -822,6 +875,7 @@ test_not_allow_member_other_user_record if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -836,6 +890,7 @@ test_not_allow_member_other_user_record if {
 test_not_allow_visitor_global_role if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.visitor"], true, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -845,6 +900,7 @@ test_not_allow_visitor_global_role if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -859,6 +915,7 @@ test_not_allow_visitor_global_role if {
 test_not_allow_member_without_email_verification if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], false, {
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -868,6 +925,7 @@ test_not_allow_member_without_email_verification if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -908,6 +966,7 @@ test_not_allow_member_set_validUntilDateTime_without_field_role if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -916,6 +975,7 @@ test_not_allow_member_set_validUntilDateTime_without_field_role if {
 			"_validUntilDateTime": "2024-06-01T00:00:00Z",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -937,6 +997,7 @@ test_allow_member_set_validUntilDateTime_with_field_role if {
 	allow with input as produce_input_replace(
 		["tarcinapp.member", "tarcinapp.lists.fields._validUntilDateTime.update"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -944,7 +1005,6 @@ test_allow_member_set_validUntilDateTime_with_field_role if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": "2020-01-01T00:00:00Z",
 			"_validUntilDateTime": now_time_str,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -952,6 +1012,7 @@ test_allow_member_set_validUntilDateTime_with_field_role if {
 			"_createdBy": "original-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -959,7 +1020,6 @@ test_allow_member_set_validUntilDateTime_with_field_role if {
 			"_ownerGroups": ["group-1"],
 			"_validFromDateTime": "2020-01-01T00:00:00Z",
 			"_validUntilDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -977,6 +1037,7 @@ test_allow_member_own_by_group_protected if {
 	allow with input as produce_input_replace(
 		["tarcinapp.member"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "protected",
@@ -984,7 +1045,6 @@ test_allow_member_own_by_group_protected if {
 			"_ownerGroups": ["group-1"],
 			"_validUntilDateTime": null,
 			"_validFromDateTime": "2020-01-01T00:00:00Z",
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -992,6 +1052,7 @@ test_allow_member_own_by_group_protected if {
 			"_createdBy": "original-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "protected",
@@ -999,7 +1060,6 @@ test_allow_member_own_by_group_protected if {
 			"_ownerGroups": ["group-1"],
 			"_validUntilDateTime": null,
 			"_validFromDateTime": "2020-01-01T00:00:00Z",
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -1017,6 +1077,7 @@ test_allow_member_add_ownerGroup_they_belong_to if {
 	allow with input as produce_input_replace(
 		["tarcinapp.member"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -1024,7 +1085,6 @@ test_allow_member_add_ownerGroup_they_belong_to if {
 			"_ownerGroups": ["group-1", "group-2"],
 			"_validUntilDateTime": null,
 			"_validFromDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -1032,6 +1092,7 @@ test_allow_member_add_ownerGroup_they_belong_to if {
 			"_createdBy": "original-user",
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_visibility": "public",
@@ -1039,7 +1100,6 @@ test_allow_member_add_ownerGroup_they_belong_to if {
 			"_ownerGroups": ["group-1"],
 			"_validUntilDateTime": null,
 			"_validFromDateTime": null,
-			"_kind": null,
 			"_listId": null,
 			"_createdDateTime": "2022-01-01T00:00:00Z",
 			"_lastUpdatedDateTime": "2022-01-01T00:00:00Z",
@@ -1057,6 +1117,7 @@ test_not_allow_member_add_ownerGroup_they_do_not_belong_to if {
 	not allow with input as produce_input_replace(
 		["tarcinapp.member"], true,
 		{
+			"_kind": "sample-kind",
 			"_name": "Test List",
 			"description": "Test Description",
 			"_visibility": "public",
@@ -1065,6 +1126,7 @@ test_not_allow_member_add_ownerGroup_they_do_not_belong_to if {
 			"_validUntilDateTime": null,
 		},
 		{
+			"_kind": "sample-kind",
 			"_name": "Original List",
 			"description": "Original Description",
 			"_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"],

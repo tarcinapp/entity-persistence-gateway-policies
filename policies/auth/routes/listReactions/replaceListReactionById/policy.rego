@@ -1,6 +1,6 @@
 package policies.auth.routes.listReactions.replaceListReactionById.policy
 
-import data.policies.fields.listReactions.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
@@ -11,11 +11,26 @@ import data.policies.util.lists.roles as list_role_utils
 # By default, deny requests.
 default allow := false
 
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_find_list := []
+
+forbidden_find_list := res if {
+	res := central_policy.get_forbidden_fields("listReactions", "find", input.originalRecord)
+}
+
+default forbidden_update_list := []
+
+forbidden_update_list := res if {
+	res := central_policy.get_forbidden_fields("listReactions", "update", input.originalRecord)
+}
+
 # Admins
 allow if {
 	role_utils.is_user_admin("update", input.originalRecord)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_fields_has_same_value_with_original_record
 	can_see_related_list
 }
@@ -24,7 +39,7 @@ allow if {
 allow if {
 	role_utils.is_user_editor("update", input.originalRecord)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_fields_has_same_value_with_original_record
 	can_see_related_list
 }
@@ -33,7 +48,7 @@ allow if {
 allow if {
 	role_utils.is_user_member("update", input.originalRecord)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 	forbidden_fields_has_same_value_with_original_record
 	is_record_belongs_to_this_user
 	not original_record.is_passive
@@ -172,41 +187,41 @@ user_in_original_record(user) if {
 }
 
 member_has_problem_with_validFrom if {
-	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validFromDateTime" in forbidden_update_list
 	input.requestPayload._validFromDateTime != null
 	input.originalRecord._validFromDateTime != null
 	input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
 }
 
 member_has_problem_with_validFrom if {
-	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validFromDateTime" in forbidden_update_list
 	input.originalRecord._validFromDateTime == null
 	input.requestPayload._validFromDateTime != null
 	not is_validFrom_in_correct_range
 }
 
 member_has_problem_with_validUntil if {
-	"_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
+	"_validUntilDateTime" in forbidden_find_list
 	payload_contains_any_field(["_validUntilDateTime"])
 }
 
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	"_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	"_validUntilDateTime" in forbidden_update_list
 	input.originalRecord._validUntilDateTime == null
 	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
 }
 
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	not "_validUntilDateTime" in forbidden_update_list
 	input.originalRecord._validUntilDateTime != null
 	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
 }
 
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	not "_validUntilDateTime" in forbidden_update_list
 	input.originalRecord._validUntilDateTime == null
 	input.requestPayload._validUntilDateTime != null
 	not is_validUntil_in_correct_range_for_inactivation
@@ -231,26 +246,26 @@ is_validUntil_in_correct_range_for_inactivation if {
 }
 
 forbidden_fields_has_same_value_with_original_record if {
-	not forbidden_fields.which_fields_forbidden_for_update[0]
+	not forbidden_update_list[0]
 }
 
 forbidden_fields_has_same_value_with_original_record if {
-	forbidden_fields.which_fields_forbidden_for_update[0]
+	forbidden_update_list[0]
 	not has_forbidden_field_with_different_value
 }
 
 # check if there are any forbidden fields with different values
 has_forbidden_field_with_different_value if {
 	some forbidden_field_for_update
-	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
-	not forbidden_field_for_update in forbidden_fields.which_fields_forbidden_for_finding
+	forbidden_field_for_update = forbidden_update_list[_]
+	not forbidden_field_for_update in forbidden_find_list
 	not has_field(input.requestPayload, forbidden_field_for_update)
 }
 
 has_forbidden_field_with_different_value if {
 	some forbidden_field_for_update
-	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
-	not forbidden_field_for_update in forbidden_fields.which_fields_forbidden_for_finding
+	forbidden_field_for_update = forbidden_update_list[_]
+	not forbidden_field_for_update in forbidden_find_list
 	input.requestPayload[forbidden_field_for_update] != input.originalRecord[forbidden_field_for_update]
 }
 

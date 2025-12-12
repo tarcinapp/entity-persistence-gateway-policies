@@ -582,7 +582,7 @@ test_allow_to_global_member_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -595,7 +595,7 @@ test_allow_to_records_member_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -608,7 +608,7 @@ test_allow_to_lists_member_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -621,7 +621,7 @@ test_allow_to_lists_create_member_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -635,7 +635,7 @@ test_allow_to_global_member_with_createdDateTime_field_permission if {
 			"_visibility": "public",
 			"_createdDateTime": "2023-01-01T00:00:00Z", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdDateTime.create",
+		"tarcinapp.fields.lists._createdDateTime.create",
 	)
 }
 
@@ -648,7 +648,7 @@ test_allow_to_records_member_with_createdDateTime_field_permission if {
 			"_visibility": "public",
 			"_createdDateTime": "2023-01-01T00:00:00Z", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdDateTime.create",
+		"tarcinapp.fields.lists._createdDateTime.create",
 	)
 }
 
@@ -661,7 +661,7 @@ test_allow_to_lists_member_with_createdDateTime_field_permission if {
 			"_visibility": "public",
 			"_createdDateTime": "2023-01-01T00:00:00Z", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdDateTime.create",
+		"tarcinapp.fields.lists._createdDateTime.create",
 	)
 }
 
@@ -674,7 +674,7 @@ test_allow_to_lists_create_member_with_createdDateTime_field_permission if {
 			"_visibility": "public",
 			"_createdDateTime": "2023-01-01T00:00:00Z", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdDateTime.create",
+		"tarcinapp.fields.lists._createdDateTime.create",
 	)
 }
 
@@ -688,7 +688,7 @@ test_allow_to_global_member_with_ownerUsers_field_permission if {
 			"_visibility": "public",
 			"_ownerUsers": ["user-1", "user-2"], # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._ownerUsers.create",
+		"tarcinapp.fields.lists._ownerUsers.create",
 	)
 }
 
@@ -701,7 +701,7 @@ test_allow_to_records_member_with_ownerUsers_field_permission if {
 			"_visibility": "public",
 			"_ownerUsers": ["user-1", "user-2"], # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._ownerUsers.create",
+		"tarcinapp.fields.lists._ownerUsers.create",
 	)
 }
 
@@ -714,7 +714,7 @@ test_allow_to_lists_member_with_ownerUsers_field_permission if {
 			"_visibility": "public",
 			"_ownerUsers": ["user-1", "user-2"], # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._ownerUsers.create",
+		"tarcinapp.fields.lists._ownerUsers.create",
 	)
 }
 
@@ -727,7 +727,7 @@ test_allow_to_lists_create_member_with_ownerUsers_field_permission if {
 			"_visibility": "public",
 			"_ownerUsers": ["user-1", "user-2"], # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._ownerUsers.create",
+		"tarcinapp.fields.lists._ownerUsers.create",
 	)
 }
 
@@ -741,7 +741,7 @@ test_allow_to_global_member_with_createdBy_manage_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level manage permission
 		},
-		"tarcinapp.lists.fields._createdBy.manage",
+		"tarcinapp.fields.lists._createdBy.manage",
 	)
 }
 
@@ -754,7 +754,7 @@ test_allow_to_lists_member_with_createdBy_manage_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level manage permission
 		},
-		"tarcinapp.lists.fields._createdBy.manage",
+		"tarcinapp.fields.lists._createdBy.manage",
 	)
 }
 
@@ -768,7 +768,7 @@ test_allow_to_global_editor_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -781,7 +781,7 @@ test_allow_to_records_editor_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -794,7 +794,7 @@ test_allow_to_lists_editor_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -807,7 +807,7 @@ test_allow_to_lists_create_editor_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # This should be allowed due to field-level permission
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -821,7 +821,7 @@ test_not_allow_to_global_visitor_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # Should still be denied - visitors cannot create
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -834,7 +834,7 @@ test_not_allow_to_records_visitor_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # Should still be denied - visitors cannot create
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -847,7 +847,7 @@ test_not_allow_to_lists_visitor_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # Should still be denied - visitors cannot create
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -860,7 +860,7 @@ test_not_allow_to_lists_create_visitor_with_createdBy_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # Should still be denied - visitors cannot create
 		},
-		"tarcinapp.lists.fields._createdBy.create",
+		"tarcinapp.fields.lists._createdBy.create",
 	)
 }
 
@@ -874,7 +874,7 @@ test_not_allow_to_global_member_with_entities_scope_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # Should be denied - wrong scope (entities vs lists)
 		},
-		"tarcinapp.entities.fields._createdBy.create",
+		"tarcinapp.fields.entities._createdBy.create",
 	)
 }
 
@@ -887,7 +887,7 @@ test_not_allow_to_lists_member_with_entities_scope_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # Should be denied - wrong scope (entities vs lists)
 		},
-		"tarcinapp.entities.fields._createdBy.create",
+		"tarcinapp.fields.entities._createdBy.create",
 	)
 }
 
@@ -901,7 +901,7 @@ test_not_allow_to_global_member_with_find_only_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # Should be denied - find permission doesn't allow create
 		},
-		"tarcinapp.lists.fields._createdBy.find",
+		"tarcinapp.fields.lists._createdBy.find",
 	)
 }
 
@@ -914,7 +914,7 @@ test_not_allow_to_lists_member_with_update_only_field_permission if {
 			"_visibility": "public",
 			"_createdBy": "some-user", # Should be denied - update permission doesn't allow create
 		},
-		"tarcinapp.lists.fields._createdBy.update",
+		"tarcinapp.fields.lists._createdBy.update",
 	)
 }
 

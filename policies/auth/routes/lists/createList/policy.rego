@@ -1,6 +1,6 @@
 package policies.auth.routes.lists.createList.policy
 
-import data.policies.fields.lists.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
@@ -8,6 +8,15 @@ import data.policies.util.lists.roles as role_utils
 
 # By default, deny requests.
 default allow := false
+
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_create_list := []
+
+forbidden_create_list := res if {
+	res := central_policy.get_forbidden_fields("lists", "create", input.requestPayload)
+}
 
 # Decide allow if any of the following section is true
 # ----------------------------------------------
@@ -17,7 +26,7 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 }
 
 allow if {
@@ -26,14 +35,14 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 }
 
 allow if {
 	role_utils.is_user_member("create", input.requestPayload)
 
 	# payload cannot contain any invalid field
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 
 	# members must be email verified
 	verification.is_email_verified

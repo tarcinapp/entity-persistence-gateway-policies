@@ -187,7 +187,7 @@ test_allow_to_editor_with_field_level_permission_for_createdDateTime if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.entities.fields._createdDateTime.update",
+		"tarcinapp.fields.entities._createdDateTime.update",
 	]
 
 	allow with input as {
@@ -215,7 +215,7 @@ test_allow_to_editor_with_field_level_manage_permission_for_createdDateTime if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.entities.fields._createdDateTime.manage",
+		"tarcinapp.fields.entities._createdDateTime.manage",
 	]
 
 	allow with input as {
@@ -243,7 +243,7 @@ test_allow_to_editor_with_field_level_permission_for_lastUpdatedDateTime if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.entities.fields._lastUpdatedDateTime.update",
+		"tarcinapp.fields.entities._lastUpdatedDateTime.update",
 	]
 
 	allow with input as {
@@ -278,8 +278,8 @@ test_allow_to_editor_with_multiple_field_permissions if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.entities.fields._createdDateTime.update",
-		"tarcinapp.entities.fields._lastUpdatedDateTime.update",
+		"tarcinapp.fields.entities._createdDateTime.update",
+		"tarcinapp.fields.entities._lastUpdatedDateTime.update",
 	]
 
 	allow with input as {
@@ -310,7 +310,7 @@ test_not_allow_to_editor_with_partial_field_permissions if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.entities.fields._createdDateTime.update",
+		"tarcinapp.fields.entities._createdDateTime.update",
 		# Missing permission for _lastUpdatedDateTime
 	]
 
@@ -370,8 +370,8 @@ test_allow_to_admin_with_field_level_permissions if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.admin",
-		"tarcinapp.entities.fields._createdDateTime.update",
-		"tarcinapp.entities.fields._lastUpdatedDateTime.update",
+		"tarcinapp.fields.entities._createdDateTime.update",
+		"tarcinapp.fields.entities._lastUpdatedDateTime.update",
 	]
 
 	allow with input as {
@@ -403,7 +403,7 @@ test_not_allow_to_editor_with_find_only_field_permission if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.entities.fields._createdDateTime.find", # Only find, not update
+		"tarcinapp.fields.entities._createdDateTime.find", # Only find, not update
 	]
 
 	not allow with input as {
@@ -431,7 +431,7 @@ test_not_allow_to_editor_with_create_only_field_permission if {
 		"offline_access",
 		"uma_authorization",
 		"tarcinapp.editor",
-		"tarcinapp.entities.fields._createdDateTime.create", # Only create, not update
+		"tarcinapp.fields.entities._createdDateTime.create", # Only create, not update
 	]
 
 	not allow with input as {

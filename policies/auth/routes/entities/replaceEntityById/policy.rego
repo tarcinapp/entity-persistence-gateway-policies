@@ -1,6 +1,6 @@
 package policies.auth.routes.entities.replaceEntityById.policy
 
-import data.policies.fields.entities.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
@@ -20,6 +20,21 @@ member_validUntil_range_for_inactivation_in_seconds := 300
 # By default, deny requests.
 default allow := false
 
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_find_list := []
+
+forbidden_find_list := res if {
+	res := central_policy.get_forbidden_fields("entities", "find", input.originalRecord)
+}
+
+default forbidden_update_list := []
+
+forbidden_update_list := res if {
+	res := central_policy.get_forbidden_fields("entities", "update", input.originalRecord)
+}
+
 #-----------------------------------------------
 
 # Decide allow if any of the following section is true
@@ -31,7 +46,7 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any field that requestor cannot see
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 
 	forbidden_fields_has_same_value_with_original_record
 }
@@ -43,7 +58,7 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any field that requestor cannot see
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 
 	forbidden_fields_has_same_value_with_original_record
 }
@@ -52,7 +67,7 @@ allow if {
 	role_utils.is_user_member("update", input.originalRecord)
 
 	# payload cannot contain any field that requestor cannot see
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
+	not payload_contains_any_field(forbidden_find_list)
 
 	forbidden_fields_has_same_value_with_original_record
 
@@ -217,7 +232,7 @@ user_in_original_record(user) if {
 # or unapproving already approved reacord, should not be allowed for members
 # user can only send same value for validFrom
 member_has_problem_with_validFrom if {
-	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validFromDateTime" in forbidden_update_list
 	input.requestPayload._validFromDateTime != null
 	input.originalRecord._validFromDateTime != null
 	input.requestPayload._validFromDateTime != input.originalRecord._validFromDateTime
@@ -228,7 +243,7 @@ member_has_problem_with_validFrom if {
 # user tries to add a validFrom
 # but validFrom is not in correct range
 member_has_problem_with_validFrom if {
-	not "_validFromDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validFromDateTime" in forbidden_update_list
 	input.originalRecord._validFromDateTime == null
 	input.requestPayload._validFromDateTime != null
 	not is_validFrom_in_correct_range
@@ -237,7 +252,7 @@ member_has_problem_with_validFrom if {
 # if user cannot find the field, he cannot send the field in the request payload
 # purpose: to prevent users from sending fields that they cannot see
 member_has_problem_with_validUntil if {
-	"_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
+	"_validUntilDateTime" in forbidden_find_list
 	payload_contains_any_field(["_validUntilDateTime"])
 }
 
@@ -249,8 +264,8 @@ member_has_problem_with_validUntil if {
 #   he cannot send any value than null for the _validUntilDateTime field
 # purpose: to prevent users from sending different values than the original value if he does not have the field level role to update it
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	"_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	"_validUntilDateTime" in forbidden_update_list
 	input.originalRecord._validUntilDateTime == null
 	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
 }
@@ -263,8 +278,8 @@ member_has_problem_with_validUntil if {
 #   he cannot send any value different than the original value for the _validUntilDateTime field
 # purpose: if original validUntilDateTime is not null, user cannot set anything different than the original value
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	not "_validUntilDateTime" in forbidden_update_list
 	input.originalRecord._validUntilDateTime != null
 	input.requestPayload._validUntilDateTime != input.originalRecord._validUntilDateTime
 }
@@ -276,8 +291,8 @@ member_has_problem_with_validUntil if {
 # then
 #   he cannot send any value that is not in the correct range for inactivation
 member_has_problem_with_validUntil if {
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_finding
-	not "_validUntilDateTime" in forbidden_fields.which_fields_forbidden_for_update
+	not "_validUntilDateTime" in forbidden_find_list
+	not "_validUntilDateTime" in forbidden_update_list
 	input.originalRecord._validUntilDateTime == null
 	input.requestPayload._validUntilDateTime != null
 	not is_validUntil_in_correct_range_for_inactivation
@@ -307,26 +322,26 @@ is_validUntil_in_correct_range_for_inactivation if {
 
 # if there is no forbidden field for update, this expression must return true
 forbidden_fields_has_same_value_with_original_record if {
-	not forbidden_fields.which_fields_forbidden_for_update[0]
+	not forbidden_update_list[0]
 }
 
 forbidden_fields_has_same_value_with_original_record if {
-	forbidden_fields.which_fields_forbidden_for_update[0]
+	forbidden_update_list[0]
 	not has_forbidden_field_with_different_value
 }
 
 # check if there are any forbidden fields with different values
 has_forbidden_field_with_different_value if {
 	some forbidden_field_for_update
-	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
-	not forbidden_field_for_update in forbidden_fields.which_fields_forbidden_for_finding
+	forbidden_field_for_update = forbidden_update_list[_]
+	not forbidden_field_for_update in forbidden_find_list
 	not has_field(input.requestPayload, forbidden_field_for_update)
 }
 
 has_forbidden_field_with_different_value if {
 	some forbidden_field_for_update
-	forbidden_field_for_update = forbidden_fields.which_fields_forbidden_for_update[_]
-	not forbidden_field_for_update in forbidden_fields.which_fields_forbidden_for_finding
+	forbidden_field_for_update = forbidden_update_list[_]
+	not forbidden_field_for_update in forbidden_find_list
 	input.requestPayload[forbidden_field_for_update] != input.originalRecord[forbidden_field_for_update]
 }
 

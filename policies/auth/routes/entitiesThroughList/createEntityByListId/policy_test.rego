@@ -97,7 +97,7 @@ test_allow_field_level_permission_allows_forbidden_field if {
 			"_visibility": "public",
 			"_createdBy": "some-user",
 		},
-		"tarcinapp.entities.fields._createdBy.create", {
+		"tarcinapp.fields.entities._createdBy.create", {
 			"name": "target-list",
 			"_ownerUsers": [],
 			"_ownerGroups": [],

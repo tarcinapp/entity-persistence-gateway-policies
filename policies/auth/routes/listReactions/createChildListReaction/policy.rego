@@ -1,6 +1,6 @@
 package policies.auth.routes.listReactions.createChildListReaction.policy
 
-import data.policies.fields.listReactions.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
@@ -10,6 +10,15 @@ import data.policies.util.lists.roles as list_roles
 # By default, deny requests.
 default allow := false
 
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_create_list := []
+
+forbidden_create_list := res if {
+	res := central_policy.get_forbidden_fields("listReactions", "create", input.requestPayload)
+}
+
 #-----------------------------------------------
 
 # Admin users can create child list reactions if they can see the parent reaction and the related list
@@ -17,7 +26,7 @@ default allow := false
 allow if {
 	reaction_roles.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 	can_user_see_parent_reaction
 	can_user_see_related_list
 }
@@ -29,7 +38,7 @@ allow if {
 allow if {
 	reaction_roles.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 	can_user_see_parent_reaction
 	can_user_see_related_list
 }
@@ -41,7 +50,7 @@ allow if {
 allow if {
 	reaction_roles.is_user_member("create", input.requestPayload)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 	not member_has_problem_with_groups
 	can_user_see_parent_reaction
 	can_user_see_related_list

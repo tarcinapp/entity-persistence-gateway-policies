@@ -99,7 +99,7 @@ Roles can be assigned at multiple scopes to provide flexible access control:
 Beyond operation access, field-level roles control access to individual fields:
 * Format: `tarcinapp.<scope>.fields.<fieldName>.<operation>`
 * Operations: `find` (view), `create`, `update`, `manage` (all operations)
-* Example: `tarcinapp.entities.fields._visibility.update` allows updating the `_visibility` field
+* Example: `tarcinapp.fields.entities._visibility.update` allows updating the `_visibility` field
 
 #### 2. Ownership
 
@@ -227,7 +227,7 @@ The policy system is divided into two complementary layers that work together to
 **Evaluation Logic:**
 * Determine the user's highest role for the resource type
 * Retrieve the default forbidden field list for that role
-* Check for field-level role exceptions (e.g., `tarcinapp.entities.fields._createdBy.create`)
+* Check for field-level role exceptions (e.g., `tarcinapp.fields.entities._createdBy.create`)
 * Return the effective forbidden fields after applying exceptions
 
 **Core Field-Level Principles:**
@@ -281,7 +281,7 @@ The following patterns consistently govern field access across all resource type
 **Field-Level Role Exceptions:**
 Any of the above restrictions can be bypassed by granting explicit field-level roles:
 * Format: `tarcinapp.<scope>.fields.<fieldName>.<operation>`
-* Example: `tarcinapp.entities.fields._validFromDateTime.create` allows a Member to set validity start time
+* Example: `tarcinapp.fields.entities._validFromDateTime.create` allows a Member to set validity start time
 * Use cases: Scheduled publishing, advanced ownership management, custom audit requirements
 
 
@@ -545,7 +545,7 @@ This component centralizes authorization and field-level controls for the Tarcin
 * **Owner-first semantics:** Direct owners in `_ownerUsers` take precedence; group and viewer checks are evaluated only when the caller is not a direct owner.
 * **Time-driven visibility:** Records can be pending, active, or passive via `_validFromDateTime` and `_validUntilDateTime`; visibility rules depend on these states.
 * **Minimal list policies:** The gateway is responsible for narrowing list/find queries according to ownership/visibility; route policies remain lightweight for list endpoints and focus on single-record checks when `originalRecord` is provided.
-* **Field-level exceptions:** Field-level roles (e.g., `tarcinapp.entities.fields._createdBy.create`) allow safe exceptions to the default forbidden field lists defined under `policies/fields/*`.
+* **Field-level exceptions:** Field-level roles (e.g., `tarcinapp.fields.entities._createdBy.create`) allow safe exceptions to the default forbidden field lists defined under `policies/fields/*`.
 
 ### Field Masking - Forbidden Fields
 
@@ -587,8 +587,8 @@ These helpers call `get_fields_for` and `get_effective_fields_for` to merge `fin
 Roles follow the pattern: `tarcinapp.<scope>.fields.<fieldName>.<operation>` or `...<fieldName>.manage` for full-field privileges.
 
 **Examples:**
-* Entity create exception: `tarcinapp.entities.fields._createdBy.create` or `tarcinapp.records.fields._createdBy.create` (entity helpers accept both `records` and `entities` scopes).
-* Relation field exception: `tarcinapp.relations.fields.<fieldName>.create` (relations use the `relations` scope).
+* Entity create exception: `tarcinapp.fields.entities._createdBy.create` or `tarcinapp.records.fields._createdBy.create` (entity helpers accept both `records` and `entities` scopes).
+* Relation field exception: `tarcinapp.fields.relations.<fieldName>.create` (relations use the `relations` scope).
 
 The field policy implements predicates such as `can_user_create_field(fieldName)` which check `token.payload.roles` against the expected role pattern and return true when a matching role is present.
 
@@ -604,7 +604,7 @@ See `policies/auth/routes/entities/createEntity/policy.rego` and `policies/auth/
 
 #### How to Grant an Exception (Practical Steps)
 
-1. Add the field-level role to the user's token (or configure it in Keycloak). Example role: `tarcinapp.entities.fields._createdBy.create`.
+1. Add the field-level role to the user's token (or configure it in Keycloak). Example role: `tarcinapp.fields.entities._createdBy.create`.
 2. In tests, use the helper `produce_input_doc_by_role_with_field_permission` to append the field-level role to the token roles array.
 3. Assert that the field is no longer returned by `forbidden_fields.which_fields_forbidden_for_create` and that the route policy allows payloads that include the field.
 
@@ -943,9 +943,9 @@ These roles allow precise control over access to individual fields within record
 
 | Role | Meaning |
 |------|---------|
-| `tarcinapp.entities.fields._visibility.find` | Can read the `_visibility` field of entities |
+| `tarcinapp.fields.entities._visibility.find` | Can read the `_visibility` field of entities |
 | `tarcinapp.records.fields._createdDateTime.update` | Can update `_createdDateTime` on records |
-| `tarcinapp.lists.fields._viewerGroups.manage` | Full access to `_viewerGroups` field on lists |
+| `tarcinapp.fields.lists._viewerGroups.manage` | Full access to `_viewerGroups` field on lists |
 
 ### Design Benefits
 

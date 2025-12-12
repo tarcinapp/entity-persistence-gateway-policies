@@ -1,6 +1,6 @@
 package policies.auth.routes.entitiesThroughList.createEntityByListId.policy
 
-import data.policies.fields.entities.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.originalRecord as original_record
 import data.policies.util.common.token as token
@@ -20,6 +20,15 @@ import data.policies.util.lists.roles as list_roles
 # Default deny
 default allow := false
 
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_create_list := []
+
+forbidden_create_list := res if {
+	res := central_policy.get_forbidden_fields("entities", "create", input.requestPayload)
+}
+
 # Final allow: must satisfy both creation rules and list visibility rules
 allow if {
 	create_allowed
@@ -30,18 +39,18 @@ allow if {
 create_allowed if {
 	entity_roles.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 }
 
 create_allowed if {
 	entity_roles.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 }
 
 create_allowed if {
 	entity_roles.is_user_member("create", input.requestPayload)
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 	verification.is_email_verified
 	not member_has_problem_with_groups
 }

@@ -193,7 +193,7 @@ can_user_find_field(fieldName) if {
 	input.appShortcode
 	token.payload.roles
 	role = token.payload.roles[_]
-	pattern := sprintf(`%s.listReactions.fields.%s.(find|update|create|manage)`, [input.appShortcode, fieldName])
+	pattern := sprintf(`%s.fields.listReactions.%s.(find|update|create|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
@@ -201,7 +201,7 @@ can_user_create_field(fieldName) if {
 	input.appShortcode
 	token.payload.roles
 	role := token.payload.roles[_]
-	pattern := sprintf(`%s.listReactions.fields.%s.(create|manage)`, [input.appShortcode, fieldName])
+	pattern := sprintf(`%s.fields.listReactions.%s.(create|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }
 
@@ -209,6 +209,6 @@ can_user_update_field(fieldName) if {
 	input.appShortcode
 	token.payload.roles
 	role := token.payload.roles[_]
-	pattern := sprintf(`%s.listReactions.fields.%s.(update|manage)`, [input.appShortcode, fieldName])
+	pattern := sprintf(`%s.fields.listReactions.%s.(update|manage)`, [input.appShortcode, fieldName])
 	regex.match(pattern, role)
 }

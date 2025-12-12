@@ -1,12 +1,21 @@
 package policies.auth.routes.relations.createRelation.policy
 
-import data.policies.fields.relations.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
 import data.policies.util.relations.roles as role_utils
 
 # By default, deny requests.
 default allow := false
+
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_create_list := []
+
+forbidden_create_list := res if {
+	res := central_policy.get_forbidden_fields("relations", "create", input.requestPayload)
+}
 
 #-----------------------------------------------
 
@@ -22,7 +31,7 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field for the caller's role
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 }
 
 allow if {
@@ -30,7 +39,7 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any invalid field for the caller's role
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 
 	# caller must own the referenced list
 	caller_owns_referenced_list

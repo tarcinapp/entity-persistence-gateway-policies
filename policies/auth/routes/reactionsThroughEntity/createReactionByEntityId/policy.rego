@@ -1,6 +1,6 @@
 package policies.auth.routes.reactionsThroughEntity.createReactionByEntityId.policy
 
-import data.policies.fields.entityReactions.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.array as array
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
@@ -10,25 +10,34 @@ import data.policies.util.entityReactions.roles as role_utils
 # By default, deny requests.
 default allow := false
 
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_create_list := []
+
+forbidden_create_list := res if {
+	res := central_policy.get_forbidden_fields("entityReactions", "create", input.requestPayload)
+}
+
 # Decide allow if any of the following section is true
 # ----------------------------------------------
 allow if {
 	role_utils.is_user_admin("create", input.requestPayload)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 	can_admin_see_source_record
 }
 
 allow if {
 	role_utils.is_user_editor("create", input.requestPayload)
 	verification.is_email_verified
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 	can_editor_see_source_record
 }
 
 allow if {
 	role_utils.is_user_member("create", input.requestPayload)
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_create)
+	not payload_contains_any_field(forbidden_create_list)
 	verification.is_email_verified
 	not member_has_problem_with_groups
 	can_member_see_source_record

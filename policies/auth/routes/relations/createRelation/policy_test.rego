@@ -446,7 +446,7 @@ test_allow_member_with_validFrom_field_permission if {
 			"_entityId": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
 			"_validFromDateTime": "2024-01-01T00:00:00Z",
 		},
-		"tarcinapp.relations.fields._validFromDateTime.create", {
+		"tarcinapp.fields.relations._validFromDateTime.create", {
 			"_fromMetadata": {"_id": "7ef64686-976f-4737-aebd-e4aea445202d", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 			"_toMetadata": {"_id": "17d4ccba-a726-4b5e-8f75-0cb303eb5131", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": [], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 		},
@@ -462,7 +462,7 @@ test_allow_member_with_validUntil_field_permission if {
 			"_entityId": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
 			"_validUntilDateTime": "2026-01-01T00:00:00Z",
 		},
-		"tarcinapp.relations.fields._validUntilDateTime.create", {
+		"tarcinapp.fields.relations._validUntilDateTime.create", {
 			"_fromMetadata": {"_id": "7ef64686-976f-4737-aebd-e4aea445202d", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 			"_toMetadata": {"_id": "17d4ccba-a726-4b5e-8f75-0cb303eb5131", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": [], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 		},
@@ -478,7 +478,7 @@ test_allow_to_global_editor_with_createdBy_field_permission if {
 			"_entityId": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
 			"_createdBy": "some-user",
 		},
-		"tarcinapp.relations.fields._createdBy.create", {
+		"tarcinapp.fields.relations._createdBy.create", {
 			"_fromMetadata": {"_id": "7ef64686-976f-4737-aebd-e4aea445202d", "_validFromDateTime": null, "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": [], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 			"_toMetadata": {"_id": "17d4ccba-a726-4b5e-8f75-0cb303eb5131", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": [], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 		},
@@ -494,7 +494,7 @@ test_not_allow_to_global_visitor_with_createdBy_field_permission if {
 			"_entityId": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
 			"_createdBy": "some-user",
 		},
-		"tarcinapp.relations.fields._createdBy.create", {
+		"tarcinapp.fields.relations._createdBy.create", {
 			"_fromMetadata": {"_id": "7ef64686-976f-4737-aebd-e4aea445202d", "_validFromDateTime": null, "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": [], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 			"_toMetadata": {"_id": "17d4ccba-a726-4b5e-8f75-0cb303eb5131", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": [], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 		},
@@ -510,7 +510,7 @@ test_not_allow_to_global_member_with_entities_scope_field_permission if {
 			"_entityId": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
 			"_validFromDateTime": "2024-01-01T00:00:00Z",
 		},
-		"tarcinapp.entities.fields._validFromDateTime.create", {
+		"tarcinapp.fields.entities._validFromDateTime.create", {
 			"_fromMetadata": {"_id": "7ef64686-976f-4737-aebd-e4aea445202d", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 			"_toMetadata": {"_id": "17d4ccba-a726-4b5e-8f75-0cb303eb5131", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": [], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 		},
@@ -526,7 +526,7 @@ test_not_allow_to_global_member_with_find_only_field_permission if {
 			"_entityId": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
 			"_validFromDateTime": "2024-01-01T00:00:00Z",
 		},
-		"tarcinapp.relations.fields._validFromDateTime.find", {
+		"tarcinapp.fields.relations._validFromDateTime.find", {
 			"_fromMetadata": {"_id": "7ef64686-976f-4737-aebd-e4aea445202d", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": ["ebe92b0c-bda2-49d0-99d0-feb538aa7db6"], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 			"_toMetadata": {"_id": "17d4ccba-a726-4b5e-8f75-0cb303eb5131", "_validFromDateTime": "2020-01-01T00:00:00Z", "_validUntilDateTime": null, "_visibility": "public", "_ownerUsers": [], "_ownerGroups": [], "_viewerUsers": [], "_viewerGroups": []},
 		},

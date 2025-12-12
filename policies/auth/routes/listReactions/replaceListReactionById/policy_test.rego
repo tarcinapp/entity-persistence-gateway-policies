@@ -26,6 +26,7 @@ test_allow_admin_replace_reaction_list_private if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -36,6 +37,7 @@ test_allow_admin_replace_reaction_list_private if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -63,6 +65,7 @@ test_allow_admin_replace_reaction_list_inactive if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -73,6 +76,7 @@ test_allow_admin_replace_reaction_list_inactive if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -100,6 +104,7 @@ test_allow_admin_replace_other_user_reaction if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["other-user"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -110,6 +115,7 @@ test_allow_admin_replace_other_user_reaction if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["other-user"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -139,6 +145,7 @@ test_allow_editor_replace_reaction_any_list if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["other-user"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -154,6 +161,7 @@ test_allow_editor_replace_reaction_any_list if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["other-user"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -192,7 +200,7 @@ test_allow_member_replace_protected_group_owned_pending_reaction if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": [],
 			"_ownerGroups": ["group-1", "group-2"],
 			"_validFromDateTime": null,
@@ -207,7 +215,7 @@ test_allow_member_replace_protected_group_owned_pending_reaction if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": [],
 			"_ownerGroups": ["group-1", "group-2"],
 			"_visibility": "protected",
@@ -239,7 +247,7 @@ test_allow_member_replace_user_owned_reaction_with_records_roles if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -254,7 +262,7 @@ test_allow_member_replace_user_owned_reaction_with_records_roles if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -286,6 +294,7 @@ test_not_allow_member_replace_reaction_list_private_with_lists_member if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -296,6 +305,7 @@ test_not_allow_member_replace_reaction_list_private_with_lists_member if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -323,6 +333,7 @@ test_not_allow_member_replace_reaction_list_inactive_with_records_roles if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -333,6 +344,7 @@ test_not_allow_member_replace_reaction_list_inactive_with_records_roles if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -362,6 +374,7 @@ test_not_allow_member_replace_other_user_reaction_with_tarcinapp_member if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["other-user"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -372,6 +385,7 @@ test_not_allow_member_replace_other_user_reaction_with_tarcinapp_member if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["other-user"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -399,6 +413,7 @@ test_not_allow_member_replace_inactive_reaction_with_reactions_roles if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -409,6 +424,7 @@ test_not_allow_member_replace_inactive_reaction_with_reactions_roles if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -436,7 +452,7 @@ test_allow_member_replace_reaction_list_viewer_group if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "protected",
@@ -451,7 +467,7 @@ test_allow_member_replace_reaction_list_viewer_group if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "protected",
@@ -483,7 +499,7 @@ test_allow_member_replace_reaction_list_viewer_user if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "protected",
@@ -498,7 +514,7 @@ test_allow_member_replace_reaction_list_viewer_user if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "protected",
@@ -530,7 +546,7 @@ test_allow_member_replace_reaction_list_group_owned if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -545,7 +561,7 @@ test_allow_member_replace_reaction_list_group_owned if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -577,6 +593,7 @@ test_not_allow_member_add_ownerGroup_they_do_not_belong_to if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": ["other-group"],
 			"_visibility": "public",
@@ -587,6 +604,7 @@ test_not_allow_member_add_ownerGroup_they_do_not_belong_to if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -614,7 +632,7 @@ test_allow_member_add_ownerGroup_they_belong_to if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": ["group-2"],
 			"_validFromDateTime": null,
@@ -629,7 +647,7 @@ test_allow_member_add_ownerGroup_they_belong_to if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
-			"_kind": null,
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -661,6 +679,7 @@ test_not_allow_member_remove_ownerGroup_they_belong_to if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": [],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -671,6 +690,7 @@ test_not_allow_member_remove_ownerGroup_they_belong_to if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": [],
 			"_ownerGroups": ["group-1"],
 			"_visibility": "public",
@@ -698,6 +718,7 @@ test_not_allow_member_change_visibility_to_private_for_group_owned if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": [],
 			"_ownerGroups": ["group-1"],
 			"_visibility": "private",
@@ -708,6 +729,7 @@ test_not_allow_member_change_visibility_to_private_for_group_owned if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": [],
 			"_ownerGroups": ["group-1"],
 			"_visibility": "protected",
@@ -735,6 +757,7 @@ test_not_allow_member_set_validUntilDateTime_without_field_role if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -745,6 +768,7 @@ test_not_allow_member_set_validUntilDateTime_without_field_role if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -772,6 +796,7 @@ test_not_allow_member_replace_reaction_unverified_email if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",
@@ -782,6 +807,7 @@ test_not_allow_member_replace_reaction_unverified_email if {
 		{
 			"_id": "reaction-1",
 			"_listId": "list-1",
+			"_kind": "sample-kind",
 			"_ownerUsers": ["user-1"],
 			"_ownerGroups": [],
 			"_visibility": "public",

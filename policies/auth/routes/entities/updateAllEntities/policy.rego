@@ -1,12 +1,27 @@
 package policies.auth.routes.entities.updateAllEntities.policy
 
-import data.policies.fields.entities.policy as forbidden_fields
+import data.policies.fields.policy as central_policy
 import data.policies.util.common.token as token
 import data.policies.util.common.verification as verification
 import data.policies.util.entities.roles as role_utils
 
 # By default, deny requests.
 default allow := false
+
+# -----------------------------------------------------------------------------
+# DYNAMIC FORBIDDEN LISTS
+# -----------------------------------------------------------------------------
+default forbidden_find_list := []
+
+forbidden_find_list := res if {
+	res := central_policy.get_forbidden_fields("entities", "find", null)
+}
+
+default forbidden_update_list := []
+
+forbidden_update_list := res if {
+	res := central_policy.get_forbidden_fields("entities", "update", null)
+}
 
 #-----------------------------------------------
 
@@ -17,8 +32,8 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any field that requestor cannot see or update
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)
+	not payload_contains_any_field(forbidden_find_list)
+	not payload_contains_any_field(forbidden_update_list)
 }
 
 allow if {
@@ -26,8 +41,8 @@ allow if {
 	verification.is_email_verified
 
 	# payload cannot contain any field that requestor cannot see or update
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
-	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_update)
+	not payload_contains_any_field(forbidden_find_list)
+	not payload_contains_any_field(forbidden_update_list)
 }
 
 #-----------------------------------------------

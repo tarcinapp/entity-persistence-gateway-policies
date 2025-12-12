@@ -799,7 +799,7 @@ test_allow_to_member_with_field_level_update_role if {
 			"_lastUpdatedBy": "original-user",
 			"_createdBy": "original-user",
 		},
-		"tarcinapp.lists.fields._createdDateTime.update",
+		"tarcinapp.fields.lists._createdDateTime.update",
 	)
 }
 
@@ -856,7 +856,7 @@ test_not_allow_to_member_update_validFrom_with_role_but_original_not_null if {
 			"_lastUpdatedBy": "original-user",
 			"_createdBy": "original-user",
 		},
-		"tarcinapp.lists.fields._validFromDateTime.update",
+		"tarcinapp.fields.lists._validFromDateTime.update",
 	)
 }
 
@@ -885,7 +885,7 @@ test_not_allow_to_member_update_validFrom_with_role_but_value_not_in_range if {
 			"_lastUpdatedBy": "original-user",
 			"_createdBy": "original-user",
 		},
-		"tarcinapp.lists.fields._validFromDateTime.update",
+		"tarcinapp.fields.lists._validFromDateTime.update",
 	)
 }
 
@@ -918,6 +918,6 @@ test_allow_to_member_update_validFrom_with_role_and_value_in_range if {
 			"_lastUpdatedBy": "original-user",
 			"_createdBy": "original-user",
 		},
-		"tarcinapp.lists.fields._validFromDateTime.update",
+		"tarcinapp.fields.lists._validFromDateTime.update",
 	)
 }
