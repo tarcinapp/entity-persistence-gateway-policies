@@ -13,7 +13,7 @@ default allow := false
 
 # Admins
 allow if {
-	role_utils.is_user_admin("update", input.requestPayload)
+	role_utils.is_user_admin("update", input.originalRecord)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
@@ -22,7 +22,7 @@ allow if {
 
 # Editors
 allow if {
-	role_utils.is_user_editor("update", input.requestPayload)
+	role_utils.is_user_editor("update", input.originalRecord)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
@@ -31,7 +31,7 @@ allow if {
 
 # Members
 allow if {
-	role_utils.is_user_member("update", input.requestPayload)
+	role_utils.is_user_member("update", input.originalRecord)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
@@ -270,7 +270,7 @@ can_see_related_entity if {
 	related := input.originalRecord._relationMetadata
 
 	# Admin
-	entity_role_utils.is_user_admin("find", input.requestPayload)
+	entity_role_utils.is_user_admin("find", input.originalRecord._relationMetadata)
 	verification.is_email_verified
 }
 
@@ -278,7 +278,7 @@ can_see_related_entity if {
 	related := input.originalRecord._relationMetadata
 
 	# Editor
-	entity_role_utils.is_user_editor("find", input.requestPayload)
+	entity_role_utils.is_user_editor("find", input.originalRecord._relationMetadata)
 	verification.is_email_verified
 }
 
@@ -286,7 +286,7 @@ can_see_related_entity if {
 	related := input.originalRecord._relationMetadata
 
 	# Member
-	entity_role_utils.is_user_member("find", input.requestPayload)
+	entity_role_utils.is_user_member("find", input.originalRecord._relationMetadata)
 	verification.is_email_verified
 	can_user_see_this_related_entity
 }
@@ -295,7 +295,7 @@ can_see_related_entity if {
 	related := input.originalRecord._relationMetadata
 
 	# Visitor
-	entity_role_utils.is_user_visitor("find", input.requestPayload)
+	entity_role_utils.is_user_visitor("find", input.originalRecord._relationMetadata)
 	verification.is_email_verified
 	is_related_entity_public_and_active
 }

@@ -25,7 +25,7 @@ default allow := false
 # Decide allow if any of the following section is true
 #-----------------------------------------------
 allow if {
-	role_utils.is_user_admin("update", input.requestPayload)
+	role_utils.is_user_admin("update", input.originalRecord)
 
 	# user must be email verified
 	verification.is_email_verified
@@ -37,7 +37,7 @@ allow if {
 }
 
 allow if {
-	role_utils.is_user_editor("update", input.requestPayload)
+	role_utils.is_user_editor("update", input.originalRecord)
 
 	# user must be email verified
 	verification.is_email_verified
@@ -49,7 +49,7 @@ allow if {
 }
 
 allow if {
-	role_utils.is_user_member("update", input.requestPayload)
+	role_utils.is_user_member("update", input.originalRecord)
 
 	# payload cannot contain any field that requestor cannot see
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)

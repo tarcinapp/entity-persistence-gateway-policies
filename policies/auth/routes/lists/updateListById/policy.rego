@@ -22,7 +22,7 @@ default allow := false
 
 # Admin users are allowed to update the original record notwithstanding the payload and original record
 allow if {
-	role_utils.is_user_admin("update", input.requestPayload)
+	role_utils.is_user_admin("update", input.originalRecord)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
@@ -30,7 +30,7 @@ allow if {
 
 # Editor users are allowed to update the record if payload satisfy 'all' of the conditions
 allow if {
-	role_utils.is_user_editor("update", input.requestPayload)
+	role_utils.is_user_editor("update", input.originalRecord)
 	verification.is_email_verified
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
 	forbidden_fields_has_same_value_with_original_record
@@ -38,7 +38,7 @@ allow if {
 
 # Members are allowed to update the list if following conditions are met
 allow if {
-	role_utils.is_user_member("update", input.requestPayload)
+	role_utils.is_user_member("update", input.originalRecord)
 	verification.is_email_verified
 	is_record_belongs_to_this_user # This will check either through user_id or groups
 	not payload_contains_any_field(forbidden_fields.which_fields_forbidden_for_finding)
