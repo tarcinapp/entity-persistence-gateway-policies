@@ -24,4 +24,6 @@ keys := {
 	"_listId": "_listId",
 	"_entityId": "_entityId",
 	"_recordType": "_recordType",
+	"_fromMetadata": "_fromMetadata",
+	"_toMetadata": "_toMetadata",
 }

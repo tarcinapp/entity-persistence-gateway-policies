@@ -1,28 +1,85 @@
 {
+    "policyName": "/policies/auth/routes/relations/replaceRelationById/policy",
     "appShortcode": "tarcinapp",
-    "policyName": "/policies/auth/routes/updateEntityById/policy",
-    "httpMethod": "PATCH",
-    "requestPath": "/entities/123",
-    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTc4NzQxMzcsImlhdCI6MTY5NzgzODEzNywianRpIjoiZjhmODExZWQtZmVlYy00NDRkLTlkNTQtMmVhOWQ2ZjIzNGRkIiwiaXNzIjoiaHR0cHM6Ly90YXJjaW5hcHAta2V5Y2xvYWsuaDN0NGVnLmVhc3lwYW5lbC5ob3N0L3JlYWxtcy90YXJjaW5hcHAiLCJhdWQiOiJhY2NvdW50Iiwic3ViIjoiZGVmYXVsdC11c2VyLWlkIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoicG9zdG1hbiIsInNlc3Npb25fc3RhdGUiOiJhNThlMjQxYi1hNmYyLTQzMzctYWRkMi1lNzM5ZjczNmQ1NTgiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIi8qIl0sInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJ0YXJjaW5hcHAubWVtYmVyIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwiZ3JvdXBzIjpbIm15LWdyb3VwIiwib3RoZXItZ3JvdXAiXSwic2NvcGUiOiJvcGVuaWQgZW1haWwgcHJvZmlsZSIsInNpZCI6ImE1OGUyNDFiLWE2ZjItNDMzNy1hZGQyLWU3MzlmNzM2ZDU1OCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJyb2xlcyI6WyJ0YXJjaW5hcHAubWVtYmVyIiwiZGVmYXVsdC1yb2xlcy10YXJjaW5hcHAiLCJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIl0sInByZWZlcnJlZF91c2VybmFtZSI6InVzZXItYmFzaWMtdmVyaWZpZWQtbWVtYmVyLTEiLCJnaXZlbl9uYW1lIjoiIiwiZmFtaWx5X25hbWUiOiIifQ.I7A77QFEJ9XyY5R9X0dSSqpEPuaZEfKmaJ4IVFq84roDwmp4hxh9ilOeOBRlrOrwb1GxZ22GndsOArVEAXm1ZuDHe9APRupnAkFParHz4_jiNIjMRqMd3fB_ANdiWEur_KcVCMkMfgGQIUbEIWKefOLGAmbCPcw2wEX8DGBVb3MDTYmgH8VAFgQnYSZuOOxQCd2gkKRBZcqadBR60wgujHew4b6oggTNhOniAwZqE0m2emMIIlDMGDLLl0u2NL9fQcf-y_T5qGNctbp1n3pnKKgDUehWwK_74N1eR5JEuPRKozteTWog9zLqWz14mqewNq9EdFjHV0-3IpX0n5FjLw",
+    "operation": "update",
+    "httpMethod": "PUT",
+    "requestPath": "/relations/c6c499aa-75d7-4220-a9b4-26cbe49ebbc8",
+    "queryParams": {},
+    "encodedJwt": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4NTkzODgxNTYsImlhdCI6MTc1OTM4ODE1NiwianRpIjoiZjhmODExZWQtZmVlYy00NDRkLTlkNTQtMmVhOWQ2ZjIzNGRkIiwiaXNzIjoidGFyY2luYXBwLWlkbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJkZWZhdWx0LXVzZXItaWQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJwb3N0bWFuIiwic2Vzc2lvbl9zdGF0ZSI6ImE1OGUyNDFiLWE2ZjItNDMzNy1hZGQyLWU3MzlmNzM2ZDU1OCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInRhcmNpbmFwcC5tZW1iZXIiLCJkZWZhdWx0LXJvbGVzLXRhcmNpbmFwcCIsIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJncm91cHMiOlsiZGVmYXVsdC11c2VyLWdyb3VwIl0sInNjb3BlIjoib3BlbmlkIGVtYWlsIHByb2ZpbGUiLCJzaWQiOiJhNThlMjQxYi1hNmYyLTQzMzctYWRkMi1lNzM5ZjczNmQ1NTgiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicm9sZXMiOlsidGFyY2luYXBwLm1lbWJlciIsImRlZmF1bHQtcm9sZXMtdGFyY2luYXBwIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiJdLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJ1c2VyLWJhc2ljLXZlcmlmaWVkLW1lbWJlci0xIiwiZ2l2ZW5fbmFtZSI6IiIsImZhbWlseV9uYW1lIjoiIn0.kC4DAqHeEFIPfi5ap8HWSIwtZWZdh1YzhIk6sw4iBTwtLYm8nG7ypjJD2GeOpc-yctQw-2LTEA7x1EFoxmZYLhC8YEYEKq7weSsnVicoyet77t805sHWFIsroSaqYFeVFTIWUl2OWS0cWUCJeAkpoaKLFA9vu_2QrMMo0w-I-JJSgLWOvCat3HvHuFlNkWb_Zw0cb8SHFmMkodnljVUf_AXdr1wjEOtVDJFDxiVUHZ9GIc-bFvh4O_q0FuoKLhhfgVKi4vEWYBJITHBLIbYQj7bAD_lcSF-bQVFt9pIeUmo7KMJj1NKi5kC1LmkjfU8um4zdF43Bwf60bZfRoi1oXg",
     "requestPayload": {
-        "_name": "Updated Entity",
-        "description": "Updated description",
-        "_visibility": "public",
-        "_ownerUsers": ["default-user-id"],
-        "_ownerGroups": ["other-group"]
+        "_id": "c6c499aa-75d7-4220-a9b4-26cbe49ebbc8",
+        "_kind": "contains",
+        "_validFromDateTime": "2025-12-16T20:03:31.948Z",
+        "_validUntilDateTime": null,
+        "_createdDateTime": "2025-12-16T20:03:31.937Z",
+        "_createdBy": "default-user-id",
+        "_lastUpdatedDateTime": "2025-12-16T20:03:31.937Z",
+        "_lastUpdatedBy": "default-user-id",
+        "_listId": "7ef64686-976f-4737-aebd-e4aea445202d",
+        "_entityId": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
+        "_fromMetadata": {
+            "_viewerUsers": [],
+            "_visibility": "protected",
+            "_validFromDateTime": "1948-09-09T23:15:02.522Z",
+            "_validUntilDateTime": null,
+            "_ownerGroups": [],
+            "_id": "7ef64686-976f-4737-aebd-e4aea445202d",
+            "_ownerUsers": [
+                "default-user-id"
+            ],
+            "_viewerGroups": []
+        },
+        "_toMetadata": {
+            "_viewerUsers": [],
+            "_visibility": "protected",
+            "_validFromDateTime": "2021-12-31T21:00:00Z",
+            "_validUntilDateTime": null,
+            "_ownerGroups": [],
+            "_id": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
+            "_ownerUsers": [
+                "default-user-id"
+            ],
+            "_viewerGroups": []
+        }
     },
     "originalRecord": {
-        "_id": "123",
-        "_name": "Original Entity",
-        "description": "Original description",
-        "_visibility": "private",
-        "_ownerUsers": ["default-user-id"],
-        "_ownerGroups": ["other-group"],
-        "_validFromDateTime": "2020-01-01T00:00:00Z",
+        "_id": "c6c499aa-75d7-4220-a9b4-26cbe49ebbc8",
+        "_kind": "contains",
+        "_validFromDateTime": "2025-12-16T20:03:31.948Z",
         "_validUntilDateTime": null,
-        "_createdDateTime": "2020-01-01T00:00:00Z",
-        "_lastUpdatedDateTime": "2020-01-02T00:00:00Z",
-        "_lastUpdatedBy": "original-user",
-        "_createdBy": "original-user"
+        "_createdDateTime": "2025-12-16T20:03:31.937Z",
+        "_createdBy": "default-user-id",
+        "_lastUpdatedDateTime": "2025-12-16T20:03:31.937Z",
+        "_lastUpdatedBy": "default-user-id",
+        "_version": 1,
+        "_recordType": "relation",
+        "_listId": "7ef64686-976f-4737-aebd-e4aea445202d",
+        "_entityId": "17d4ccba-a726-4b5e-8f75-0cb303eb5131",
+        "_fromMetadata": {
+            "_kind": "bookshelf",
+            "_validFromDateTime": "1948-09-09T23:15:02.522Z",
+            "_validUntilDateTime": null,
+            "_visibility": "protected",
+            "_ownerUsers": [
+                "default-user-id"
+            ],
+            "_ownerGroups": [],
+            "_viewerUsers": [],
+            "_viewerGroups": []
+        },
+        "_toMetadata": {
+            "_kind": "book",
+            "_name": "İnsancıklar",
+            "_slug": "insanciklar",
+            "_validFromDateTime": "2021-12-31T21:00:00.000Z",
+            "_validUntilDateTime": null,
+            "_visibility": "protected",
+            "_ownerUsers": [
+                "default-user-id"
+            ],
+            "_ownerGroups": [],
+            "_viewerUsers": [],
+            "_viewerGroups": []
+        }
     }
 }
