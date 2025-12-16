@@ -62,10 +62,23 @@ definitions := {
 		"kinds": {},
 	},
 	"relations": {
-		"default": [{
-			"role": "member",
-			"operations": {"update": ["_entityId", "_listId"]},
-		}],
+		"default": [
+			{
+				"role": "admin",
+				"operations": {"update": ["_fromMetadata", "_toMetadata"]},
+			},
+			{
+				"role": "editor",
+				"operations": {"update": ["_fromMetadata", "_toMetadata"]},
+			},
+			{
+				"role": "member",
+				"operations": {
+					"update": ["_entityId", "_listId", "_fromMetadata", "_toMetadata"],
+					"create": ["_fromMetadata", "_toMetadata"],
+				},
+			},
+		],
 		"kinds": {},
 	},
 	"entityReactions": {
