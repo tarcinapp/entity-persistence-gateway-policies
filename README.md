@@ -247,7 +247,7 @@ The following patterns consistently govern field access across all resource type
   * `_lastUpdatedDateTime` - Last modification timestamp (system-managed)
   * `_lastUpdatedBy` - Last modifier identifier (system-managed)
   * `_idempotencyKey` - Deduplication key (client-managed at creation only)
-* **Rationale:** Editors can fully manage content but cannot tamper with audit trails or impersonate other users
+* **Rationale:** Editors can fully manage content but cannot tamper with audit trails or impersonate other users. Because `_lastUpdatedBy` is in their `forbidden_update_list`, the gateway's `AddManagedFieldsInPatch` (PATCH) and `AddManagedFieldsFromOriginalToPayloadInReplace` (PUT) filters will **always overwrite** any value they send for this field with the authenticated caller's identity.
 
 **Members:**
 * **View restrictions** (cannot see internal system fields):
@@ -265,7 +265,7 @@ The following patterns consistently govern field access across all resource type
   * Immutable resource identifiers (`_kind`, `_slug`, `_listId`, `_entityId` depending on resource type)
 * **Rationale:** Members have standard user privileges with protections against:
   * Privilege escalation (cannot assign themselves as owners)
-  * Audit trail manipulation (cannot modify creation/update metadata)
+  * Audit trail manipulation (cannot modify creation/update metadata) — `_lastUpdatedBy` is in their `forbidden_update_list`; the gateway always overwrites it with the caller's identity on PATCH and PUT.
   * Temporal control bypass (cannot schedule or expire content without additional permissions)
   * Resource identity tampering (cannot change fundamental resource properties)
 
@@ -280,9 +280,10 @@ The following patterns consistently govern field access across all resource type
 
 **Field-Level Role Exceptions:**
 Any of the above restrictions can be bypassed by granting explicit field-level roles:
-* Format: `tarcinapp.<scope>.fields.<fieldName>.<operation>`
+* Format: `tarcinapp.fields.<scope>(.<kind>)?.<fieldName>.(update|create|manage)`
 * Example: `tarcinapp.fields.entities._validFromDateTime.create` allows a Member to set validity start time
-* Use cases: Scheduled publishing, advanced ownership management, custom audit requirements
+* Example: `tarcinapp.fields.entities._lastUpdatedBy.update` allows an editor/member to supply a custom `_lastUpdatedBy` value (treated identically to admin — the gateway uses `putIfAbsent` instead of always-overwrite for that caller)
+* Use cases: Scheduled publishing, advanced ownership management, custom audit requirements, migration scripts
 
 
 **Protected Fields Examples:**
